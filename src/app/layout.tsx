@@ -15,6 +15,18 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
   description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+  openGraph: {
+    title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
+    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+    siteName: "华语Talk Master",
+    locale: "th_TH",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
+    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
