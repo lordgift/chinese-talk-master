@@ -9,7 +9,7 @@ export const CATEGORIES: Category[] = [
     icon: 'UtensilsCrossed',
     color: 'from-amber-500 to-rose-500',
     bgGradient: 'bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-transparent',
-    scenariosCount: 4,
+    scenariosCount: 3,
     isAvailable: true,
   },
   {
@@ -20,7 +20,7 @@ export const CATEGORIES: Category[] = [
     icon: 'Compass',
     color: 'from-sky-500 to-indigo-500',
     bgGradient: 'bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent',
-    scenariosCount: 4,
+    scenariosCount: 6,
     isAvailable: true,
   },
   {
