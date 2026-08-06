@@ -5,6 +5,7 @@ import { Mic, MicOff, Sparkles, AlertCircle, Award, Volume2, XCircle, AlertTrian
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { evaluateWordByWordPronunciation, DetailedSpeechEvaluation, WordBreakdown } from '@/lib/pinyinUtils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+import { AudioPlayer } from './AudioPlayer';
 import confetti from 'canvas-confetti';
 
 interface SpeechRecorderProps {
@@ -108,9 +109,9 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
       </div>
 
       {/* Target Preview */}
-      <div className="mb-4 bg-slate-50 p-3 rounded-xl border border-slate-200">
+      <div className="mb-4 bg-slate-50 p-3.5 rounded-xl border border-slate-200">
         <p className="text-xs text-slate-500 mb-1 font-mono">ประโยคเป้าหมายที่ต้องพูด:</p>
-        <p className="text-base font-bold text-slate-900 font-serif">{targetHanzi}</p>
+        <p className="text-lg font-bold text-slate-900 font-serif">{targetHanzi}</p>
         <p className="text-xs text-amber-800 font-bold">{targetPinyin}</p>
       </div>
 
@@ -164,47 +165,7 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
       {/* DETAILED WORD-BY-WORD DIAGNOSTIC PANEL WITH GREEN/YELLOW/RED PILLS */}
       {hasTested && evaluation && (
         <div className="mt-5 pt-4 border-t border-slate-200 space-y-4">
-          <div
-            className={`p-4 rounded-xl border transition-all ${
-              evaluation.score >= 80
-                ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
-                : evaluation.score >= 60
-                ? 'bg-amber-50 border-amber-200 text-amber-900'
-                : 'bg-rose-50 border-rose-200 text-rose-900'
-            }`}
-          >
-            <div className="flex items-center gap-2 font-bold text-sm mb-1">
-              <Sparkles className="w-4 h-4" />
-              <span>สรุปผลการประเมินการออกเสียง</span>
-            </div>
-            <p className="text-xs leading-relaxed font-medium">{evaluation.feedbackMsg}</p>
-
-            {/* AUTOMATIC EXPLANATION OF MISTAKES */}
-            {evaluation.missedCount > 0 && (
-              <div className="mt-3 pt-3 border-t border-slate-200/80 text-xs text-slate-800 space-y-2 bg-white/80 p-3.5 rounded-xl border border-slate-200 shadow-2xs">
-                <div className="font-bold text-rose-700 flex items-center gap-1.5 text-xs">
-                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
-                  <span>วิเคราะห์สาเหตุการผิดพลาดจากระบบ (Detailed Diagnostic):</span>
-                </div>
-                <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
-                  {evaluation.wordEvaluations
-                    .filter((we) => we.status !== 'correct')
-                    .map((we, idx) => (
-                      <li key={idx} className="leading-relaxed flex items-start gap-1.5">
-                        <span className="text-slate-400 mt-0.5">•</span>
-                        <div>
-                          <span className="font-bold text-slate-900 font-serif text-sm">{we.word.hanzi}</span>{' '}
-                          <span className="text-amber-800 font-bold text-xs">({we.word.pinyin})</span>:{' '}
-                          <span className="text-slate-800 font-medium">{we.reasonExplanation}</span>
-                        </div>
-                      </li>
-                    ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* Word & Character Color Pills Breakdown */}
+          {/* Word & Character Color Pills Breakdown FIRST */}
           <div className="bg-slate-50 rounded-xl p-4 border border-slate-200">
             <h5 className="text-xs font-bold text-slate-900 mb-3 flex items-center justify-between">
               <span>🔍 ผลการไฮไลท์สีรายตัวอักษร/คำ (Character Color Diagnostic):</span>
@@ -261,16 +222,57 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
                       <button
                         onClick={() => handlePlayWord(we.word.hanzi)}
                         title="ฟังเสียงเฉพาะคำนี้ (ช้า 0.5x)"
-                        className="mt-2.5 px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-[10px] font-bold text-amber-800 border border-slate-200 flex items-center gap-1 transition shadow-2xs"
+                        className="mt-2.5 px-2.5 py-1 rounded-lg bg-amber-50 hover:bg-amber-100 text-[10px] font-bold text-amber-900 border border-amber-300 flex items-center gap-1 transition shadow-2xs"
                       >
                         <Volume2 className="w-3.5 h-3.5 text-amber-600" />
-                        <span>ฟังเสียงคำนี้</span>
+                        <span>🐢 ฟังช้าๆ (0.5x)</span>
                       </button>
                     )}
                   </div>
                 );
               })}
             </div>
+          </div>
+
+          {/* สรุปผลการประเมินการออกเสียง & AUTOMATIC EXPLANATION MOVED TO BOTTOM */}
+          <div
+            className={`p-4 rounded-xl border transition-all ${
+              evaluation.score >= 80
+                ? 'bg-emerald-50 border-emerald-200 text-emerald-900'
+                : evaluation.score >= 60
+                ? 'bg-amber-50 border-amber-200 text-amber-900'
+                : 'bg-rose-50 border-rose-200 text-rose-900'
+            }`}
+          >
+            <div className="flex items-center gap-2 font-bold text-sm mb-1">
+              <Sparkles className="w-4 h-4" />
+              <span>สรุปผลการประเมินการออกเสียง</span>
+            </div>
+            <p className="text-xs leading-relaxed font-medium">{evaluation.feedbackMsg}</p>
+
+            {/* AUTOMATIC EXPLANATION OF MISTAKES */}
+            {evaluation.missedCount > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-200/80 text-xs text-slate-800 space-y-2 bg-white/80 p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                <div className="font-bold text-rose-700 flex items-center gap-1.5 text-xs">
+                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                  <span>วิเคราะห์สาเหตุการผิดพลาดจากระบบ (Detailed Diagnostic):</span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
+                  {evaluation.wordEvaluations
+                    .filter((we) => we.status !== 'correct')
+                    .map((we, idx) => (
+                      <li key={idx} className="leading-relaxed flex items-start gap-1.5">
+                        <span className="text-slate-400 mt-0.5">•</span>
+                        <div>
+                          <span className="font-bold text-slate-900 font-serif text-sm">{we.word.hanzi}</span>{' '}
+                          <span className="text-amber-800 font-bold text-xs">({we.word.pinyin})</span>:{' '}
+                          <span className="text-slate-800 font-medium">{we.reasonExplanation}</span>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
         </div>
       )}
