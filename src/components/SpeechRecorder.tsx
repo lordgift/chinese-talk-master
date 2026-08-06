@@ -178,6 +178,30 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
               <span>สรุปผลการประเมินการออกเสียง</span>
             </div>
             <p className="text-xs leading-relaxed font-medium">{evaluation.feedbackMsg}</p>
+
+            {/* AUTOMATIC EXPLANATION OF MISTAKES */}
+            {evaluation.missedCount > 0 && (
+              <div className="mt-3 pt-3 border-t border-slate-200/80 text-xs text-slate-800 space-y-2 bg-white/80 p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                <div className="font-bold text-rose-700 flex items-center gap-1.5 text-xs">
+                  <AlertCircle className="w-4 h-4 text-rose-600 flex-shrink-0" />
+                  <span>วิเคราะห์สาเหตุการผิดพลาดจากระบบ (Detailed Diagnostic):</span>
+                </div>
+                <ul className="space-y-1.5 text-xs text-slate-700 font-medium">
+                  {evaluation.wordEvaluations
+                    .filter((we) => we.status !== 'correct')
+                    .map((we, idx) => (
+                      <li key={idx} className="leading-relaxed flex items-start gap-1.5">
+                        <span className="text-slate-400 mt-0.5">•</span>
+                        <div>
+                          <span className="font-bold text-slate-900 font-serif text-sm">{we.word.hanzi}</span>{' '}
+                          <span className="text-amber-800 font-bold text-xs">({we.word.pinyin})</span>:{' '}
+                          <span className="text-slate-800 font-medium">{we.reasonExplanation}</span>
+                        </div>
+                      </li>
+                    ))}
+                </ul>
+              </div>
+            )}
           </div>
 
           {/* Word & Character Color Pills Breakdown */}
@@ -212,11 +236,19 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
                         </span>
                       ) : isPartial ? (
                         <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-white flex items-center gap-0.5">
-                          <AlertTriangle className="w-3 h-3" /> 🟡 ใกล้เคียง
+                          <AlertTriangle className="w-3 h-3" /> 🟡 ออกเสียงเพี้ยน
+                        </span>
+                      ) : we.reasonType === 'wrong_word' ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 animate-pulse">
+                          <XCircle className="w-3 h-3" /> ❌ ผิดคำ
+                        </span>
+                      ) : we.reasonType === 'omitted' ? (
+                        <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-slate-600 text-white flex items-center gap-0.5">
+                          <AlertCircle className="w-3 h-3" /> 🔇 ตกคำนี้
                         </span>
                       ) : (
                         <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 animate-pulse">
-                          <XCircle className="w-3 h-3" /> 🔴 พลาด
+                          <XCircle className="w-3 h-3" /> 🔴 ออกเสียงเพี้ยน
                         </span>
                       )}
                     </div>

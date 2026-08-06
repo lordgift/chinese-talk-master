@@ -48,6 +48,8 @@ export interface WordEvaluation {
   status: 'correct' | 'partial' | 'missed';
   matchedCharsCount: number;
   totalCharsCount: number;
+  reasonType?: 'mispronounced' | 'wrong_word' | 'omitted';
+  reasonExplanation?: string;
 }
 
 export interface DetailedSpeechEvaluation {
@@ -61,11 +63,6 @@ export interface DetailedSpeechEvaluation {
 
 /**
  * Get Tailwind CSS color for Pinyin tones
- * Tone 1 (High): Red/Coral
- * Tone 2 (Rising): Green
- * Tone 3 (Falling-Rising): Amber/Yellow
- * Tone 4 (Falling): Purple/Indigo
- * Neutral Tone 5: Gray
  */
 export function getToneColorClass(tone?: number): { text: string; bg: string; border: string } {
   switch (tone) {
@@ -157,7 +154,7 @@ export function evaluateSpeechAccuracy(recognizedText: string, targetHanzi: stri
 }
 
 /**
- * Perform detailed Word-by-Word pronunciation evaluation
+ * Perform detailed Word-by-Word pronunciation evaluation with specific error classification
  */
 export function evaluateWordByWordPronunciation(
   recognizedText: string,
@@ -166,6 +163,7 @@ export function evaluateWordByWordPronunciation(
 ): DetailedSpeechEvaluation {
   const baseResult = evaluateSpeechAccuracy(recognizedText, targetHanzi);
   const cleanRecognized = (recognizedText || '').replace(/[^\u4e00-\u9fa5]/g, '');
+  const cleanTarget = targetHanzi.replace(/[^\u4e00-\u9fa5]/g, '');
 
   let correctCount = 0;
   let missedCount = 0;
@@ -181,15 +179,37 @@ export function evaluateWordByWordPronunciation(
     }
 
     let status: 'correct' | 'partial' | 'missed' = 'missed';
+    let reasonType: 'mispronounced' | 'wrong_word' | 'omitted' | undefined = undefined;
+    let reasonExplanation: string | undefined = undefined;
+
     if (matchedCount === cleanWordHanzi.length && cleanWordHanzi.length > 0) {
       status = 'correct';
       correctCount++;
     } else if (matchedCount > 0) {
       status = 'partial';
       missedCount++;
+      reasonType = 'mispronounced';
+      reasonExplanation = `🔊 ออกเสียงเพี้ยนบางวรรณยุกต์/พยัญชนะ (ระบบได้ยินเสียงคล้ายกันเป็น "${cleanRecognized}")`;
     } else {
       status = 'missed';
       missedCount++;
+
+      if (!cleanRecognized || cleanRecognized.length === 0) {
+        reasonType = 'omitted';
+        reasonExplanation = `🔇 พูดตกคำนี้ไป หรือไมค์ไม่ได้ยินเสียงคำว่า "${w.hanzi}"`;
+      } else {
+        // Check if user spoke a completely different word vs mispronounced tone
+        // Find if any character in cleanRecognized is totally outside cleanTarget
+        const extraChars = Array.from(cleanRecognized).filter((c) => !cleanTarget.includes(c));
+
+        if (extraChars.length > 0) {
+          reasonType = 'wrong_word';
+          reasonExplanation = `❌ พูดผิดคำไปเลย (คุณพูดได้เป็นคำว่า "${cleanRecognized}" แทนคำเป้าหมาย "${w.hanzi}")`;
+        } else {
+          reasonType = 'mispronounced';
+          reasonExplanation = `🔊 ออกเสียงไม่ถูกต้อง/วรรณยุกต์เพี้ยน (ระบบได้ยินเป็น "${cleanRecognized}")`;
+        }
+      }
     }
 
     return {
@@ -197,6 +217,8 @@ export function evaluateWordByWordPronunciation(
       status,
       matchedCharsCount: matchedCount,
       totalCharsCount: cleanWordHanzi.length,
+      reasonType,
+      reasonExplanation,
     };
   });
 
