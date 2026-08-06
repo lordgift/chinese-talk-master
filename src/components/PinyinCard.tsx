@@ -1,0 +1,130 @@
+'use client';
+
+import { useState } from 'react';
+import { DialogueLine, getToneColorClass } from '@/lib/pinyinUtils';
+import { AudioPlayer } from './AudioPlayer';
+import { Info, Volume2 } from 'lucide-react';
+import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
+
+interface PinyinCardProps {
+  dialogue: DialogueLine;
+  isCurrent?: boolean;
+}
+
+export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
+  const [selectedWord, setSelectedWord] = useState<string | null>(null);
+  const { speak } = useSpeechSynthesis();
+
+  const isUser = dialogue.speaker === 'user';
+
+  const handleWordClick = (wordHanzi: string) => {
+    setSelectedWord(selectedWord === wordHanzi ? null : wordHanzi);
+    speak(wordHanzi, 0.75); // Speak individual word clearly
+  };
+
+  return (
+    <div
+      className={`rounded-2xl p-4 sm:p-5 transition-all duration-300 border ${
+        isUser
+          ? 'bg-slate-900/80 border-amber-500/30 shadow-lg shadow-amber-500/5 ml-4 sm:ml-8'
+          : 'bg-slate-900/60 border-slate-800 mr-4 sm:mr-8'
+      } ${isCurrent ? 'ring-2 ring-rose-500/50 shadow-xl shadow-rose-500/10' : ''}`}
+    >
+      {/* Header / Speaker avatar */}
+      <div className="flex items-center justify-between gap-3 mb-3 border-b border-slate-800/80 pb-2.5">
+        <div className="flex items-center gap-2.5">
+          <span className="text-2xl p-1.5 rounded-xl bg-slate-800/80 border border-slate-700/50">
+            {dialogue.avatar}
+          </span>
+          <div>
+            <span
+              className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+                isUser
+                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
+                  : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+              }`}
+            >
+              {dialogue.speakerName}
+            </span>
+          </div>
+        </div>
+
+        {/* Audio player for full sentence */}
+        <AudioPlayer text={dialogue.hanzi} compact />
+      </div>
+
+      {/* Main Chinese Sentence Display with Pinyin */}
+      <div className="my-4">
+        {/* Full Pinyin text string */}
+        <p className="text-sm font-medium text-amber-300/90 font-sans tracking-wide mb-1 select-all">
+          {dialogue.pinyin}
+        </p>
+
+        {/* Big Hanzi text with interactive clickable word pills */}
+        <div className="flex flex-wrap items-baseline gap-2 py-1">
+          {dialogue.words.map((word, idx) => {
+            const isSelected = selectedWord === word.hanzi;
+            return (
+              <button
+                key={idx}
+                onClick={() => handleWordClick(word.hanzi)}
+                className={`group relative flex flex-col items-center p-1.5 rounded-lg border transition-all ${
+                  isSelected
+                    ? 'bg-amber-500/20 border-amber-400 scale-105 shadow-md shadow-amber-500/20'
+                    : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50'
+                }`}
+              >
+                {/* Tone styled Pinyin */}
+                <span className="text-xs font-semibold text-slate-300 group-hover:text-amber-300">
+                  {word.pinyin}
+                </span>
+
+                {/* Hanzi */}
+                <span className="text-2xl font-bold text-white tracking-wider my-0.5 font-serif">
+                  {word.hanzi}
+                </span>
+
+                {/* Thai Word Meaning Pill */}
+                <span className="text-[11px] text-slate-400 font-light group-hover:text-slate-200">
+                  {word.thai}
+                </span>
+
+                {/* Tone indicator bar */}
+                {word.tones && (
+                  <div className="flex items-center gap-1 mt-1">
+                    {word.tones.map((t, tIdx) => {
+                      const toneStyle = getToneColorClass(t);
+                      return (
+                        <span
+                          key={tIdx}
+                          title={`Tone ${t}`}
+                          className={`text-[9px] px-1 py-0.2 rounded border ${toneStyle.bg} ${toneStyle.text} ${toneStyle.border}`}
+                        >
+                          T{t}
+                        </span>
+                      );
+                    })}
+                  </div>
+                )}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Thai sentence translation */}
+        <p className="text-sm text-slate-300 mt-3 font-normal flex items-center gap-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/50">
+          <span className="text-slate-500 text-xs font-mono uppercase">TH:</span>
+          <span>{dialogue.thai}</span>
+        </p>
+      </div>
+
+      {/* Audio hint or Tone sandhi rule tooltip if present */}
+      {dialogue.audioHint && (
+        <div className="mt-3 text-xs text-amber-200/90 bg-amber-950/40 border border-amber-800/40 rounded-xl p-2.5 flex items-start gap-2">
+          <Info className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+          <div>{dialogue.audioHint}</div>
+        </div>
+      )}
+    </div>
+  );
+}

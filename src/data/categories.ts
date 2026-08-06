@@ -1,0 +1,48 @@
+import { Category } from '@/lib/pinyinUtils';
+
+export const CATEGORIES: Category[] = [
+  {
+    id: 'food-ordering',
+    title: 'สั่งอาหาร & ร้านอาหาร',
+    titleZh: '点餐与美食 (Diǎncān yǔ Měishí)',
+    description: 'ฝึกการสั่งอาหาร ชาไข่มุก ถามระดับความเผ็ด แจ้งการแพ้อาหาร และการเช็คบิลในร้านอาหารจีน',
+    icon: 'UtensilsCrossed',
+    color: 'from-amber-500 to-rose-500',
+    bgGradient: 'bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-transparent',
+    scenariosCount: 3,
+    isAvailable: true,
+  },
+  {
+    id: 'travel',
+    title: 'ท่องเที่ยว & การเดินทาง',
+    titleZh: '旅游与交通 (Lǚyóu yǔ Jiāotōng)',
+    description: 'ฝึกถามทาง ขึ้นรถไฟฟ้า MRT/BTS ซื้อตั๋วเดินทาง เรียกรถแท็กซี่ และถามสถานที่ท่องเที่ยว',
+    icon: 'Compass',
+    color: 'from-sky-500 to-indigo-500',
+    bgGradient: 'bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent',
+    scenariosCount: 3,
+    isAvailable: true,
+  },
+  {
+    id: 'shopping',
+    title: 'ช้อปปิ้ง & ต่อราคา',
+    titleZh: '购物与砍价 (Gòuwù yǔ Kǎnjià)',
+    description: 'ถามราคา ขอส่วนลด ลองเสื้อผ้า ชำระเงินด้วย WeChat/Alipay (เปิดให้บริการเร็วๆ นี้)',
+    icon: 'ShoppingBag',
+    color: 'from-emerald-500 to-teal-500',
+    bgGradient: 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent',
+    scenariosCount: 0,
+    isAvailable: false,
+  },
+  {
+    id: 'hotel',
+    title: 'โรงแรม & ที่พัก',
+    titleZh: '酒店与住宿 (Jiǔdiàn yǔ Zhùsù)',
+    description: 'การเช็คอิน ฝากกระเป๋า แจ้งปัญหาห้องพัก และเช็คเอ้าท์ (เปิดให้บริการเร็วๆ นี้)',
+    icon: 'Building2',
+    color: 'from-purple-500 to-pink-500',
+    bgGradient: 'bg-gradient-to-br from-purple-500/10 via-pink-500/5 to-transparent',
+    scenariosCount: 0,
+    isAvailable: false,
+  },
+];
