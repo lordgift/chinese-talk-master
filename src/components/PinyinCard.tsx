@@ -32,22 +32,22 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
     <div
       className={`rounded-2xl p-4 sm:p-5 transition-all duration-300 border ${
         isUser
-          ? 'bg-slate-900/80 border-amber-500/30 shadow-lg shadow-amber-500/5 ml-4 sm:ml-8'
-          : 'bg-slate-900/60 border-slate-800 mr-4 sm:mr-8'
-      } ${isCurrent ? 'ring-2 ring-rose-500/50 shadow-xl shadow-rose-500/10' : ''}`}
+          ? 'bg-white border-amber-300 shadow-sm ml-4 sm:ml-8'
+          : 'bg-white border-slate-200 mr-4 sm:mr-8 shadow-2xs'
+      } ${isCurrent ? 'ring-2 ring-rose-400/70 shadow-md shadow-rose-500/10' : ''}`}
     >
       {/* Header / Speaker avatar */}
-      <div className="flex items-center justify-between gap-3 mb-3 border-b border-slate-800/80 pb-2.5">
+      <div className="flex items-center justify-between gap-3 mb-3 border-b border-slate-100 pb-2.5">
         <div className="flex items-center gap-2.5">
-          <span className="text-2xl p-1.5 rounded-xl bg-slate-800/80 border border-slate-700/50">
+          <span className="text-2xl p-1.5 rounded-xl bg-slate-100 border border-slate-200">
             {dialogue.avatar}
           </span>
           <div>
             <span
-              className={`text-xs font-semibold px-2 py-0.5 rounded-md ${
+              className={`text-xs font-bold px-2.5 py-0.5 rounded-md ${
                 isUser
-                  ? 'bg-amber-500/20 text-amber-300 border border-amber-500/30'
-                  : 'bg-indigo-500/20 text-indigo-300 border border-indigo-500/30'
+                  ? 'bg-amber-100 text-amber-900 border border-amber-300'
+                  : 'bg-indigo-100 text-indigo-900 border border-indigo-300'
               }`}
             >
               {dialogue.speakerName}
@@ -62,7 +62,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
       {/* Main Chinese Sentence Display with Pinyin */}
       <div className="my-4">
         {/* Full Pinyin text string */}
-        <p className="text-sm font-medium text-amber-300/90 font-sans tracking-wide mb-1 select-all">
+        <p className="text-sm font-bold text-amber-800 font-sans tracking-wide mb-1 select-all">
           {dialogue.pinyin}
         </p>
 
@@ -73,33 +73,33 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
             const evalResult = getWordEval(word.hanzi);
 
             // Determine border & background styling based on Green/Yellow/Red evaluation status
-            let evalBorderClass = 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50';
-            let hanziColorClass = 'text-white';
+            let evalBorderClass = 'bg-slate-50 border-slate-200 hover:border-amber-400 hover:bg-amber-50/60';
+            let hanziColorClass = 'text-slate-900';
             let statusBadge = null;
 
             if (evalResult) {
               if (evalResult.status === 'correct') {
                 evalBorderClass =
-                  'bg-emerald-950/50 border-emerald-500 ring-2 ring-emerald-500/60 shadow-lg shadow-emerald-500/20';
-                hanziColorClass = 'text-emerald-300 font-extrabold';
+                  'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-400/50 shadow-xs';
+                hanziColorClass = 'text-emerald-900 font-extrabold';
                 statusBadge = (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 flex items-center gap-0.5 mt-1">
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-600 text-white flex items-center gap-0.5 mt-1">
                     <CheckCircle2 className="w-2.5 h-2.5" /> 🟢 ถูกต้อง
                   </span>
                 );
               } else if (evalResult.status === 'partial') {
                 evalBorderClass =
-                  'bg-amber-950/50 border-amber-500 ring-2 ring-amber-500/60 shadow-lg shadow-amber-500/20';
-                hanziColorClass = 'text-amber-300 font-extrabold';
+                  'bg-amber-50 border-amber-400 ring-2 ring-amber-400/50 shadow-xs';
+                hanziColorClass = 'text-amber-900 font-extrabold';
                 statusBadge = (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 flex items-center gap-0.5 mt-1">
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-white flex items-center gap-0.5 mt-1">
                     <AlertTriangle className="w-2.5 h-2.5" /> 🟡 ใกล้เคียง
                   </span>
                 );
               } else {
                 evalBorderClass =
-                  'bg-rose-950/50 border-rose-500 ring-2 ring-rose-500/60 shadow-lg shadow-rose-500/20';
-                hanziColorClass = 'text-rose-400 font-extrabold';
+                  'bg-rose-50 border-rose-400 ring-2 ring-rose-400/50 shadow-xs';
+                hanziColorClass = 'text-rose-700 font-extrabold';
                 statusBadge = (
                   <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 mt-1 animate-pulse">
                     <XCircle className="w-2.5 h-2.5" /> 🔴 พลาด
@@ -107,7 +107,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                 );
               }
             } else if (isSelected) {
-              evalBorderClass = 'bg-amber-500/20 border-amber-400 scale-105 shadow-md shadow-amber-500/20';
+              evalBorderClass = 'bg-amber-100/70 border-amber-400 scale-105 shadow-xs';
             }
 
             return (
@@ -117,7 +117,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                 className={`group relative flex flex-col items-center p-2 rounded-xl border transition-all ${evalBorderClass}`}
               >
                 {/* Tone styled Pinyin */}
-                <span className="text-xs font-semibold text-slate-300 group-hover:text-amber-300">
+                <span className="text-xs font-semibold text-slate-600 group-hover:text-amber-800">
                   {word.pinyin}
                 </span>
 
@@ -127,7 +127,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                 </span>
 
                 {/* Thai Word Meaning Pill */}
-                <span className="text-[11px] text-slate-400 font-light group-hover:text-slate-200">
+                <span className="text-[11px] text-slate-500 font-medium group-hover:text-slate-700">
                   {word.thai}
                 </span>
 
@@ -157,16 +157,16 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
         </div>
 
         {/* Thai sentence translation */}
-        <p className="text-sm text-slate-300 mt-3 font-normal flex items-center gap-2 bg-slate-950/40 p-2.5 rounded-lg border border-slate-800/50">
-          <span className="text-slate-500 text-xs font-mono uppercase">TH:</span>
+        <p className="text-sm text-slate-800 mt-3 font-medium flex items-center gap-2 bg-slate-100/70 p-2.5 rounded-lg border border-slate-200">
+          <span className="text-slate-500 text-xs font-mono uppercase font-bold">TH:</span>
           <span>{dialogue.thai}</span>
         </p>
       </div>
 
       {/* Audio hint or Tone sandhi rule tooltip if present */}
       {dialogue.audioHint && (
-        <div className="mt-3 text-xs text-amber-200/90 bg-amber-950/40 border border-amber-800/40 rounded-xl p-2.5 flex items-start gap-2">
-          <Info className="w-4 h-4 text-amber-400 flex-shrink-0 mt-0.5" />
+        <div className="mt-3 text-xs text-amber-900 bg-amber-50 border border-amber-200 rounded-xl p-2.5 flex items-start gap-2 font-medium">
+          <Info className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" />
           <div>{dialogue.audioHint}</div>
         </div>
       )}

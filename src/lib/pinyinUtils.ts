@@ -70,16 +70,16 @@ export interface DetailedSpeechEvaluation {
 export function getToneColorClass(tone?: number): { text: string; bg: string; border: string } {
   switch (tone) {
     case 1:
-      return { text: 'text-rose-500 font-semibold', bg: 'bg-rose-500/10', border: 'border-rose-500/30' };
+      return { text: 'text-rose-600 font-bold', bg: 'bg-rose-50', border: 'border-rose-200' };
     case 2:
-      return { text: 'text-emerald-500 font-semibold', bg: 'bg-emerald-500/10', border: 'border-emerald-500/30' };
+      return { text: 'text-emerald-700 font-bold', bg: 'bg-emerald-50', border: 'border-emerald-200' };
     case 3:
-      return { text: 'text-amber-500 font-semibold', bg: 'bg-amber-500/10', border: 'border-amber-500/30' };
+      return { text: 'text-amber-700 font-bold', bg: 'bg-amber-50', border: 'border-amber-200' };
     case 4:
-      return { text: 'text-indigo-500 font-semibold', bg: 'bg-indigo-500/10', border: 'border-indigo-500/30' };
+      return { text: 'text-indigo-700 font-bold', bg: 'bg-indigo-50', border: 'border-indigo-200' };
     case 5:
     default:
-      return { text: 'text-slate-400 font-medium', bg: 'bg-slate-500/10', border: 'border-slate-500/20' };
+      return { text: 'text-slate-600 font-semibold', bg: 'bg-slate-100', border: 'border-slate-200' };
   }
 }
 
