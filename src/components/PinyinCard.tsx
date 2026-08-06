@@ -1,17 +1,18 @@
 'use client';
 
 import { useState } from 'react';
-import { DialogueLine, getToneColorClass } from '@/lib/pinyinUtils';
+import { DialogueLine, getToneColorClass, WordEvaluation } from '@/lib/pinyinUtils';
 import { AudioPlayer } from './AudioPlayer';
-import { Info, Volume2 } from 'lucide-react';
+import { Info, CheckCircle2, XCircle, AlertTriangle } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 
 interface PinyinCardProps {
   dialogue: DialogueLine;
   isCurrent?: boolean;
+  wordEvaluations?: WordEvaluation[];
 }
 
-export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
+export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: PinyinCardProps) {
   const [selectedWord, setSelectedWord] = useState<string | null>(null);
   const { speak } = useSpeechSynthesis();
 
@@ -20,6 +21,11 @@ export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
   const handleWordClick = (wordHanzi: string) => {
     setSelectedWord(selectedWord === wordHanzi ? null : wordHanzi);
     speak(wordHanzi, 0.75); // Speak individual word clearly
+  };
+
+  const getWordEval = (hanzi: string): WordEvaluation | undefined => {
+    if (!wordEvaluations) return undefined;
+    return wordEvaluations.find((we) => we.word.hanzi === hanzi);
   };
 
   return (
@@ -64,15 +70,51 @@ export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
         <div className="flex flex-wrap items-baseline gap-2 py-1">
           {dialogue.words.map((word, idx) => {
             const isSelected = selectedWord === word.hanzi;
+            const evalResult = getWordEval(word.hanzi);
+
+            // Determine border & background styling based on Green/Yellow/Red evaluation status
+            let evalBorderClass = 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50';
+            let hanziColorClass = 'text-white';
+            let statusBadge = null;
+
+            if (evalResult) {
+              if (evalResult.status === 'correct') {
+                evalBorderClass =
+                  'bg-emerald-950/50 border-emerald-500 ring-2 ring-emerald-500/60 shadow-lg shadow-emerald-500/20';
+                hanziColorClass = 'text-emerald-300 font-extrabold';
+                statusBadge = (
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-500 text-slate-950 flex items-center gap-0.5 mt-1">
+                    <CheckCircle2 className="w-2.5 h-2.5" /> 🟢 ถูกต้อง
+                  </span>
+                );
+              } else if (evalResult.status === 'partial') {
+                evalBorderClass =
+                  'bg-amber-950/50 border-amber-500 ring-2 ring-amber-500/60 shadow-lg shadow-amber-500/20';
+                hanziColorClass = 'text-amber-300 font-extrabold';
+                statusBadge = (
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-slate-950 flex items-center gap-0.5 mt-1">
+                    <AlertTriangle className="w-2.5 h-2.5" /> 🟡 ใกล้เคียง
+                  </span>
+                );
+              } else {
+                evalBorderClass =
+                  'bg-rose-950/50 border-rose-500 ring-2 ring-rose-500/60 shadow-lg shadow-rose-500/20';
+                hanziColorClass = 'text-rose-400 font-extrabold';
+                statusBadge = (
+                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 mt-1 animate-pulse">
+                    <XCircle className="w-2.5 h-2.5" /> 🔴 พลาด
+                  </span>
+                );
+              }
+            } else if (isSelected) {
+              evalBorderClass = 'bg-amber-500/20 border-amber-400 scale-105 shadow-md shadow-amber-500/20';
+            }
+
             return (
               <button
                 key={idx}
                 onClick={() => handleWordClick(word.hanzi)}
-                className={`group relative flex flex-col items-center p-1.5 rounded-lg border transition-all ${
-                  isSelected
-                    ? 'bg-amber-500/20 border-amber-400 scale-105 shadow-md shadow-amber-500/20'
-                    : 'bg-slate-950/60 border-slate-800/80 hover:border-slate-700 hover:bg-slate-800/50'
-                }`}
+                className={`group relative flex flex-col items-center p-2 rounded-xl border transition-all ${evalBorderClass}`}
               >
                 {/* Tone styled Pinyin */}
                 <span className="text-xs font-semibold text-slate-300 group-hover:text-amber-300">
@@ -80,7 +122,7 @@ export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
                 </span>
 
                 {/* Hanzi */}
-                <span className="text-2xl font-bold text-white tracking-wider my-0.5 font-serif">
+                <span className={`text-2xl font-bold tracking-wider my-0.5 font-serif ${hanziColorClass}`}>
                   {word.hanzi}
                 </span>
 
@@ -89,8 +131,11 @@ export function PinyinCard({ dialogue, isCurrent = false }: PinyinCardProps) {
                   {word.thai}
                 </span>
 
+                {/* Green/Yellow/Red evaluation badge if tested */}
+                {statusBadge}
+
                 {/* Tone indicator bar */}
-                {word.tones && (
+                {!statusBadge && word.tones && (
                   <div className="flex items-center gap-1 mt-1">
                     {word.tones.map((t, tIdx) => {
                       const toneStyle = getToneColorClass(t);

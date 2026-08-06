@@ -43,6 +43,22 @@ export interface Category {
   isAvailable: boolean;
 }
 
+export interface WordEvaluation {
+  word: WordBreakdown;
+  status: 'correct' | 'partial' | 'missed';
+  matchedCharsCount: number;
+  totalCharsCount: number;
+}
+
+export interface DetailedSpeechEvaluation {
+  score: number;
+  grade: 'S' | 'A' | 'B' | 'C';
+  feedbackMsg: string;
+  wordEvaluations: WordEvaluation[];
+  correctCount: number;
+  missedCount: number;
+}
+
 /**
  * Get Tailwind CSS color for Pinyin tones
  * Tone 1 (High): Red/Coral
@@ -120,16 +136,16 @@ export function evaluateSpeechAccuracy(recognizedText: string, targetHanzi: stri
 
   if (finalScore >= 90) {
     grade = 'S';
-    feedbackMsg = '🎉 สุดยอดมาก! ออกเสียงได้ชัดเจนและถูกต้องตามวรรณยุกต์';
+    feedbackMsg = '🎉 สุดยอดมาก! ออกเสียงได้ถูกต้องแม่นยำทุกคำ';
   } else if (finalScore >= 75) {
     grade = 'A';
-    feedbackMsg = '👍 ดีมาก! ออกเสียงได้ใกล้เคียง พยายามเน้นเสียงวรรณยุกต์อีกนิด';
+    feedbackMsg = '👍 ดีมาก! ออกเสียงได้ใกล้เคียงส่วนใหญ่ ลองดูคำที่พลาดเพื่อปรับปรุงอีกนิด';
   } else if (finalScore >= 50) {
     grade = 'B';
-    feedbackMsg = '💪 พยายามได้ดี! ลองเปิดฟังเสียงตัวอย่างและลองใหม่อีกครั้ง';
+    feedbackMsg = '💪 พยายามได้ดี! ลองกดปุ่มลำโพงฟังเสียงคำที่พลาดเฉพาะคำอีกครั้งนะครับ';
   } else {
     grade = 'C';
-    feedbackMsg = '💡 แนะนำให้กดปุ่มลำโพงฟังเสียงช้าๆ (0.5x) แล้วฝึกออกเสียงตามนะครับ';
+    feedbackMsg = '💡 ลองเปิดฟังเสียงตัวอย่างช้าๆ (0.5x) แล้วฝึกเน้นออกเสียงทีละคำนะครับ';
   }
 
   return {
@@ -137,5 +153,57 @@ export function evaluateSpeechAccuracy(recognizedText: string, targetHanzi: stri
     matchedChars,
     feedbackMsg,
     grade,
+  };
+}
+
+/**
+ * Perform detailed Word-by-Word pronunciation evaluation
+ */
+export function evaluateWordByWordPronunciation(
+  recognizedText: string,
+  targetHanzi: string,
+  words: WordBreakdown[]
+): DetailedSpeechEvaluation {
+  const baseResult = evaluateSpeechAccuracy(recognizedText, targetHanzi);
+  const cleanRecognized = (recognizedText || '').replace(/[^\u4e00-\u9fa5]/g, '');
+
+  let correctCount = 0;
+  let missedCount = 0;
+
+  const wordEvaluations: WordEvaluation[] = (words || []).map((w) => {
+    const cleanWordHanzi = w.hanzi.replace(/[^\u4e00-\u9fa5]/g, '');
+    let matchedCount = 0;
+
+    for (const char of cleanWordHanzi) {
+      if (cleanRecognized.includes(char)) {
+        matchedCount++;
+      }
+    }
+
+    let status: 'correct' | 'partial' | 'missed' = 'missed';
+    if (matchedCount === cleanWordHanzi.length && cleanWordHanzi.length > 0) {
+      status = 'correct';
+      correctCount++;
+    } else if (matchedCount > 0) {
+      status = 'partial';
+      missedCount++;
+    } else {
+      status = 'missed';
+      missedCount++;
+    }
+
+    return {
+      word: w,
+      status,
+      matchedCharsCount: matchedCount,
+      totalCharsCount: cleanWordHanzi.length,
+    };
+  });
+
+  return {
+    ...baseResult,
+    wordEvaluations,
+    correctCount,
+    missedCount,
   };
 }
