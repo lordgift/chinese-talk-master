@@ -90,10 +90,18 @@ export default function SessionPage({ params }: PageProps) {
   };
 
   const calculateAverageScore = () => {
-    const scoreValues = Object.values(scores);
-    if (scoreValues.length === 0) return 90; // Default baseline if not recorded
-    const sum = scoreValues.reduce((acc, curr) => acc + curr, 0);
-    return Math.round(sum / scoreValues.length);
+    const userTurnIndices = scenario.dialogues
+      .map((d, index) => (d.speaker === 'user' ? index : -1))
+      .filter((index) => index !== -1);
+
+    if (userTurnIndices.length === 0) return 0;
+
+    let totalScore = 0;
+    userTurnIndices.forEach((idx) => {
+      totalScore += scores[idx] || 0;
+    });
+
+    return Math.round(totalScore / userTurnIndices.length);
   };
 
   return (

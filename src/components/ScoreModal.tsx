@@ -13,12 +13,14 @@ interface ScoreModalProps {
 
 export function ScoreModal({ scenarioTitle, totalScore, onRetry }: ScoreModalProps) {
   useEffect(() => {
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-    });
-  }, []);
+    if (totalScore > 0) {
+      confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+      });
+    }
+  }, [totalScore]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fadeIn">
@@ -40,7 +42,7 @@ export function ScoreModal({ scenarioTitle, totalScore, onRetry }: ScoreModalPro
             <Star
               key={star}
               className={`w-8 h-8 ${
-                star <= (totalScore >= 80 ? 3 : totalScore >= 60 ? 2 : 1)
+                star <= (totalScore >= 80 ? 3 : totalScore >= 60 ? 2 : totalScore > 0 ? 1 : 0)
                   ? 'text-amber-500 fill-amber-500 animate-pulse'
                   : 'text-slate-300'
               }`}
@@ -59,7 +61,9 @@ export function ScoreModal({ scenarioTitle, totalScore, onRetry }: ScoreModalPro
               ? '🌟 ยอดเยี่ยมมาก! คุณมีความแม่นยำในการออกเสียงวรรณยุกต์ Pinyin ระดับสูง'
               : totalScore >= 60
               ? '👍 ทำได้ดีมาก! ฝึกฝนบ่อยๆ จะช่วยให้ออกเสียงเป็นธรรมชาติยิ่งขึ้น'
-              : '💪 ฝึกซ้อมอย่างต่อเนื่อง แล้วคุณจะเชี่ยวชาญขึ้นแน่นอน!'}
+              : totalScore > 0
+              ? '💪 ฝึกซ้อมอย่างต่อเนื่อง แล้วคุณจะเชี่ยวชาญขึ้นแน่นอน!'
+              : '🔇 คุณยังไม่ได้ลองกดพูดบันทึกเสียงในบทนี้ กด "ฝึกใหม่อีกครั้ง" แล้วเริ่มกดไมค์เพื่อฝึกพูดได้เลยนะครับ'}
           </p>
         </div>
 
