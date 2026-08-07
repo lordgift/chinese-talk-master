@@ -94,7 +94,7 @@ export function ScoreModal({ scenarioId, scenarioTitle, totalScore, onRetry }: S
           {user ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
               <CloudCheck className="w-4 h-4 text-emerald-600" />
-              <span>บันทึกผลการเรียนลง Firebase Cloud แล้ว ☁️</span>
+              <span>บันทึกผลการเรียนลง Cloud แล้ว ☁️</span>
             </div>
           ) : (
             <div className="bg-amber-50/80 p-3 rounded-xl border border-amber-200 text-left text-xs text-amber-900 flex items-start justify-between gap-2">
