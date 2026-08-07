@@ -91,15 +91,13 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             <button
               type="button"
               onClick={handleFavoriteToggle}
-              className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${
-                isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
-              }`}
+              className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
+                }`}
               title={isFavorited ? 'ยกเลิกบทเรียนที่ชอบ' : 'บันทึกเป็นบทเรียนที่ชอบ'}
             >
               <Heart
-                className={`w-4 h-4 transition-colors ${
-                  isFavorited ? 'fill-rose-500 text-rose-500' : ''
-                }`}
+                className={`w-4 h-4 transition-colors ${isFavorited ? 'fill-rose-500 text-rose-500' : ''
+                  }`}
               />
             </button>
           </div>
