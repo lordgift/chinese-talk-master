@@ -19,7 +19,7 @@ export interface DialogueLine {
 
 export interface Scenario {
   id: string;
-  categoryId: 'food-ordering' | 'travel' | 'shopping' | 'hotel';
+  categoryId: 'pinyin-course' | 'food-ordering' | 'travel' | 'shopping' | 'hotel';
   level: 'easy' | 'medium' | 'hard';
   levelTitle: string;
   title: string;
@@ -32,7 +32,7 @@ export interface Scenario {
 }
 
 export interface Category {
-  id: 'food-ordering' | 'travel' | 'shopping' | 'hotel';
+  id: 'pinyin-course' | 'food-ordering' | 'travel' | 'shopping' | 'hotel';
   title: string;
   titleZh: string;
   description: string;

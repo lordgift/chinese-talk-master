@@ -17,6 +17,7 @@ import {
   Layers,
   Filter,
   Heart,
+  GraduationCap,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -25,6 +26,8 @@ export default function HomePage() {
 
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
+      case 'GraduationCap':
+        return <GraduationCap className="w-5 h-5 text-rose-500" />;
       case 'UtensilsCrossed':
         return <UtensilsCrossed className="w-5 h-5 text-amber-500" />;
       case 'Compass':

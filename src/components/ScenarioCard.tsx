@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Scenario } from '@/lib/pinyinUtils';
-import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart, ShoppingBag, GraduationCap } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { ScorePieChart } from './ScorePieChart';
 
@@ -29,6 +29,10 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
 
   const renderIcon = (iconName: string) => {
     switch (iconName) {
+      case 'GraduationCap':
+        return <GraduationCap className="w-5 h-5 text-rose-600" />;
+      case 'ShoppingBag':
+        return <ShoppingBag className="w-5 h-5 text-emerald-600" />;
       case 'User':
         return <User className="w-5 h-5 text-indigo-600" />;
       case 'CupSoda':

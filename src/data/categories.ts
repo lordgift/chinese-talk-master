@@ -2,6 +2,17 @@ import { Category } from '@/lib/pinyinUtils';
 
 export const CATEGORIES: Category[] = [
   {
+    id: 'pinyin-course',
+    title: 'คอร์สปูพื้นฐาน Pinyin (ผู้เริ่มต้น)',
+    titleZh: '拼音基础教程 (Pīnyīn Jīchǔ Jiàochéng)',
+    description: 'สำหรับผู้ที่ไม่เคยเรียนภาษาจีนมาก่อน: ฝึกพยัญชนะ (b p m f), สระ (a o e i u ü), และวรรณยุกต์ทั้ง 4 เสียง',
+    icon: 'GraduationCap',
+    color: 'from-rose-500 to-amber-500',
+    bgGradient: 'bg-gradient-to-br from-rose-500/10 via-amber-500/5 to-transparent',
+    scenariosCount: 4,
+    isAvailable: true,
+  },
+  {
     id: 'food-ordering',
     title: 'สั่งอาหาร & ร้านอาหาร',
     titleZh: '点餐与美食 (Diǎncān yǔ Měishí)',
@@ -38,11 +49,11 @@ export const CATEGORIES: Category[] = [
     id: 'shopping',
     title: 'ช้อปปิ้ง & ต่อราคา',
     titleZh: '购物与砍价 (Gòuwù yǔ Kǎnjià)',
-    description: 'ถามราคา ขอส่วนลด ลองเสื้อผ้า ชำระเงินด้วย WeChat/Alipay (เปิดให้บริการเร็วๆ นี้)',
+    description: 'ถามราคา ขอส่วนลด ขอลองไซส์เสื้อผ้า และเจรจาต่อรองราคาสินค้าภาษาจีน',
     icon: 'ShoppingBag',
     color: 'from-emerald-500 to-teal-500',
     bgGradient: 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent',
-    scenariosCount: 0,
-    isAvailable: false,
+    scenariosCount: 3,
+    isAvailable: true,
   },
 ];
