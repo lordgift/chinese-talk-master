@@ -6,6 +6,7 @@ import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { evaluateWordByWordPronunciation, DetailedSpeechEvaluation, WordBreakdown } from '@/lib/pinyinUtils';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { AudioPlayer } from './AudioPlayer';
+import { PronunciationChart } from './PronunciationChart';
 import confetti from 'canvas-confetti';
 
 interface SpeechRecorderProps {
@@ -233,6 +234,13 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
               })}
             </div>
           </div>
+
+          {/* Tone & Pitch Contour Comparison Chart Graph */}
+          <PronunciationChart
+            targetHanzi={targetHanzi}
+            evaluation={evaluation}
+            recognizedText={transcript}
+          />
 
           {/* สรุปผลการประเมินการออกเสียง & AUTOMATIC EXPLANATION MOVED TO BOTTOM */}
           <div
