@@ -27,11 +27,11 @@ export const CATEGORIES: Category[] = [
     id: 'travel',
     title: 'ท่องเที่ยว & การเดินทาง',
     titleZh: '旅游与交通 (Lǚyóu yǔ Jiāotōng)',
-    description: 'ฝึกถามทาง ขึ้นรถไฟฟ้า MRT/BTS ซื้อตั๋วเดินทาง เรียกรถแท็กซี่ และถามสถานที่ท่องเที่ยว',
+    description: 'ฝึกถามทาง ขึ้นรถไฟฟ้า MRT/BTS ซื้อตั๋วเดินทาง เรียกรถแท็กซี่ และแนะนำตัวภาษาจีน',
     icon: 'Compass',
     color: 'from-sky-500 to-indigo-500',
     bgGradient: 'bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent',
-    scenariosCount: 5,
+    scenariosCount: 6,
     isAvailable: true,
   },
   {

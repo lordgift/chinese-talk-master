@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { Scenario } from '@/lib/pinyinUtils';
-import { Clock, MapPin, ChevronRight, MessageSquare, CupSoda, UtensilsCrossed, Compass, Car, Hotel, Soup, Utensils } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, MessageSquare, CupSoda, UtensilsCrossed, Compass, Car, Hotel, Soup, Utensils, User } from 'lucide-react';
 
 interface ScenarioCardProps {
   scenario: Scenario;
@@ -22,6 +22,8 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
 
   const renderIcon = (iconName: string) => {
     switch (iconName) {
+      case 'User':
+        return <User className="w-5 h-5 text-indigo-600" />;
       case 'CupSoda':
         return <CupSoda className="w-5 h-5 text-amber-600" />;
       case 'Utensils':

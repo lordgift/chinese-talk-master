@@ -2,6 +2,104 @@ import { Scenario } from '@/lib/pinyinUtils';
 
 export const SCENARIOS: Scenario[] = [
   // ==========================================
+  // CATEGORY: SELF INTRODUCTION (แนะนำตัว)
+  // ==========================================
+  {
+    id: 'self-intro-sompong',
+    categoryId: 'travel',
+    level: 'easy',
+    levelTitle: 'ง่ายมาก 🌱 (แนะนำตัว)',
+    title: '🙋‍♂️ ประโยคแนะนำตัว (ชื่อสมพง คนไทย อายุ 25 มาจากกรุงเทพ)',
+    titleZh: '自我介绍 (Zìwǒ Jièshào)',
+    description: 'ฝึก 5 ประโยคแนะนำตัวภาษาจีน: บอกชื่อ (สมพง), สัญชาติ (คนไทย), อายุ (25 ปี), มาจากกรุงเทพฯ และประโยคสรุปรวม',
+    icon: 'User',
+    location: 'ทักทาย & ทำความรู้จัก (自我介绍)',
+    estimatedMinutes: 3,
+    dialogues: [
+      {
+        id: 'intro-1',
+        speaker: 'user',
+        speakerName: 'คุณ (สมพง)',
+        avatar: '🧑',
+        hanzi: '我叫松朋。',
+        pinyin: 'Wǒ jiào Sōngpéng.',
+        thai: 'ฉันชื่อสมพง',
+        audioHint: '💡 "我叫" (wǒ jiào) = ฉันชื่อ... | "松朋" (Sōngpéng) = สมพง (ชื่อทับศัพท์)',
+        words: [
+          { hanzi: '我叫', pinyin: 'wǒ jiào', thai: 'ฉันชื่อ', tones: [3, 4] },
+          { hanzi: '松朋', pinyin: 'Sōng péng', thai: 'สมพง', tones: [1, 2] },
+        ],
+      },
+      {
+        id: 'intro-2',
+        speaker: 'user',
+        speakerName: 'คุณ (สมพง)',
+        avatar: '🧑',
+        hanzi: '我是泰国人。',
+        pinyin: 'Wǒ shì Tàiguórén.',
+        thai: 'ฉันเป็นคนไทย',
+        audioHint: '💡 "泰国人" (Tàiguórén) = คนไทย',
+        words: [
+          { hanzi: '我是', pinyin: 'wǒ shì', thai: 'ฉันเป็น/คือ', tones: [3, 4] },
+          { hanzi: '泰国人', pinyin: 'Tài guó rén', thai: 'คนไทย', tones: [4, 2, 2] },
+        ],
+      },
+      {
+        id: 'intro-3',
+        speaker: 'user',
+        speakerName: 'คุณ (สมพง)',
+        avatar: '🧑',
+        hanzi: '我今年二十五岁。',
+        pinyin: 'Wǒ jīnnián èrshíwǔ suì.',
+        thai: 'ฉันปีนี้อายุ 25 ปี',
+        audioHint: '💡 "二十五岁" (èrshíwǔ suì) = อายุ 25 ปี',
+        words: [
+          { hanzi: '我', pinyin: 'wǒ', thai: 'ฉัน', tones: [3] },
+          { hanzi: '今年', pinyin: 'jīn nián', thai: 'ปีนี้', tones: [1, 2] },
+          { hanzi: '二十五', pinyin: 'èr shí wǔ', thai: 'ยี่สิบห้า (25)', tones: [4, 2, 3] },
+          { hanzi: '岁', pinyin: 'suì', thai: 'ขวบ/ปี (อายุ)', tones: [4] },
+        ],
+      },
+      {
+        id: 'intro-4',
+        speaker: 'user',
+        speakerName: 'คุณ (สมพง)',
+        avatar: '🧑',
+        hanzi: '我来自曼谷。',
+        pinyin: 'Wǒ láizì Màngǔ.',
+        thai: 'ฉันมาจากกรุงเทพฯ',
+        audioHint: '💡 "来自" (láizì) = มาจาก | "曼谷" (Màngǔ) = กรุงเทพฯ',
+        words: [
+          { hanzi: '我来自', pinyin: 'wǒ lái zì', thai: 'ฉันมาจาก', tones: [3, 2, 4] },
+          { hanzi: '曼谷', pinyin: 'Màn gǔ', thai: 'กรุงเทพฯ', tones: [4, 3] },
+        ],
+      },
+      {
+        id: 'intro-5',
+        speaker: 'user',
+        speakerName: 'คุณ (สมพง)',
+        avatar: '🧑',
+        hanzi: '你好！我叫松朋，我是泰国人，今年二十五岁，来自曼谷。很高兴认识你！',
+        pinyin: 'Nǐ hǎo! Wǒ jiào Sōngpéng, wǒ shì Tàiguórén, jīnnián èrshíwǔ suì, láizì Màngǔ. Hěn gāoxìng rènshi nǐ!',
+        thai: 'สวัสดีครับ/ค่ะ ฉันชื่อสมพง ฉันเป็นคนไทย ปีนี้อายุ 25 ปี มาจากกรุงเทพฯ ยินดีที่ได้รู้จักครับ/ค่ะ!',
+        audioHint: '💡 "很高兴认识你" (hěn gāoxìng rènshi nǐ) = ยินดีที่ได้รู้จักคุณ',
+        words: [
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '我叫', pinyin: 'wǒ jiào', thai: 'ฉันชื่อ', tones: [3, 4] },
+          { hanzi: '松朋', pinyin: 'Sōng péng', thai: 'สมพง', tones: [1, 2] },
+          { hanzi: '我是', pinyin: 'wǒ shì', thai: 'ฉันเป็น', tones: [3, 4] },
+          { hanzi: '泰国人', pinyin: 'Tài guó rén', thai: 'คนไทย', tones: [4, 2, 2] },
+          { hanzi: '今年', pinyin: 'jīn nián', thai: 'ปีนี้', tones: [1, 2] },
+          { hanzi: '二十五岁', pinyin: 'èr shí wǔ suì', thai: 'อายุ 25 ปี', tones: [4, 2, 3, 4] },
+          { hanzi: '来自', pinyin: 'lái zì', thai: 'มาจาก', tones: [2, 4] },
+          { hanzi: '曼谷', pinyin: 'Màn gǔ', thai: 'กรุงเทพฯ', tones: [4, 3] },
+          { hanzi: '很高兴', pinyin: 'hěn gāo xìng', thai: 'ยินดีมาก', tones: [3, 1, 4] },
+          { hanzi: '认识你', pinyin: 'rèn shi nǐ', thai: 'ที่ได้รู้จักคุณ', tones: [4, 5, 3] },
+        ],
+      },
+    ],
+  },
+  // ==========================================
   // CATEGORY: SURVIVAL ESSENTIALS (ประโยคเอาตัวรอดจำเป็น)
   // ==========================================
   {
