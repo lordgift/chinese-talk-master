@@ -4,6 +4,7 @@ import { useRouter } from 'next/navigation';
 import { Scenario } from '@/lib/pinyinUtils';
 import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
+import { ScorePieChart } from './ScorePieChart';
 
 interface ScenarioCardProps {
   scenario: Scenario;
@@ -76,7 +77,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             {progress && (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                <span>สูงสุด {progress.bestScore}%</span>
+                <span>ผ่านแล้ว</span>
               </span>
             )}
           </div>
@@ -104,16 +105,23 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
           </div>
         </div>
 
-        {/* Icon & Title */}
-        <div className="flex items-start gap-3 my-2">
-          <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:scale-105 transition-transform shrink-0">
-            {renderIcon(scenario.icon)}
+        {/* Icon, Title & Score Pie Chart */}
+        <div className="flex items-start justify-between gap-3 my-2">
+          <div className="flex items-start gap-3">
+            <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:scale-105 transition-transform shrink-0">
+              {renderIcon(scenario.icon)}
+            </div>
+            <div>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-rose-600 transition">
+                {scenario.title}
+              </h3>
+              <p className="text-xs text-rose-600 font-serif font-semibold">{scenario.titleZh}</p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-base font-bold text-slate-900 group-hover:text-rose-600 transition">
-              {scenario.title}
-            </h3>
-            <p className="text-xs text-rose-600 font-serif font-semibold">{scenario.titleZh}</p>
+
+          {/* Mini Pie Chart for Score */}
+          <div className="shrink-0">
+            <ScorePieChart score={progress ? progress.bestScore : 0} />
           </div>
         </div>
 
