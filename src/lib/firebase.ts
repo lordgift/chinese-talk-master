@@ -12,13 +12,13 @@ import {
 import { getFirestore, Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
-  measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID,
+  apiKey: "AIzaSyD1Y_PYuBy5dU-PbrxoIzy9TZkLyYGMN8E",
+  authDomain: "chinese-talk-master.firebaseapp.com",
+  projectId: "chinese-talk-master",
+  storageBucket: "chinese-talk-master.firebasestorage.app",
+  messagingSenderId: "709360285242",
+  appId: "1:709360285242:web:1d4dc42470473a55a32703",
+  measurementId: "G-VFQ1WL8PSK",
 };
 
 // Initialize Firebase App
