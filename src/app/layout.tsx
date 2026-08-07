@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { FirebaseAnalytics } from "@/components/FirebaseAnalytics";
+import { AuthProvider } from "@/context/AuthContext";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -38,10 +39,12 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased bg-slate-50 text-slate-900`}
     >
       <body className="min-h-full flex flex-col bg-slate-50 text-slate-900">
-        <Suspense fallback={null}>
-          <FirebaseAnalytics />
-        </Suspense>
-        {children}
+        <AuthProvider>
+          <Suspense fallback={null}>
+            <FirebaseAnalytics />
+          </Suspense>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

@@ -322,6 +322,7 @@ export default function SessionPage({ params }: PageProps) {
       {/* Completion Modal */}
       {isCompleted && (
         <ScoreModal
+          scenarioId={scenario.id}
           scenarioTitle={scenario.title}
           totalScore={calculateAverageScore()}
           onRetry={() => {

@@ -1,5 +1,15 @@
 import { initializeApp, getApps, getApp, FirebaseApp } from 'firebase/app';
 import { getAnalytics, isSupported, Analytics, logEvent } from 'firebase/analytics';
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  signOut,
+  onAuthStateChanged,
+  User,
+  Auth,
+} from 'firebase/auth';
+import { getFirestore, Firestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -13,6 +23,11 @@ const firebaseConfig = {
 
 // Initialize Firebase App
 const app: FirebaseApp = getApps().length === 0 ? initializeApp(firebaseConfig) : getApp();
+
+// Initialize Auth & Firestore
+const auth: Auth = getAuth(app);
+const db: Firestore = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
 let analyticsInstance: Analytics | null = null;
 
@@ -43,4 +58,5 @@ export const trackEvent = async (eventName: string, eventParams?: Record<string,
   }
 };
 
-export { app };
+export { app, auth, db, googleProvider, signInWithPopup, signOut, onAuthStateChanged };
+export type { User };

@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { Sparkles, Languages, Volume2, BookOpen } from 'lucide-react';
+import { Sparkles, Languages, BookOpen } from 'lucide-react';
+import { UserMenu } from './UserMenu';
 
 export function Header() {
   return (
@@ -23,7 +24,7 @@ export function Header() {
           </div>
         </Link>
 
-        {/* Action Badges */}
+        {/* Action Badges & User Menu */}
         <div className="flex items-center gap-3">
           <div className="hidden md:flex items-center gap-2 text-xs font-semibold text-amber-800 bg-amber-50 border border-amber-200/80 px-3 py-1.5 rounded-full">
             <Sparkles className="w-3.5 h-3.5 animate-pulse text-amber-600" />
@@ -37,6 +38,8 @@ export function Header() {
             <BookOpen className="w-4 h-4 text-rose-500" />
             <span>หน้าแรก</span>
           </Link>
+
+          <UserMenu />
         </div>
       </div>
     </header>
