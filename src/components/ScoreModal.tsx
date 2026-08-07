@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { Trophy, Star, ArrowRight, RotateCcw, Home } from 'lucide-react';
 import confetti from 'canvas-confetti';
 import { useEffect } from 'react';
+import { trackEvent } from '@/lib/firebase';
 
 interface ScoreModalProps {
   scenarioTitle: string;
@@ -13,6 +14,11 @@ interface ScoreModalProps {
 
 export function ScoreModal({ scenarioTitle, totalScore, onRetry }: ScoreModalProps) {
   useEffect(() => {
+    trackEvent('session_complete', {
+      scenario_title: scenarioTitle,
+      total_score: totalScore,
+    });
+
     if (totalScore > 0) {
       confetti({
         particleCount: 100,
@@ -20,7 +26,7 @@ export function ScoreModal({ scenarioTitle, totalScore, onRetry }: ScoreModalPro
         origin: { y: 0.6 },
       });
     }
-  }, [totalScore]);
+  }, [scenarioTitle, totalScore]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-md animate-fadeIn">
