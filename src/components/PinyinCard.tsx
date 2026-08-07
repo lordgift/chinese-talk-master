@@ -61,13 +61,13 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
 
       {/* Main Chinese Sentence Display with Pinyin */}
       <div className="my-4">
-        {/* Full Pinyin text string */}
-        <p className="text-sm font-bold text-amber-800 font-sans tracking-wide mb-1 select-all">
+        {/* Large & Crisp Pinyin sentence string */}
+        <p className="text-lg sm:text-xl font-extrabold text-amber-900 font-pinyin tracking-wide mb-2 select-all leading-relaxed">
           {dialogue.pinyin}
         </p>
 
         {/* Big Hanzi text with interactive clickable word pills */}
-        <div className="flex flex-wrap items-baseline gap-2 py-1">
+        <div className="flex flex-wrap items-baseline gap-2.5 py-1">
           {dialogue.words.map((word, idx) => {
             const isSelected = selectedWord === word.hanzi;
             const evalResult = getWordEval(word.hanzi);
@@ -83,7 +83,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                   'bg-emerald-50 border-emerald-400 ring-2 ring-emerald-400/50 shadow-xs';
                 hanziColorClass = 'text-emerald-900 font-extrabold';
                 statusBadge = (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-600 text-white flex items-center gap-0.5 mt-1">
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-emerald-600 text-white flex items-center gap-0.5 mt-1">
                     <CheckCircle2 className="w-2.5 h-2.5" /> 🟢 ถูกต้อง
                   </span>
                 );
@@ -92,7 +92,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                   'bg-amber-50 border-amber-400 ring-2 ring-amber-400/50 shadow-xs';
                 hanziColorClass = 'text-amber-900 font-extrabold';
                 statusBadge = (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-white flex items-center gap-0.5 mt-1">
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-amber-500 text-white flex items-center gap-0.5 mt-1">
                     <AlertTriangle className="w-2.5 h-2.5" /> 🟡 ใกล้เคียง
                   </span>
                 );
@@ -101,7 +101,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                   'bg-rose-50 border-rose-400 ring-2 ring-rose-400/50 shadow-xs';
                 hanziColorClass = 'text-rose-700 font-extrabold';
                 statusBadge = (
-                  <span className="text-[9px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 mt-1 animate-pulse">
+                  <span className="text-[10px] font-bold px-1.5 py-0.2 rounded-full bg-rose-600 text-white flex items-center gap-0.5 mt-1 animate-pulse">
                     <XCircle className="w-2.5 h-2.5" /> 🔴 พลาด
                   </span>
                 );
@@ -114,20 +114,20 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
               <button
                 key={idx}
                 onClick={() => handleWordClick(word.hanzi)}
-                className={`group relative flex flex-col items-center p-2 rounded-xl border transition-all ${evalBorderClass}`}
+                className={`group relative flex flex-col items-center p-2.5 rounded-xl border transition-all ${evalBorderClass}`}
               >
-                {/* Tone styled Pinyin */}
-                <span className="text-xs font-semibold text-slate-600 group-hover:text-amber-800">
+                {/* Large Tone styled Pinyin */}
+                <span className="text-sm sm:text-base font-extrabold text-slate-800 font-pinyin group-hover:text-amber-900 tracking-wide mb-0.5">
                   {word.pinyin}
                 </span>
 
                 {/* Hanzi */}
-                <span className={`text-2xl font-bold tracking-wider my-0.5 font-serif ${hanziColorClass}`}>
+                <span className={`text-2xl sm:text-3xl font-bold tracking-wider my-0.5 font-serif ${hanziColorClass}`}>
                   {word.hanzi}
                 </span>
 
                 {/* Thai Word Meaning Pill */}
-                <span className="text-[11px] text-slate-500 font-medium group-hover:text-slate-700">
+                <span className="text-xs text-slate-500 font-medium group-hover:text-slate-700">
                   {word.thai}
                 </span>
 
@@ -143,7 +143,7 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
                         <span
                           key={tIdx}
                           title={`Tone ${t}`}
-                          className={`text-[9px] px-1 py-0.2 rounded border ${toneStyle.bg} ${toneStyle.text} ${toneStyle.border}`}
+                          className={`text-[9px] px-1 py-0.2 rounded border font-bold ${toneStyle.bg} ${toneStyle.text} ${toneStyle.border}`}
                         >
                           T{t}
                         </span>

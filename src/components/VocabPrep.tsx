@@ -63,7 +63,7 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
 
         <button
           onClick={onStartDialogue}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 transition"
+          className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 transition cursor-pointer"
         >
           <span>พร้อมแล้ว ไปฝึกบทสนทนา 💬</span>
         </button>
@@ -77,13 +77,13 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
           </div>
 
           {/* Tone badges */}
-          <div className="flex items-center justify-center gap-1 mb-2">
+          <div className="flex items-center justify-center gap-1.5 mb-3">
             {currentWord.tones?.map((t, idx) => {
               const toneStyle = getToneColorClass(t);
               return (
                 <span
                   key={idx}
-                  className={`text-[10px] px-2 py-0.5 rounded-md border font-semibold ${toneStyle.bg} ${toneStyle.text} ${toneStyle.border}`}
+                  className={`text-xs px-2.5 py-0.5 rounded-md border font-bold ${toneStyle.bg} ${toneStyle.text} ${toneStyle.border}`}
                 >
                   วรรณยุกต์ Tone {t}
                 </span>
@@ -91,13 +91,13 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
             })}
           </div>
 
-          {/* Pinyin */}
-          <p className="text-lg font-bold text-rose-600 tracking-wide font-sans mb-1">
+          {/* Prominent Large Pinyin */}
+          <p className="text-2xl sm:text-3xl font-extrabold text-rose-600 font-pinyin tracking-wide mb-1">
             {currentWord.pinyin}
           </p>
 
           {/* Hanzi */}
-          <h2 className="text-5xl font-black text-slate-900 tracking-widest font-serif my-3">
+          <h2 className="text-5xl sm:text-6xl font-black text-slate-900 tracking-widest font-serif my-3">
             {currentWord.hanzi}
           </h2>
 
@@ -110,7 +110,7 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
             <button
               onClick={() => handlePlayWord(currentWord)}
-              className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-2xs transition"
+              className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-2xs transition cursor-pointer"
             >
               <Volume2 className="w-4 h-4 text-rose-500" />
               <span>ฟังเสียงอ่าน (0.75x)</span>
@@ -118,7 +118,7 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
 
             <button
               onClick={handleTestWord}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-2xs transition ${
+              className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-2xs transition cursor-pointer ${
                 isListening
                   ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/30'
                   : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
@@ -168,14 +168,14 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
                 setActiveWordIndex(idx);
                 handlePlayWord(word);
               }}
-              className={`p-3 rounded-xl border text-left transition-all ${
+              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
                 isActive
                   ? 'bg-amber-100/80 border-amber-400 ring-2 ring-amber-400/50 scale-[1.02]'
                   : 'bg-slate-50 border-slate-200 hover:bg-amber-50/60 hover:border-amber-300'
               }`}
             >
               <div className="flex items-center justify-between text-xs text-amber-800 font-bold">
-                <span>{word.pinyin}</span>
+                <span className="font-pinyin text-sm font-extrabold">{word.pinyin}</span>
                 <Volume2 className="w-3.5 h-3.5 text-slate-400 group-hover:text-amber-600" />
               </div>
 

@@ -42,7 +42,7 @@ export default function HomePage() {
     return a.isAvailable ? -1 : 1;
   });
 
-  const favoritesCount = Object.values(userFavorites).filter(Boolean).length;
+  const favoriteScenarios = SCENARIOS.filter((sc) => !!userFavorites[sc.id]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
@@ -123,6 +123,17 @@ export default function HomePage() {
               <Layers className="w-4 h-4 text-slate-500" />
               หมวดบทเรียน:
             </span>
+
+            {favoriteScenarios.length > 0 && (
+              <a
+                href="#favorites"
+                className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+              >
+                <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
+                <span>บทเรียนที่ชอบ ({favoriteScenarios.length})</span>
+              </a>
+            )}
+
             {sortedCategories
               .filter((c) => c.isAvailable)
               .map((cat) => (
@@ -140,25 +151,8 @@ export default function HomePage() {
           <div className="flex items-center gap-1.5 text-xs font-semibold flex-wrap">
             <span className="text-slate-400 flex items-center gap-1 mr-1">
               <Filter className="w-3.5 h-3.5 text-slate-500" />
-              ตัวกรอง:
+              ระดับความยาก:
             </span>
-
-            <button
-              onClick={() => setSelectedLevel('favorites')}
-              className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer ${
-                selectedLevel === 'favorites'
-                  ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-xs'
-                  : 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
-              }`}
-            >
-              <Heart className={`w-3.5 h-3.5 ${selectedLevel === 'favorites' ? 'fill-white' : 'fill-rose-500 text-rose-500'}`} />
-              <span>บทเรียนที่ชอบ</span>
-              {favoritesCount > 0 && (
-                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${selectedLevel === 'favorites' ? 'bg-white/20 text-white' : 'bg-rose-200 text-rose-800'}`}>
-                  {favoritesCount}
-                </span>
-              )}
-            </button>
 
             <button
               onClick={() => setSelectedLevel('all')}
@@ -206,23 +200,58 @@ export default function HomePage() {
           </div>
         </div>
 
+        {/* DISTINCT FAVORITES PANEL CONTAINER */}
+        {favoriteScenarios.length > 0 && (
+          <section
+            id="favorites"
+            className="scroll-mt-24 rounded-3xl bg-gradient-to-b from-rose-50/80 via-rose-50/30 to-white border border-rose-200/90 p-5 sm:p-7 shadow-xs space-y-5"
+          >
+            {/* Panel Header with Bottom Border Divider */}
+            <div className="flex flex-wrap items-end justify-between border-b border-rose-200/80 pb-4 gap-3">
+              <div className="flex items-center gap-3">
+                <div className="p-3 rounded-2xl bg-white border border-rose-200 shadow-2xs text-rose-500">
+                  <Heart className="w-5 h-5 fill-rose-500" />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-xl font-extrabold text-slate-900">บทเรียนที่ชอบของคุณ</h2>
+                    <span className="text-xs font-serif font-semibold text-rose-600 px-2.5 py-0.5 rounded-md bg-white border border-rose-200 shadow-2xs">
+                      收藏课程
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5 font-medium">
+                    บทเรียนที่คุณกดหัวใจบันทึกไว้ เพื่อการทบทวนได้อย่างรวดเร็วในทุกๆ วัน
+                  </p>
+                </div>
+              </div>
+
+              <div className="text-xs font-bold text-rose-700 bg-white px-3.5 py-1 rounded-full border border-rose-200 shadow-2xs">
+                {favoriteScenarios.length} บทเรียน
+              </div>
+            </div>
+
+            {/* Grid of favorited scenarios inside container */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {favoriteScenarios
+                .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
+                .map((scenario) => (
+                  <ScenarioCard key={scenario.id} scenario={scenario} />
+                ))}
+            </div>
+          </section>
+        )}
+
         {/* Render Lessons Grouped by Category Sections */}
         {sortedCategories.map((cat) => {
           const categoryScenarios = SCENARIOS.filter((sc) => {
             const matchCategory = sc.categoryId === cat.id;
             if (!matchCategory) return false;
-
-            if (selectedLevel === 'favorites') {
-              return !!userFavorites[sc.id];
-            }
             if (selectedLevel === 'all') return true;
             return sc.level === selectedLevel;
           });
 
           // Skip empty categories if filtering
           if (categoryScenarios.length === 0) {
-            if (selectedLevel === 'favorites') return null;
-
             if (!cat.isAvailable) {
               return (
                 <section key={cat.id} id={cat.id} className="scroll-mt-24">
@@ -277,25 +306,6 @@ export default function HomePage() {
             </section>
           );
         })}
-
-        {/* Empty state when filtering favorites */}
-        {selectedLevel === 'favorites' && favoritesCount === 0 && (
-          <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md mx-auto">
-            <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center mx-auto mb-4 animate-bounce">
-              <Heart className="w-8 h-8 fill-rose-500" />
-            </div>
-            <h3 className="text-lg font-bold text-slate-900">ยังไม่มีบทเรียนที่ชอบ</h3>
-            <p className="text-xs text-slate-500 mt-2 max-w-xs mx-auto">
-              คุณสามารถกดปุ่มหัวใจ ❤️ บนมุมขวาของการ์ดบทเรียนใดก็ได้ เพื่อบันทึกไว้ในบทเรียนที่ชอบของคุณ
-            </p>
-            <button
-              onClick={() => setSelectedLevel('all')}
-              className="mt-6 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs cursor-pointer"
-            >
-              ดูบทเรียนทั้งหมด
-            </button>
-          </div>
-        )}
       </main>
 
       {/* Footer */}
