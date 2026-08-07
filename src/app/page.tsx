@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import Link from 'next/link';
 import { CATEGORIES } from '@/data/categories';
 import { SCENARIOS } from '@/data/scenarios';
 import { Header } from '@/components/Header';
@@ -18,10 +17,13 @@ import {
   Filter,
   Heart,
   GraduationCap,
+  ChevronDown,
+  ChevronUp,
 } from 'lucide-react';
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
+  const [isPinyinExpanded, setIsPinyinExpanded] = useState<boolean>(false);
   const { userFavorites } = useAuth();
 
   const getCategoryIcon = (iconName: string) => {
@@ -40,12 +42,15 @@ export default function HomePage() {
     }
   };
 
-  const sortedCategories = [...CATEGORIES].sort((a, b) => {
+  const pinyinCategory = CATEGORIES.find((c) => c.id === 'pinyin-course');
+  const pinyinScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'pinyin-course');
+
+  const scenarioCategories = CATEGORIES.filter((c) => c.id !== 'pinyin-course').sort((a, b) => {
     if (a.isAvailable === b.isAvailable) return 0;
     return a.isAvailable ? -1 : 1;
   });
 
-  const favoriteScenarios = SCENARIOS.filter((sc) => !!userFavorites[sc.id]);
+  const favoriteScenarios = SCENARIOS.filter((sc) => sc.categoryId !== 'pinyin-course' && !!userFavorites[sc.id]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
@@ -117,7 +122,7 @@ export default function HomePage() {
       </section>
 
       {/* Main Content Area */}
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-12">
+      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex-1 w-full space-y-8">
         {/* Sticky Filter & Section Jump Bar */}
         <div className="bg-white/90 backdrop-blur-md sticky top-16 z-30 p-3 sm:p-4 rounded-2xl border border-slate-200/90 shadow-sm flex flex-wrap items-center justify-between gap-3">
           {/* Quick jump to sections */}
@@ -126,6 +131,17 @@ export default function HomePage() {
               <Layers className="w-4 h-4 text-slate-500" />
               หมวดบทเรียน:
             </span>
+
+            {pinyinCategory && (
+              <a
+                href="#pinyin-course"
+                onClick={() => setIsPinyinExpanded(true)}
+                className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                <span>คอร์ส Pinyin</span>
+              </a>
+            )}
 
             {favoriteScenarios.length > 0 && (
               <a
@@ -137,7 +153,7 @@ export default function HomePage() {
               </a>
             )}
 
-            {sortedCategories
+            {scenarioCategories
               .filter((c) => c.isAvailable)
               .map((cat) => (
                 <a
@@ -150,7 +166,7 @@ export default function HomePage() {
               ))}
           </div>
 
-          {/* Filter Dropdown / Buttons */}
+          {/* Filter Buttons */}
           <div className="flex items-center gap-1.5 text-xs font-semibold flex-wrap">
             <span className="text-slate-400 flex items-center gap-1 mr-1">
               <Filter className="w-3.5 h-3.5 text-slate-500" />
@@ -203,13 +219,89 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* DISTINCT FAVORITES PANEL CONTAINER */}
+        {/* 1. ACADEMIC INDIGO-VIOLET COLLAPSIBLE PINYIN FOUNDATION COURSE */}
+        {pinyinCategory && (
+          <section
+            id="pinyin-course"
+            className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-white border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
+          >
+            {/* Collapsible Header Toggle */}
+            <button
+              onClick={() => setIsPinyinExpanded(!isPinyinExpanded)}
+              className="w-full flex items-center justify-between text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
+                  <GraduationCap className="w-5 h-5 text-indigo-600" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
+                      🎓 คอร์สปูพื้นฐาน Pinyin
+                    </h2>
+                    <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
+                      拼音基础教程
+                    </span>
+                    <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                      {pinyinScenarios.length} บทเรียน
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    ปูพื้นฐานพยัญชนะ สระ วรรณยุกต์ และกฎการผันเสียงสำหรับคนที่ไม่เคยเรียนมาก่อน
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
+                <span>{isPinyinExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียน Pinyin'}</span>
+                {isPinyinExpanded ? (
+                  <ChevronUp className="w-4 h-4 text-indigo-600" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-indigo-600" />
+                )}
+              </div>
+            </button>
+
+            {/* Collapsed / Expanded Content */}
+            {isPinyinExpanded && (
+              <div className="pt-3 border-t border-indigo-200/60 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in duration-200">
+                {pinyinScenarios.map((scenario) => (
+                  <ScenarioCard key={scenario.id} scenario={scenario} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* 2. REAL-LIFE SCENARIOS HEADER DIVIDER */}
+        <div className="pt-6 pb-2 border-t border-slate-200/90">
+          <div className="flex items-center gap-3">
+            <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-rose-500 via-amber-500 to-indigo-600 text-white shadow-md shadow-rose-500/20">
+              <Compass className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h2 className="text-2xl font-black tracking-tight text-slate-900">
+                  🎭 จำลองสถานการณ์ต่างๆ
+                </h2>
+                <span className="text-xs font-serif font-bold text-rose-600 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200">
+                  情景对话模拟
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 mt-0.5">
+                ฝึกบทสนทนาโต้ตอบในสถานการณ์จริงที่พบบ่อย พร้อมคำแปล พินอิน และระบบช่วยประเมินเสียงอ่าน
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* 3. FAVORITES SECTION CONTAINER */}
         {favoriteScenarios.length > 0 && (
           <section
             id="favorites"
             className="scroll-mt-24 rounded-3xl bg-gradient-to-b from-rose-50/80 via-rose-50/30 to-white border border-rose-200/90 p-5 sm:p-7 shadow-xs space-y-5"
           >
-            {/* Panel Header with Bottom Border Divider */}
+            {/* Panel Header */}
             <div className="flex flex-wrap items-end justify-between border-b border-rose-200/80 pb-4 gap-3">
               <div className="flex items-center gap-3">
                 <div className="p-3 rounded-2xl bg-white border border-rose-200 shadow-2xs text-rose-500">
@@ -233,7 +325,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Grid of favorited scenarios inside container */}
+            {/* Grid of favorited scenarios */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {favoriteScenarios
                 .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
@@ -244,71 +336,73 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* Render Lessons Grouped by Category Sections */}
-        {sortedCategories.map((cat) => {
-          const categoryScenarios = SCENARIOS.filter((sc) => {
-            const matchCategory = sc.categoryId === cat.id;
-            if (!matchCategory) return false;
-            if (selectedLevel === 'all') return true;
-            return sc.level === selectedLevel;
-          });
+        {/* 4. RENDER LESSON CATEGORIES */}
+        <div className="space-y-8">
+          {scenarioCategories.map((cat) => {
+            const categoryScenarios = SCENARIOS.filter((sc) => {
+              const matchCategory = sc.categoryId === cat.id;
+              if (!matchCategory) return false;
+              if (selectedLevel === 'all') return true;
+              return sc.level === selectedLevel;
+            });
 
-          // Skip empty categories if filtering
-          if (categoryScenarios.length === 0) {
-            if (!cat.isAvailable) {
-              return (
-                <section key={cat.id} id={cat.id} className="scroll-mt-24">
-                  <div className="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80 text-center">
-                    <div className="inline-flex p-3 rounded-2xl bg-white border border-slate-200 mb-2">
-                      {getCategoryIcon(cat.icon)}
-                    </div>
-                    <h3 className="text-base font-bold text-slate-800">{cat.title}</h3>
-                    <p className="text-xs text-rose-600 font-serif font-semibold">{cat.titleZh}</p>
-                    <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">{cat.description}</p>
-                    <span className="inline-block mt-3 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">
-                      🚧 เปิดให้บริการบทเรียนหมวดนี้เร็วๆ นี้
-                    </span>
-                  </div>
-                </section>
-              );
-            }
-
-            return null;
-          }
-
-          return (
-            <section key={cat.id} id={cat.id} className="scroll-mt-24 space-y-4">
-              {/* Section Header */}
-              <div className="flex flex-wrap items-end justify-between border-b border-slate-200 pb-3 gap-2">
-                <div className="flex items-center gap-3">
-                  <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
-                    {getCategoryIcon(cat.icon)}
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <h2 className="text-xl font-extrabold text-slate-900">{cat.title}</h2>
-                      <span className="text-xs font-serif font-semibold text-rose-600 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200">
-                        {cat.titleZh}
+            // Skip empty categories if filtering
+            if (categoryScenarios.length === 0) {
+              if (!cat.isAvailable) {
+                return (
+                  <section key={cat.id} id={cat.id} className="scroll-mt-24">
+                    <div className="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80 text-center">
+                      <div className="inline-flex p-3 rounded-2xl bg-white border border-slate-200 mb-2">
+                        {getCategoryIcon(cat.icon)}
+                      </div>
+                      <h3 className="text-base font-bold text-slate-800">{cat.title}</h3>
+                      <p className="text-xs text-rose-600 font-serif font-semibold">{cat.titleZh}</p>
+                      <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">{cat.description}</p>
+                      <span className="inline-block mt-3 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">
+                        🚧 เปิดให้บริการบทเรียนหมวดนี้เร็วๆ นี้
                       </span>
                     </div>
-                    <p className="text-xs text-slate-500 mt-0.5">{cat.description}</p>
+                  </section>
+                );
+              }
+
+              return null;
+            }
+
+            return (
+              <section key={cat.id} id={cat.id} className="scroll-mt-24 space-y-4">
+                {/* Section Header */}
+                <div className="flex flex-wrap items-end justify-between border-b border-slate-200 pb-3 gap-2">
+                  <div className="flex items-center gap-3">
+                    <div className="p-3 rounded-2xl bg-white border border-slate-200 shadow-2xs">
+                      {getCategoryIcon(cat.icon)}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h2 className="text-xl font-extrabold text-slate-900">{cat.title}</h2>
+                        <span className="text-xs font-serif font-semibold text-rose-600 px-2 py-0.5 rounded-md bg-rose-50 border border-rose-200">
+                          {cat.titleZh}
+                        </span>
+                      </div>
+                      <p className="text-xs text-slate-500 mt-0.5">{cat.description}</p>
+                    </div>
+                  </div>
+
+                  <div className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
+                    {categoryScenarios.length} บทเรียน
                   </div>
                 </div>
 
-                <div className="text-xs font-bold text-slate-500 bg-slate-100 px-3 py-1 rounded-full border border-slate-200">
-                  {categoryScenarios.length} บทเรียน
+                {/* Scenarios Grid for this section */}
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {categoryScenarios.map((scenario) => (
+                    <ScenarioCard key={scenario.id} scenario={scenario} />
+                  ))}
                 </div>
-              </div>
-
-              {/* Scenarios Grid for this section */}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {categoryScenarios.map((scenario) => (
-                  <ScenarioCard key={scenario.id} scenario={scenario} />
-                ))}
-              </div>
-            </section>
-          );
-        })}
+              </section>
+            );
+          })}
+        </div>
       </main>
 
       {/* Footer */}

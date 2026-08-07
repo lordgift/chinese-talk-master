@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { Languages, BookOpen, GraduationCap } from 'lucide-react';
+import { Languages, BookOpen } from 'lucide-react';
 import { UserMenu } from './UserMenu';
 
 export function Header() {
@@ -26,14 +26,6 @@ export function Header() {
 
         {/* Navigation & User Menu */}
         <div className="flex items-center gap-2.5">
-          <Link
-            href="/#pinyin-course"
-            className="hidden sm:flex items-center gap-1.5 text-xs font-semibold text-rose-700 hover:text-rose-900 bg-rose-50 hover:bg-rose-100 px-3.5 py-1.5 rounded-xl border border-rose-200/80 transition shadow-2xs"
-          >
-            <GraduationCap className="w-4 h-4 text-rose-600" />
-            <span>คอร์ส Pinyin พื้นฐาน</span>
-          </Link>
-
           <Link
             href="/"
             className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 hover:bg-slate-200/80 px-3.5 py-1.5 rounded-xl border border-slate-200 transition shadow-2xs"
