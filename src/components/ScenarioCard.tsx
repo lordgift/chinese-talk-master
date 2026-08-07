@@ -1,8 +1,8 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Scenario } from '@/lib/pinyinUtils';
-import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Award } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 
 interface ScenarioCardProps {
@@ -10,8 +10,10 @@ interface ScenarioCardProps {
 }
 
 export function ScenarioCard({ scenario }: ScenarioCardProps) {
-  const { userProgress } = useAuth();
+  const router = useRouter();
+  const { userProgress, userFavorites, toggleFavorite } = useAuth();
   const progress = userProgress[scenario.id];
+  const isFavorited = !!userFavorites[scenario.id];
 
   const getLevelBadge = (level: Scenario['level']) => {
     switch (level) {
@@ -45,13 +47,22 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
     }
   };
 
+  const handleFavoriteToggle = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    toggleFavorite(scenario.id);
+  };
+
+  const handleCardClick = () => {
+    router.push(`/session/${scenario.id}`);
+  };
+
   return (
-    <Link
-      href={`/session/${scenario.id}`}
-      className="group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-rose-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl hover:shadow-rose-500/10 flex flex-col justify-between block"
+    <div
+      onClick={handleCardClick}
+      className="group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-rose-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl hover:shadow-rose-500/10 flex flex-col justify-between cursor-pointer"
     >
       <div>
-        {/* Top bar with level badge & estimated time & progress badge */}
+        {/* Top bar with level badge & estimated time & favorite heart */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span
@@ -70,10 +81,27 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             )}
           </div>
 
-          <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
-            <Clock className="w-3.5 h-3.5 text-slate-400" />
-            {scenario.estimatedMinutes} นาที
-          </span>
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-slate-500 font-medium flex items-center gap-1">
+              <Clock className="w-3.5 h-3.5 text-slate-400" />
+              {scenario.estimatedMinutes}m
+            </span>
+
+            <button
+              type="button"
+              onClick={handleFavoriteToggle}
+              className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${
+                isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
+              }`}
+              title={isFavorited ? 'ยกเลิกบทเรียนที่ชอบ' : 'บันทึกเป็นบทเรียนที่ชอบ'}
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  isFavorited ? 'fill-rose-500 text-rose-500' : ''
+                }`}
+              />
+            </button>
+          </div>
         </div>
 
         {/* Icon & Title */}
@@ -107,6 +135,6 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
           <ChevronRight className="w-4 h-4" />
         </span>
       </div>
-    </Link>
+    </div>
   );
 }

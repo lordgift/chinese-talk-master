@@ -1,5 +1,5 @@
 import { db } from './firebase';
-import { doc, setDoc, getDocs, collection } from 'firebase/firestore';
+import { doc, setDoc, deleteDoc, getDocs, collection } from 'firebase/firestore';
 
 export interface ScenarioProgress {
   scenarioId: string;
@@ -11,6 +11,7 @@ export interface ScenarioProgress {
 }
 
 const LOCAL_STORAGE_KEY = 'chinese_talk_user_progress';
+const LOCAL_FAVORITES_KEY = 'chinese_talk_user_favorites';
 
 /**
  * Get all progress saved in LocalStorage
@@ -35,6 +36,98 @@ export const saveLocalProgress = (progressMap: Record<string, ScenarioProgress>)
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(progressMap));
   } catch (err) {
     console.error('Error saving local progress:', err);
+  }
+};
+
+/**
+ * Get all favorites saved in LocalStorage
+ */
+export const getLocalFavorites = (): Record<string, boolean> => {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(LOCAL_FAVORITES_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    console.error('Error reading local favorites:', err);
+    return {};
+  }
+};
+
+/**
+ * Save favorites to LocalStorage
+ */
+export const saveLocalFavorites = (favoritesMap: Record<string, boolean>) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(LOCAL_FAVORITES_KEY, JSON.stringify(favoritesMap));
+  } catch (err) {
+    console.error('Error saving local favorites:', err);
+  }
+};
+
+/**
+ * Toggle favorite status for a scenario
+ */
+export const toggleFavoriteScenario = async (
+  userId: string | null | undefined,
+  scenarioId: string
+): Promise<Record<string, boolean>> => {
+  const localFavs = getLocalFavorites();
+  const currentFavState = !!localFavs[scenarioId];
+  const newFavState = !currentFavState;
+
+  if (newFavState) {
+    localFavs[scenarioId] = true;
+  } else {
+    delete localFavs[scenarioId];
+  }
+
+  saveLocalFavorites(localFavs);
+
+  if (userId) {
+    try {
+      const favDocRef = doc(db, 'users', userId, 'favorites', scenarioId);
+      if (newFavState) {
+        await setDoc(favDocRef, { scenarioId, favoritedAt: new Date().toISOString() });
+      } else {
+        await deleteDoc(favDocRef);
+      }
+    } catch (err) {
+      console.error('Failed to sync favorite to Firestore:', err);
+    }
+  }
+
+  return localFavs;
+};
+
+/**
+ * Fetch all user favorites (merges Firestore and LocalStorage)
+ */
+export const fetchUserFavorites = async (
+  userId: string | null | undefined
+): Promise<Record<string, boolean>> => {
+  const localFavs = getLocalFavorites();
+  if (!userId) {
+    return localFavs;
+  }
+
+  try {
+    const favsColRef = collection(db, 'users', userId, 'favorites');
+    const snapshot = await getDocs(favsColRef);
+    const firestoreFavs: Record<string, boolean> = {};
+
+    snapshot.forEach((docSnap) => {
+      if (docSnap.exists()) {
+        firestoreFavs[docSnap.id] = true;
+      }
+    });
+
+    const mergedFavs: Record<string, boolean> = { ...localFavs, ...firestoreFavs };
+    saveLocalFavorites(mergedFavs);
+    return mergedFavs;
+  } catch (err) {
+    console.error('Error fetching favorites from Firestore:', err);
+    return localFavs;
   }
 };
 
@@ -99,7 +192,6 @@ export const fetchUserProgress = async (
       }
     });
 
-    // Merge: prefer higher bestScore / latest completedAt between local and cloud
     const mergedMap: Record<string, ScenarioProgress> = { ...localMap };
 
     Object.keys(firestoreMap).forEach((id) => {
@@ -123,7 +215,6 @@ export const fetchUserProgress = async (
       }
     });
 
-    // Save merged result back to LocalStorage
     saveLocalProgress(mergedMap);
     return mergedMap;
   } catch (err) {
@@ -133,21 +224,32 @@ export const fetchUserProgress = async (
 };
 
 /**
- * Sync offline LocalStorage progress to Firestore after Google login
+ * Sync offline LocalStorage data (progress & favorites) to Firestore after Google login
  */
 export const syncLocalToFirestore = async (userId: string) => {
   const localMap = getLocalProgress();
-  const keys = Object.keys(localMap);
-  if (keys.length === 0) return;
+  const progressKeys = Object.keys(localMap);
+
+  const localFavs = getLocalFavorites();
+  const favoriteKeys = Object.keys(localFavs);
 
   try {
-    const batchPromises = keys.map((scenarioId) => {
+    const promises: Promise<void>[] = [];
+
+    progressKeys.forEach((scenarioId) => {
       const docRef = doc(db, 'users', userId, 'scenarios', scenarioId);
-      return setDoc(docRef, localMap[scenarioId], { merge: true });
+      promises.push(setDoc(docRef, localMap[scenarioId], { merge: true }));
     });
 
-    await Promise.all(batchPromises);
+    favoriteKeys.forEach((scenarioId) => {
+      if (localFavs[scenarioId]) {
+        const favDocRef = doc(db, 'users', userId, 'favorites', scenarioId);
+        promises.push(setDoc(favDocRef, { scenarioId, favoritedAt: new Date().toISOString() }));
+      }
+    });
+
+    await Promise.all(promises);
   } catch (err) {
-    console.error('Error syncing local progress to Firestore on login:', err);
+    console.error('Error syncing local data to Firestore on login:', err);
   }
 };

@@ -6,6 +6,7 @@ import { CATEGORIES } from '@/data/categories';
 import { SCENARIOS } from '@/data/scenarios';
 import { Header } from '@/components/Header';
 import { ScenarioCard } from '@/components/ScenarioCard';
+import { useAuth } from '@/context/AuthContext';
 import {
   Sparkles,
   UtensilsCrossed,
@@ -15,10 +16,12 @@ import {
   Volume2,
   Layers,
   Filter,
+  Heart,
 } from 'lucide-react';
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
+  const { userFavorites } = useAuth();
 
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
@@ -38,6 +41,8 @@ export default function HomePage() {
     if (a.isAvailable === b.isAvailable) return 0;
     return a.isAvailable ? -1 : 1;
   });
+
+  const favoritesCount = Object.values(userFavorites).filter(Boolean).length;
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
@@ -131,25 +136,44 @@ export default function HomePage() {
               ))}
           </div>
 
-          {/* Level Filter Dropdown / Buttons */}
-          <div className="flex items-center gap-1.5 text-xs font-semibold">
+          {/* Filter Dropdown / Buttons */}
+          <div className="flex items-center gap-1.5 text-xs font-semibold flex-wrap">
             <span className="text-slate-400 flex items-center gap-1 mr-1">
               <Filter className="w-3.5 h-3.5 text-slate-500" />
-              ระดับความยาก:
+              ตัวกรอง:
             </span>
+
+            <button
+              onClick={() => setSelectedLevel('favorites')}
+              className={`px-3 py-1.5 rounded-xl transition flex items-center gap-1.5 cursor-pointer ${
+                selectedLevel === 'favorites'
+                  ? 'bg-gradient-to-r from-rose-500 to-pink-500 text-white font-bold shadow-xs'
+                  : 'bg-rose-50 text-rose-700 border border-rose-200 hover:bg-rose-100'
+              }`}
+            >
+              <Heart className={`w-3.5 h-3.5 ${selectedLevel === 'favorites' ? 'fill-white' : 'fill-rose-500 text-rose-500'}`} />
+              <span>บทเรียนที่ชอบ</span>
+              {favoritesCount > 0 && (
+                <span className={`px-1.5 py-0.2 rounded-full text-[10px] ${selectedLevel === 'favorites' ? 'bg-white/20 text-white' : 'bg-rose-200 text-rose-800'}`}>
+                  {favoritesCount}
+                </span>
+              )}
+            </button>
+
             <button
               onClick={() => setSelectedLevel('all')}
-              className={`px-3 py-1.5 rounded-xl transition ${
+              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
                 selectedLevel === 'all'
-                  ? 'bg-rose-500 text-white font-bold shadow-xs'
+                  ? 'bg-slate-800 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
               }`}
             >
               ทั้งหมด
             </button>
+
             <button
               onClick={() => setSelectedLevel('easy')}
-              className={`px-3 py-1.5 rounded-xl transition ${
+              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
                 selectedLevel === 'easy'
                   ? 'bg-emerald-600 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50'
@@ -157,9 +181,10 @@ export default function HomePage() {
             >
               🟢 ง่าย
             </button>
+
             <button
               onClick={() => setSelectedLevel('medium')}
-              className={`px-3 py-1.5 rounded-xl transition ${
+              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
                 selectedLevel === 'medium'
                   ? 'bg-amber-500 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-amber-700 hover:bg-amber-50'
@@ -167,9 +192,10 @@ export default function HomePage() {
             >
               🟡 ปานกลาง
             </button>
+
             <button
               onClick={() => setSelectedLevel('hard')}
-              className={`px-3 py-1.5 rounded-xl transition ${
+              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
                 selectedLevel === 'hard'
                   ? 'bg-rose-600 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-rose-700 hover:bg-rose-50'
@@ -184,27 +210,38 @@ export default function HomePage() {
         {sortedCategories.map((cat) => {
           const categoryScenarios = SCENARIOS.filter((sc) => {
             const matchCategory = sc.categoryId === cat.id;
-            const matchLevel = selectedLevel === 'all' || sc.level === selectedLevel;
-            return matchCategory && matchLevel;
+            if (!matchCategory) return false;
+
+            if (selectedLevel === 'favorites') {
+              return !!userFavorites[sc.id];
+            }
+            if (selectedLevel === 'all') return true;
+            return sc.level === selectedLevel;
           });
 
-          // Skip unavailable empty categories if filtered
-          if (!cat.isAvailable && categoryScenarios.length === 0) {
-            return (
-              <section key={cat.id} id={cat.id} className="scroll-mt-24">
-                <div className="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80 text-center">
-                  <div className="inline-flex p-3 rounded-2xl bg-white border border-slate-200 mb-2">
-                    {getCategoryIcon(cat.icon)}
+          // Skip empty categories if filtering
+          if (categoryScenarios.length === 0) {
+            if (selectedLevel === 'favorites') return null;
+
+            if (!cat.isAvailable) {
+              return (
+                <section key={cat.id} id={cat.id} className="scroll-mt-24">
+                  <div className="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80 text-center">
+                    <div className="inline-flex p-3 rounded-2xl bg-white border border-slate-200 mb-2">
+                      {getCategoryIcon(cat.icon)}
+                    </div>
+                    <h3 className="text-base font-bold text-slate-800">{cat.title}</h3>
+                    <p className="text-xs text-rose-600 font-serif font-semibold">{cat.titleZh}</p>
+                    <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">{cat.description}</p>
+                    <span className="inline-block mt-3 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">
+                      🚧 เปิดให้บริการบทเรียนหมวดนี้เร็วๆ นี้
+                    </span>
                   </div>
-                  <h3 className="text-base font-bold text-slate-800">{cat.title}</h3>
-                  <p className="text-xs text-rose-600 font-serif font-semibold">{cat.titleZh}</p>
-                  <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">{cat.description}</p>
-                  <span className="inline-block mt-3 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">
-                    🚧 เปิดให้บริการบทเรียนหมวดนี้เร็วๆ นี้
-                  </span>
-                </div>
-              </section>
-            );
+                </section>
+              );
+            }
+
+            return null;
           }
 
           return (
@@ -232,28 +269,33 @@ export default function HomePage() {
               </div>
 
               {/* Scenarios Grid for this section */}
-              {categoryScenarios.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {categoryScenarios.map((scenario) => (
-                    <ScenarioCard key={scenario.id} scenario={scenario} />
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-8 bg-white rounded-2xl border border-slate-200/80 shadow-2xs">
-                  <p className="text-xs text-slate-500">
-                    ไม่มีบทเรียนระดับ {selectedLevel === 'easy' ? '🟢 ง่าย' : selectedLevel === 'medium' ? '🟡 ปานกลาง' : '🔴 ท้าทาย'} ในหมวดนี้
-                  </p>
-                  <button
-                    onClick={() => setSelectedLevel('all')}
-                    className="mt-2 text-xs font-bold text-rose-600 underline hover:text-rose-700"
-                  >
-                    ดูทุกระดับในหมวดนี้
-                  </button>
-                </div>
-              )}
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {categoryScenarios.map((scenario) => (
+                  <ScenarioCard key={scenario.id} scenario={scenario} />
+                ))}
+              </div>
             </section>
           );
         })}
+
+        {/* Empty state when filtering favorites */}
+        {selectedLevel === 'favorites' && favoritesCount === 0 && (
+          <div className="text-center py-16 bg-white rounded-3xl border border-slate-200 shadow-sm max-w-md mx-auto">
+            <div className="w-16 h-16 rounded-full bg-rose-50 border border-rose-200 text-rose-500 flex items-center justify-center mx-auto mb-4 animate-bounce">
+              <Heart className="w-8 h-8 fill-rose-500" />
+            </div>
+            <h3 className="text-lg font-bold text-slate-900">ยังไม่มีบทเรียนที่ชอบ</h3>
+            <p className="text-xs text-slate-500 mt-2 max-w-xs mx-auto">
+              คุณสามารถกดปุ่มหัวใจ ❤️ บนมุมขวาของการ์ดบทเรียนใดก็ได้ เพื่อบันทึกไว้ในบทเรียนที่ชอบของคุณ
+            </p>
+            <button
+              onClick={() => setSelectedLevel('all')}
+              className="mt-6 px-4 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition shadow-xs cursor-pointer"
+            >
+              ดูบทเรียนทั้งหมด
+            </button>
+          </div>
+        )}
       </main>
 
       {/* Footer */}

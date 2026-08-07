@@ -12,6 +12,8 @@ import {
 import {
   ScenarioProgress,
   fetchUserProgress,
+  fetchUserFavorites,
+  toggleFavoriteScenario,
   syncLocalToFirestore,
 } from '@/lib/userProgress';
 
@@ -19,38 +21,47 @@ interface AuthContextType {
   user: User | null;
   loading: boolean;
   userProgress: Record<string, ScenarioProgress>;
+  userFavorites: Record<string, boolean>;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   refreshProgress: () => Promise<void>;
+  toggleFavorite: (scenarioId: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType>({
   user: null,
   loading: true,
   userProgress: {},
+  userFavorites: {},
   loginWithGoogle: async () => {},
   logout: async () => {},
   refreshProgress: async () => {},
+  toggleFavorite: async () => {},
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
   const [userProgress, setUserProgress] = useState<Record<string, ScenarioProgress>>({});
+  const [userFavorites, setUserFavorites] = useState<Record<string, boolean>>({});
 
-  const reloadProgress = async (u: User | null) => {
-    const progress = await fetchUserProgress(u?.uid);
+  const reloadData = async (u: User | null) => {
+    const [progress, favorites] = await Promise.all([
+      fetchUserProgress(u?.uid),
+      fetchUserFavorites(u?.uid),
+    ]);
     setUserProgress(progress);
+    setUserFavorites(favorites);
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Sync any local progress made before logging in
+        // Sync local progress & favorites to Firestore on login
         await syncLocalToFirestore(currentUser.uid);
       }
-      await reloadProgress(currentUser);
+      await reloadData(currentUser);
       setLoading(false);
     });
 
@@ -74,7 +85,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       await signOut(auth);
-      await reloadProgress(null);
+      await reloadData(null);
     } catch (err) {
       console.error('Sign-out error:', err);
     } finally {
@@ -83,7 +94,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   const refreshProgress = async () => {
-    await reloadProgress(user);
+    await reloadData(user);
+  };
+
+  const toggleFavorite = async (scenarioId: string) => {
+    const updatedFavs = await toggleFavoriteScenario(user?.uid, scenarioId);
+    setUserFavorites({ ...updatedFavs });
   };
 
   return (
@@ -92,9 +108,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         user,
         loading,
         userProgress,
+        userFavorites,
         loginWithGoogle,
         logout,
         refreshProgress,
+        toggleFavorite,
       }}
     >
       {children}
