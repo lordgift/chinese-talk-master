@@ -22,6 +22,7 @@ import {
   ChevronDown,
   ChevronUp,
   Lightbulb,
+  CloudSun,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -40,6 +41,8 @@ export default function HomePage() {
         return <UtensilsCrossed className="w-5 h-5 text-amber-500" />;
       case 'Compass':
         return <Compass className="w-5 h-5 text-sky-500" />;
+      case 'CloudSun':
+        return <CloudSun className="w-5 h-5 text-sky-500" />;
       case 'ShoppingBag':
         return <ShoppingBag className="w-5 h-5 text-emerald-500" />;
       case 'Building2':

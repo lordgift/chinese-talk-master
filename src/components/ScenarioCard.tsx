@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Scenario } from '@/lib/pinyinUtils';
-import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart, ShoppingBag, GraduationCap, Calculator } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart, ShoppingBag, GraduationCap, Calculator, CloudSun } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { ScorePieChart } from './ScorePieChart';
 
@@ -40,6 +40,8 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
         return <User className="w-5 h-5 text-indigo-600" />;
       case 'CupSoda':
         return <CupSoda className="w-5 h-5 text-amber-600" />;
+      case 'CloudSun':
+        return <CloudSun className="w-5 h-5 text-sky-600" />;
       case 'UtensilsCrossed':
       case 'Utensils':
         return <Utensils className="w-5 h-5 text-rose-600" />;
@@ -74,6 +76,8 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
         isFoundation
           ? 'hover:border-indigo-300 hover:shadow-indigo-500/10'
           : scenario.categoryId === 'travel-transport'
+          ? 'hover:border-sky-300 hover:shadow-sky-500/10'
+          : scenario.categoryId === 'weather-climate'
           ? 'hover:border-sky-300 hover:shadow-sky-500/10'
           : scenario.categoryId === 'dining-shopping'
           ? 'hover:border-amber-300 hover:shadow-amber-500/10'

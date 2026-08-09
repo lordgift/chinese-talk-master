@@ -17,9 +17,16 @@ export interface DialogueLine {
   words: WordBreakdown[];
 }
 
+export type CategoryId =
+  | 'survival-foundation'
+  | 'travel-transport'
+  | 'dining-shopping'
+  | 'hotel-stay'
+  | 'weather-climate';
+
 export interface Scenario {
   id: string;
-  categoryId: 'survival-foundation' | 'travel-transport' | 'dining-shopping' | 'hotel-stay';
+  categoryId: CategoryId;
   level: 'easy' | 'medium' | 'hard';
   levelTitle: string;
   title: string;
@@ -32,7 +39,7 @@ export interface Scenario {
 }
 
 export interface Category {
-  id: 'survival-foundation' | 'travel-transport' | 'dining-shopping' | 'hotel-stay';
+  id: CategoryId;
   title: string;
   titleZh: string;
   description: string;
