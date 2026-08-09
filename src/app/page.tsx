@@ -304,29 +304,7 @@ export default function HomePage() {
           )}
         </section>
 
-        {/* 2. REAL-LIFE SCENARIOS HEADER DIVIDER */}
-        <div className="pt-6 pb-2 border-t border-slate-200/90">
-          <div className="flex items-center gap-3">
-            <div className="p-2.5 rounded-2xl bg-gradient-to-tr from-rose-500 via-amber-500 to-indigo-600 text-white shadow-md shadow-rose-500/20">
-              <Compass className="w-5 h-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <h2 className="text-2xl font-black tracking-tight text-slate-900">
-                  🎭 จำลองสถานการณ์ต่างๆ
-                </h2>
-                <span className="text-xs font-serif font-bold text-rose-600 px-2.5 py-0.5 rounded-full bg-rose-50 border border-rose-200">
-                  情景对话模拟
-                </span>
-              </div>
-              <p className="text-xs text-slate-500 mt-0.5">
-                ฝึกบทสนทนาโต้ตอบในสถานการณ์จริงที่พบบ่อย พร้อมคำแปล พินอิน และระบบช่วยประเมินเสียงอ่าน
-              </p>
-            </div>
-          </div>
-        </div>
-
-        {/* 3. FAVORITES SECTION CONTAINER */}
+        {/* 2. FAVORITES SECTION CONTAINER (RIGHT UNDER FOUNDATION COURSE) */}
         {favoriteScenarios.length > 0 && (
           <section
             id="favorites"
@@ -366,6 +344,39 @@ export default function HomePage() {
             </div>
           </section>
         )}
+
+        {/* 3. REAL-LIFE SCENARIOS HERO COLOR BANNER */}
+        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-600 p-6 sm:p-7 text-white shadow-xl shadow-rose-500/20 border border-white/20 my-6">
+          {/* Ambient Glows */}
+          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-white/20 rounded-full blur-2xl pointer-events-none" />
+          <div className="absolute bottom-0 left-10 -mb-10 w-48 h-48 bg-amber-400/30 rounded-full blur-2xl pointer-events-none" />
+
+          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-md">
+                <Compass className="w-7 h-7 text-white animate-pulse" />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-xs">
+                    🎭 จำลองสถานการณ์ต่างๆ
+                  </h2>
+                  <span className="text-xs font-serif font-extrabold text-amber-900 bg-amber-200/90 backdrop-blur-md px-3 py-1 rounded-full border border-amber-300 shadow-2xs">
+                    情景对话模拟
+                  </span>
+                </div>
+                <p className="text-xs sm:text-sm text-rose-50/95 font-medium mt-1 max-w-xl">
+                  ฝึกบทสนทนาโต้ตอบในสถานการณ์จริงที่พบบ่อย (สั่งอาหาร, โรงแรม, ท่องเที่ยว) พร้อมพินอิน คำแปล และระบบช่วยประเมินเสียงอ่าน
+                </p>
+              </div>
+            </div>
+
+            <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-extrabold shadow-2xs">
+              <Sparkles className="w-4 h-4 text-amber-200" />
+              <span>เรียนรู้วิถีชีวิตจริง</span>
+            </div>
+          </div>
+        </div>
 
         {/* 4. RENDER LESSON CATEGORIES */}
         <div className="space-y-8">
