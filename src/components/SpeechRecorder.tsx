@@ -119,8 +119,9 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
       {/* Mic Record Controls */}
       <div className="flex flex-col items-center justify-center gap-3 my-4">
         <button
+          type="button"
           onClick={handleToggleListening}
-          className={`relative w-20 h-20 rounded-full flex items-center justify-center transition-all duration-300 shadow-lg ${
+          className={`relative w-22 h-22 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg touch-manipulation select-none active:scale-95 cursor-pointer ${
             isListening
               ? 'bg-rose-600 text-white scale-110 shadow-rose-600/40 animate-pulse'
               : 'bg-gradient-to-tr from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white shadow-rose-500/25 hover:scale-105'
@@ -129,10 +130,10 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
           {isListening ? (
             <>
               <span className="absolute inset-0 rounded-full bg-rose-500 opacity-75 animate-ping" />
-              <MicOff className="w-8 h-8 relative z-10" />
+              <MicOff className="w-9 h-9 relative z-10" />
             </>
           ) : (
-            <Mic className="w-8 h-8" />
+            <Mic className="w-9 h-9" />
           )}
         </button>
 

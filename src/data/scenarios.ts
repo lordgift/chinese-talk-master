@@ -2,7 +2,7 @@ import { Scenario } from '@/lib/pinyinUtils';
 
 export const SCENARIOS: Scenario[] = [
   // ==========================================
-  // 1. SURVIVAL FOUNDATION (ปูพื้นฐานเอาตัวรอด)
+  // 1. SURVIVAL FOUNDATION (ปูพื้นฐานเอาตัวรอด - แบบฝึกออกเสียงเดี่ยว)
   // ==========================================
   {
     id: 'foundation-pinyin-initials',
@@ -40,7 +40,7 @@ export const SCENARIOS: Scenario[] = [
         hanzi: 'd t n l',
         pinyin: 'dē  tē  nē  lē',
         thai: 'ออกเสียงพยัญชนะปลายลิ้น: d (เตอ), t (เทอ), n (เนอ), l (เลอ)',
-        audioHint: '💡 d = ต (ไม่พ่นลม), t = ท (พ่นลม), n = น, l = ล',
+        audioHint: '💡 d = ต (ไม่พ่นลม), t = ท (พ่นลม), n = น, l = เลอ',
         words: [
           { hanzi: 'd', pinyin: 'dē', thai: 'เตอ (เสียง ต)', tones: [1] },
           { hanzi: 't', pinyin: 'tē', thai: 'เทอ (เสียง ท)', tones: [1] },
@@ -349,16 +349,16 @@ export const SCENARIOS: Scenario[] = [
   },
 
   // ==========================================
-  // 2. TRAVEL & TRANSPORTATION (การเดินทาง & ถามทาง)
+  // 2. TRAVEL & TRANSPORTATION (การเดินทาง & ถามทาง - มีคู่สนทนาโต้ตอบ)
   // ==========================================
   {
-    id: 'travel-subway-mrt',
+    id: 'travel-subway-metro',
     categoryId: 'travel-transport',
     level: 'easy',
     levelTitle: 'ง่าย 🌱 (รถไฟฟ้าใต้ดิน Metro)',
     title: '🚇 ถามหาสถานีรถไฟฟ้าใต้ดิน (Metro/Subway) & ซื้อตั๋วเดินทาง',
     titleZh: '乘坐地铁与买票 (Chéngzuò Dìtiě yǔ Mǎi Piào)',
-    description: 'ฝึกถามหาสถานีรถไฟฟ้าใต้ดิน (地铁站) และซื้อตั๋วเดินทาง 1 ใบ (买一张票)',
+    description: 'ฝึกโต้ตอบถามหาสถานีรถไฟฟ้าใต้ดิน (地铁站) และซื้อตั๋วเดินทางกับพนักงาน',
     icon: 'Compass',
     location: 'สถานีรถไฟฟ้าใต้ดิน (地铁站)',
     estimatedMinutes: 3,
@@ -368,10 +368,10 @@ export const SCENARIOS: Scenario[] = [
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
-        hanzi: '请问，地铁站在哪里？',
+        hanzi: '请问，地铁站在在哪里？',
         pinyin: 'Qǐngwèn, dìtiězhàn zài nǎlǐ?',
         thai: 'ขอถามหน่อยครับ/ค่ะ สถานีรถไฟฟ้าใต้ดิน (Metro) อยู่ที่ไหน?',
-        audioHint: '💡 "地铁站" (dìtiězhàn) = สถานีรถไฟฟ้าใต้ดิน (Metro / Subway)',
+        audioHint: '💡 "地铁站" (dìtiězhàn) = สถานีรถไฟฟ้าใต้ดิน',
         words: [
           { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
           { hanzi: '地铁站', pinyin: 'dì tiě zhàn', thai: 'สถานีรถไฟฟ้าใต้ดิน (Metro)', tones: [4, 3, 4] },
@@ -380,6 +380,19 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'ts-2',
+        speaker: 'ai',
+        speakerName: 'คนแถวนั้น (路人)',
+        avatar: '👨‍💼',
+        hanzi: '往前走，就在前面。',
+        pinyin: 'Wǎng qián zǒu, jiù zài qiánmiàn.',
+        thai: 'คู่สนทนาตอบ: เดินตรงไปข้างหน้า อยู่ข้างหน้านี้ครับ',
+        words: [
+          { hanzi: '往前走', pinyin: 'wǎng qián zǒu', thai: 'เดินตรงไปข้างหน้า', tones: [3, 2, 3] },
+          { hanzi: '就在前面', pinyin: 'jiù zài qián miàn', thai: 'ก็อยู่ข้างหน้า', tones: [4, 4, 2, 4] },
+        ],
+      },
+      {
+        id: 'ts-3',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -392,17 +405,16 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
       {
-        id: 'ts-3',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '是这条路吗？',
-        pinyin: 'Shì zhè tiáo lù ma?',
-        thai: 'ใช่เส้นทางนี้ไหมครับ/คะ?',
+        id: 'ts-4',
+        speaker: 'ai',
+        speakerName: 'พนักงานขายตั๋ว (票务员)',
+        avatar: '👩‍💼',
+        hanzi: '好的，五块钱。',
+        pinyin: 'Hǎo de, wǔ kuài qián.',
+        thai: 'พนักงานตอบ: ได้ครับ/ค่ะ 5 หยวนครับ',
         words: [
-          { hanzi: '是', pinyin: 'shì', thai: 'ใช่/คือ', tones: [4] },
-          { hanzi: '这条路', pinyin: 'zhè tiáo lù', thai: 'เส้นทางนี้', tones: [4, 2, 4] },
-          { hanzi: '吗', pinyin: 'ma', thai: 'ไหม', tones: [5] },
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'ได้ครับ', tones: [3, 5] },
+          { hanzi: '五块钱', pinyin: 'wǔ kuài qián', thai: '5 หยวน', tones: [3, 4, 2] },
         ],
       },
     ],
@@ -414,24 +426,22 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (แท็กซี่ & Didi)',
     title: '🚕 เรียกรถแท็กซี่ / Didi & บอกสถานที่จุดหมาย',
     titleZh: '打车与告知目的地 (Dǎchē yǔ Gàozhī Mùdìdì)',
-    description: 'ฝึกบอกคนขับรถว่าจะไปสถานที่ไหน ถามว่าไกลไหม (远不远) และบอกถึงแล้ว (到了)',
+    description: 'ฝึกโต้ตอบกับคนขับรถแท็กซี่/Didi ทักทาย บอกสถานที่ และบอกจุดจอดรถ',
     icon: 'Car',
     location: 'บนรถแท็กซี่ / Didi (出租车/网约车)',
     estimatedMinutes: 3,
     dialogues: [
       {
         id: 'tt-1',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '师傅，去这个地方。',
-        pinyin: 'Shīfu, qù zhège dìfang.',
-        thai: 'พี่คนขับครับ ไปสถานที่นี้ครับ/ค่ะ (โชว์แมปในมือถือ)',
-        audioHint: '💡 "师傅" (Shīfu) = คำเรียกคนขับรถอย่างสุภาพ',
+        speaker: 'ai',
+        speakerName: 'คนขับรถ (师傅)',
+        avatar: '👨‍✈️',
+        hanzi: '你好！去哪里？',
+        pinyin: 'Nǐ hǎo! Qù nǎlǐ?',
+        thai: 'คนขับทักทาย: สวัสดีครับ! ไปที่ไหนครับ?',
         words: [
-          { hanzi: '师傅', pinyin: 'shī fu', thai: 'คนขับรถ (คำเรียกสุภาพ)', tones: [1, 5] },
-          { hanzi: '去', pinyin: 'qù', thai: 'ไป', tones: [4] },
-          { hanzi: '这个地方', pinyin: 'zhè ge dì fang', thai: 'สถานที่นี้', tones: [4, 5, 4, 5] },
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '去哪里', pinyin: 'qù nǎ lǐ', thai: 'ไปไหน', tones: [4, 3, 3] },
         ],
       },
       {
@@ -439,15 +449,30 @@ export const SCENARIOS: Scenario[] = [
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
-        hanzi: '远不远？',
-        pinyin: 'Yuǎn bù yuǎn?',
-        thai: 'ไกลหรือเปล่าครับ/คะ?',
+        hanzi: '师傅，去这个地方。',
+        pinyin: 'Shīfu, qù zhège dìfang.',
+        thai: 'พี่คนขับครับ ไปสถานที่นี้ครับ/ค่ะ (โชว์แมปในมือถือ)',
         words: [
-          { hanzi: '远不远', pinyin: 'yuǎn bù yuǎn', thai: 'ไกลไหม/ไกลหรือเปล่า', tones: [3, 4, 3] },
+          { hanzi: '师傅', pinyin: 'shī fu', thai: 'คนขับรถ (คำเรียกสุภาพ)', tones: [1, 5] },
+          { hanzi: '去', pinyin: 'qù', thai: 'ไป', tones: [4] },
+          { hanzi: '这个地方', pinyin: 'zhè ge dì fang', thai: 'สถานที่นี้', tones: [4, 5, 4, 5] },
         ],
       },
       {
         id: 'tt-3',
+        speaker: 'ai',
+        speakerName: 'คนขับรถ (师傅)',
+        avatar: '👨‍✈️',
+        hanzi: '好的，没问题。',
+        pinyin: 'Hǎo de, méi wèntí.',
+        thai: 'คนขับตอบ: ได้ครับ ไม่มีปัญหา',
+        words: [
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'โอเค/ได้ครับ', tones: [3, 5] },
+          { hanzi: '没问题', pinyin: 'méi wèn tí', thai: 'ไม่มีปัญหา', tones: [2, 4, 2] },
+        ],
+      },
+      {
+        id: 'tt-4',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -468,7 +493,7 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (เที่ยวชมสถานที่)',
     title: '⛩️ ถามทางเข้าสถานที่เที่ยว & ซื้อตั๋วเข้าชม',
     titleZh: '景区入口与买门票 (Jǐngqū Rùkǒu yǔ Mǎi Ménpiào)',
-    description: 'ฝึกถามหาประตูทางเข้า (入口), ซื้อตั๋วเข้าชม 2 ใบ (买两张门票) และเดินไปได้ไหม',
+    description: 'ฝึกถามทางเข้าสถานที่เที่ยวกับเจ้าหน้าที่ และซื้อตั๋วเข้าชม 2 ใบ',
     icon: 'MapPin',
     location: 'หน้าสถานที่ท่องเที่ยว (景区门口)',
     estimatedMinutes: 3,
@@ -488,16 +513,15 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'ta-2',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '买两张门票。',
-        pinyin: 'Mǎi liǎng zhāng ménpiào.',
-        thai: 'ซื้อตั๋วเข้าชม 2 ใบครับ/ค่ะ',
-        audioHint: '💡 2 ใบ ต้องพูดว่า 两张 (liǎng zhāng)',
+        speaker: 'ai',
+        speakerName: 'เจ้าหน้าที่ (工作人员)',
+        avatar: '👮‍♂️',
+        hanzi: '右转就到了。',
+        pinyin: 'Yòu zhuǎn jiù dào le.',
+        thai: 'เจ้าหน้าที่ตอบ: เลี้ยวขวาก็ถึงแล้วครับ',
         words: [
-          { hanzi: '买', pinyin: 'mǎi', thai: 'ซื้อ', tones: [3] },
-          { hanzi: '两张门票', pinyin: 'liǎng zhāng mén piào', thai: 'ตั๋วเข้าชม 2 ใบ', tones: [3, 1, 2, 4] },
+          { hanzi: '右转', pinyin: 'yòu zhuǎn', thai: 'เลี้ยวขวา', tones: [4, 3] },
+          { hanzi: '就到了', pinyin: 'jiù dào le', thai: 'ก็ถึงแล้ว', tones: [4, 4, 5] },
         ],
       },
       {
@@ -505,19 +529,19 @@ export const SCENARIOS: Scenario[] = [
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
-        hanzi: '可以走路去吗？',
-        pinyin: 'Kěyǐ zǒulù qù ma?',
-        thai: 'สามารถเดินเท้าไปได้ไหมครับ/คะ?',
+        hanzi: '买两张门票。',
+        pinyin: 'Mǎi liǎng zhāng ménpiào.',
+        thai: 'ซื้อตั๋วเข้าชม 2 ใบครับ/ค่ะ',
         words: [
-          { hanzi: '可以', pinyin: 'kě yǐ', thai: 'สามารถ...ได้ไหม', tones: [3, 3] },
-          { hanzi: '走路去', pinyin: 'zǒu lù qù', thai: 'เดินเท้าไป', tones: [3, 4, 4] },
+          { hanzi: '买', pinyin: 'mǎi', thai: 'ซื้อ', tones: [3] },
+          { hanzi: '两张门票', pinyin: 'liǎng zhāng mén piào', thai: 'ตั๋วเข้าชม 2 ใบ', tones: [3, 1, 2, 4] },
         ],
       },
     ],
   },
 
   // ==========================================
-  // 3. DINING & SHOPPING (สั่งอาหาร & จ่ายเงิน)
+  // 3. DINING & SHOPPING (สั่งอาหาร & จ่ายเงิน - มีคู่สนทนาโต้ตอบ)
   // ==========================================
   {
     id: 'dining-food-pointing',
@@ -526,27 +550,51 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (สั่งอาหารชี้เมนู)',
     title: '🍜 สั่งอาหารแบบชี้รูปเมนู & ระบุไม่เผ็ด/ไม่ผักชี',
     titleZh: '看图点餐与口味要求 (Kàntú Diǎncān yǔ Kǒuwèi Yāoqiú)',
-    description: 'ฝึกชี้สั่งอาหาร "เอาอันนี้" (我要这个), ระบุไม่ใส่เผ็ด (不要辣) และไม่ใส่ผักชี (不要香菜)',
+    description: 'ฝึกโต้ตอบสั่งอาหารกับพนักงานร้าน: ชี้รูปเมนู ระบุไม่เผ็ด และเรียกเช็คบิล',
     icon: 'UtensilsCrossed',
     location: 'ร้านอาหารทั่วไป (餐厅)',
     estimatedMinutes: 3,
     dialogues: [
       {
         id: 'df-1',
+        speaker: 'ai',
+        speakerName: 'พนักงานร้าน (店员)',
+        avatar: '👩‍🍳',
+        hanzi: '你好！吃什么？',
+        pinyin: 'Nǐ hǎo! Chī shénme?',
+        thai: 'พนักงานทักทาย: สวัสดีครับ/ค่ะ! ทานอะไรดีครับ/คะ?',
+        words: [
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '吃什么', pinyin: 'chī shén me', thai: 'ทานอะไร', tones: [1, 2, 5] },
+        ],
+      },
+      {
+        id: 'df-2',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
         hanzi: '你好！我要这个。',
         pinyin: 'Nǐ hǎo! Wǒ yào zhège.',
-        thai: 'สวัสดีครับ/ค่ะ! ฉันเอาอันนี้ (ชี้เมนู)',
-        audioHint: '💡 วิธีสั่งอาหารที่ง่ายที่สุดคือพูด "我要这个" (wǒ yào zhège) พร้อมชี้รูป',
+        thai: 'สวัสดีครับ/ค่ะ! ฉันเอาอันนี้ (ชี้รูปเมนู)',
         words: [
           { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
           { hanzi: '我要这个', pinyin: 'wǒ yào zhè ge', thai: 'ฉันเอาอันนี้', tones: [3, 4, 4, 5] },
         ],
       },
       {
-        id: 'df-2',
+        id: 'df-3',
+        speaker: 'ai',
+        speakerName: 'พนักงานร้าน (店员)',
+        avatar: '👩‍🍳',
+        hanzi: '要辣吗？',
+        pinyin: 'Yào là ma?',
+        thai: 'พนักงานถาม: เอาเผ็ดไหมครับ/คะ?',
+        words: [
+          { hanzi: '要辣吗', pinyin: 'yào là ma', thai: 'เอาเผ็ดไหม', tones: [4, 4, 5] },
+        ],
+      },
+      {
+        id: 'df-4',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -559,7 +607,7 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
       {
-        id: 'df-3',
+        id: 'df-5',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -581,13 +629,26 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (ชานม & กาแฟ)',
     title: '🥤 สั่งชานมไข่มุก/กาแฟ & ปรับระดับความหวาน/น้ำแข็ง',
     titleZh: '买奶茶/咖啡与甜度冰量 (Mǎi Nǎichá/Kāfēi yǔ Tiándù Bīngliàng)',
-    description: 'ฝึกสั่งชานม (奶茶), ระบุหวานน้อย (少糖) และขอใส่น้ำแข็งเยอะหน่อย (多冰)',
+    description: 'ฝึกโต้ตอบสั่งชานมกับพนักงานร้าน ระบุระดับความหวานน้อยและน้ำแข็ง',
     icon: 'CupSoda',
     location: 'ร้านชานมไข่มุก/กาแฟ (奶茶店/咖啡馆)',
     estimatedMinutes: 3,
     dialogues: [
       {
         id: 'db-1',
+        speaker: 'ai',
+        speakerName: 'พนักงานร้าน (店员)',
+        avatar: '👩‍🍳',
+        hanzi: '你好！喝什么？',
+        pinyin: 'Nǐ hǎo! Hē shénme?',
+        thai: 'พนักงานทักทาย: สวัสดีครับ/ค่ะ! ดื่มอะไรดีครับ/คะ?',
+        words: [
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '喝什么', pinyin: 'hē shén me', thai: 'ดื่มอะไร', tones: [1, 2, 5] },
+        ],
+      },
+      {
+        id: 'db-2',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -601,7 +662,19 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
       {
-        id: 'db-2',
+        id: 'db-3',
+        speaker: 'ai',
+        speakerName: 'พนักงานร้าน (店员)',
+        avatar: '👩‍🍳',
+        hanzi: '少糖吗？',
+        pinyin: 'Shǎo táng ma?',
+        thai: 'พนักงานถาม: หวานน้อยไหมครับ/คะ?',
+        words: [
+          { hanzi: '少糖吗', pinyin: 'shǎo táng ma', thai: 'หวานน้อยไหม', tones: [3, 2, 5] },
+        ],
+      },
+      {
+        id: 'db-4',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -613,19 +686,6 @@ export const SCENARIOS: Scenario[] = [
           { hanzi: '多冰', pinyin: 'duō bīng', thai: 'ใส่น้ำแข็งเยอะหน่อย', tones: [1, 1] },
         ],
       },
-      {
-        id: 'db-3',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '请给我一包纸巾。',
-        pinyin: 'Qǐng gěi wǒ yī bāo zhǐjīn.',
-        thai: 'ขอทิชชู่ให้ฉัน 1 ห่อหน่อยครับ/ค่ะ',
-        words: [
-          { hanzi: '请给我', pinyin: 'qǐng gěi wǒ', thai: 'โปรดให้ฉัน', tones: [3, 3, 3] },
-          { hanzi: '一包纸巾', pinyin: 'yī bāo zhǐ jīn', thai: 'ทิชชู่ 1 ห่อ', tones: [1, 1, 3, 1] },
-        ],
-      },
     ],
   },
   {
@@ -635,7 +695,7 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (สแกนจ่าย Alipay)',
     title: '📲 ถามราคา ต่อรองเล็กน้อย & สแกนจ่ายด้วย Alipay/WeChat',
     titleZh: '问价、砍价与支付宝支付 (Wènjià, Kǎnjià yǔ Zhīfùbào Zhīfù)',
-    description: 'ฝึกถามราคา (多少钱), ขอส่วนลด (便宜一点), และบอกว่าจะสแกนจ่ายด้วย Alipay (我用支付宝)',
+    description: 'ฝึกโต้ตอบถามราคาสินค้า ต่อรองส่วนลด และแจ้งสแกนจ่ายด้วย Alipay กับแม่ค้า',
     icon: 'ShoppingBag',
     location: 'ร้านค้า & เคาน์เตอร์ชำระเงิน (商场/收银台)',
     estimatedMinutes: 3,
@@ -655,6 +715,19 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'sp-2',
+        speaker: 'ai',
+        speakerName: 'แม่ค้า (店员)',
+        avatar: '👩‍💼',
+        hanzi: '这个三十块。',
+        pinyin: 'Zhège sānshí kuài.',
+        thai: 'แม่ค้าตอบ: อันนี้ 30 หยวนครับ/ค่ะ',
+        words: [
+          { hanzi: '这个', pinyin: 'zhè ge', thai: 'อันนี้', tones: [4, 5] },
+          { hanzi: '三十块', pinyin: 'sān shí kuài', thai: '30 หยวน', tones: [1, 2, 4] },
+        ],
+      },
+      {
+        id: 'sp-3',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -667,14 +740,26 @@ export const SCENARIOS: Scenario[] = [
         ],
       },
       {
-        id: 'sp-3',
+        id: 'sp-4',
+        speaker: 'ai',
+        speakerName: 'แม่ค้า (店员)',
+        avatar: '👩‍💼',
+        hanzi: '好的，二十块吧。',
+        pinyin: 'Hǎo de, èrshí kuài ba.',
+        thai: 'แม่ค้าตอบ: โอเค 20 หยวนละกันครับ/ค่ะ',
+        words: [
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'โอเค/ได้ครับ', tones: [3, 5] },
+          { hanzi: '二十块吧', pinyin: 'èr shí kuài ba', thai: '20 หยวนละกัน', tones: [4, 2, 4, 5] },
+        ],
+      },
+      {
+        id: 'sp-5',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
         hanzi: '我用支付宝，请扫这里。',
         pinyin: 'Wǒ yòng Zhīfùbào, qǐng sǎo zhèlǐ.',
         thai: 'ฉันใช้ Alipay ครับ/ค่ะ โปรดสแกนตรงนี้',
-        audioHint: '💡 "支付宝" (Zhīfùbào) = Alipay / "微信" (Wēixìn) = WeChat Pay',
         words: [
           { hanzi: '我用', pinyin: 'wǒ yòng', thai: 'ฉันใช้', tones: [3, 4] },
           { hanzi: '支付宝', pinyin: 'zhī fù bào', thai: 'Alipay', tones: [1, 4, 4] },
@@ -685,7 +770,7 @@ export const SCENARIOS: Scenario[] = [
   },
 
   // ==========================================
-  // 4. HOTEL & ACCOMMODATION (โรงแรม & ที่พัก)
+  // 4. HOTEL & ACCOMMODATION (โรงแรม & ที่พัก - มีคู่สนทนาโต้ตอบ)
   // ==========================================
   {
     id: 'hotel-checkin-passport',
@@ -694,7 +779,7 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (เช็คอินโรงแรม)',
     title: '🏨 เช็คอินเข้าพักโรงแรม & ยื่นพาสปอร์ต',
     titleZh: '办理酒店入住与出示护照 (Bànlǐ Jiǔdiàn Rùzhù yǔ Chūshì Hùzhào)',
-    description: 'ฝึกแจ้งพนักงานว่ามาเช็คอิน (办理入住) และยื่นพาสปอร์ต (这是护照)',
+    description: 'ฝึกโต้ตอบเช็คอินโรงแรม ยื่นพาสปอร์ต และถามชั้นห้องอาหารเช้ากับพนักงาน',
     icon: 'Building2',
     location: 'เคาน์เตอร์เช็คอินโรงแรม (酒店前台)',
     estimatedMinutes: 3,
@@ -714,6 +799,20 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'hc-2',
+        speaker: 'ai',
+        speakerName: 'พนักงานโรงแรม (前台)',
+        avatar: '👩‍💼',
+        hanzi: '您好！请出示您的护照。',
+        pinyin: 'Nín hǎo! Qǐng chūshì nín de hùzhào.',
+        thai: 'พนักงานตอบ: สวัสดีครับ/ค่ะ โปรดยื่นพาสปอร์ตของคุณครับ/ค่ะ',
+        words: [
+          { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
+          { hanzi: '请出示', pinyin: 'qǐng chū shì', thai: 'โปรดยื่น/แสดง', tones: [3, 1, 4] },
+          { hanzi: '护照', pinyin: 'hù zhào', thai: 'พาสปอร์ต', tones: [4, 4] },
+        ],
+      },
+      {
+        id: 'hc-3',
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
@@ -725,20 +824,6 @@ export const SCENARIOS: Scenario[] = [
           { hanzi: '护照', pinyin: 'hù zhào', thai: 'พาสปอร์ต', tones: [4, 4] },
         ],
       },
-      {
-        id: 'hc-3',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '请问，早餐在几楼？',
-        pinyin: 'Qǐngwèn, zǎocān zài jǐ lóu?',
-        thai: 'ขอถามหน่อยครับ/คะ อาหารเช้าอยู่ที่ชั้นไหน?',
-        words: [
-          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
-          { hanzi: '早餐', pinyin: 'zǎo cān', thai: 'อาหารเช้า', tones: [3, 1] },
-          { hanzi: '几楼', pinyin: 'jǐ lóu', thai: 'ชั้นไหน/ชั้นอะไร', tones: [3, 2] },
-        ],
-      },
     ],
   },
   {
@@ -748,7 +833,7 @@ export const SCENARIOS: Scenario[] = [
     levelTitle: 'ง่าย 🌱 (ขอ Wi-Fi & ฝากกระเป๋า)',
     title: '📶 ขอรหัส Wi-Fi, ขอน้ำดื่ม & เช็คเอ้าท์ฝากกระเป๋า',
     titleZh: '询问Wi-Fi密码与寄寄存行李 (Xúnwèn Wi-Fi Mìmǎ yǔ Jìcún Xíngli)',
-    description: 'ฝึกถามรหัส Wi-Fi (Wi-Fi 密码是什么?), ขอน้ำดื่มเย็น/ร้อน (冰水/热水) และขอฝากกระเป๋า (寄行李)',
+    description: 'ฝึกโต้ตอบขอรหัส Wi-Fi ขอน้ำดื่มเย็น และแจ้งฝากกระเป๋าเดินทางกับพนักงาน',
     icon: 'Building2',
     location: 'เคาน์เตอร์ & ห้องพักโรงแรม (酒店前台/房间)',
     estimatedMinutes: 3,
@@ -768,15 +853,15 @@ export const SCENARIOS: Scenario[] = [
       },
       {
         id: 'hs-2',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '我要两瓶冰水。',
-        pinyin: 'Wǒ yào liǎng píng bīngshuǐ.',
-        thai: 'ฉันขอน้ำเย็น 2 ขวดครับ/ค่ะ',
+        speaker: 'ai',
+        speakerName: 'พนักงานโรงแรม (前台)',
+        avatar: '👩‍💼',
+        hanzi: '密码是八个八。',
+        pinyin: 'Mìmǎ shì bā gè bā.',
+        thai: 'พนักงานตอบ: รหัสผ่านคือ เลข 8 แปดตัว (88888888) ครับ/ค่ะ',
         words: [
-          { hanzi: '两瓶', pinyin: 'liǎng píng', thai: '2 ขวด', tones: [3, 2] },
-          { hanzi: '冰水', pinyin: 'bīng shuǐ', thai: 'น้ำเย็น', tones: [1, 3] },
+          { hanzi: '密码是', pinyin: 'mì mǎ shì', thai: 'รหัสคือ', tones: [4, 3, 4] },
+          { hanzi: '八个八', pinyin: 'bā gè bā', thai: 'เลข 8 แปดตัว', tones: [1, 4, 1] },
         ],
       },
       {
@@ -790,6 +875,19 @@ export const SCENARIOS: Scenario[] = [
         words: [
           { hanzi: '退房', pinyin: 'tuì fáng', thai: 'เช็คเอ้าท์/คืนห้อง', tones: [4, 2] },
           { hanzi: '寄行李', pinyin: 'jì xíng li', thai: 'ฝากสัมภาระ/กระเป๋า', tones: [4, 2, 5] },
+        ],
+      },
+      {
+        id: 'hs-4',
+        speaker: 'ai',
+        speakerName: 'พนักงานโรงแรม (前台)',
+        avatar: '👩‍💼',
+        hanzi: '可以的，没问题。',
+        pinyin: 'Kěyǐ de, méi wèntí.',
+        thai: 'พนักงานตอบ: ฝากได้ครับ/ค่ะ ไม่มีปัญหา',
+        words: [
+          { hanzi: '可以的', pinyin: 'kě yǐ de', thai: 'ได้ครับ', tones: [3, 3, 5] },
+          { hanzi: '没问题', pinyin: 'méi wèn tí', thai: 'ไม่มีปัญหา', tones: [2, 4, 2] },
         ],
       },
     ],

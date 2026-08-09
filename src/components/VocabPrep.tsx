@@ -62,8 +62,9 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
         </div>
 
         <button
+          type="button"
           onClick={onStartDialogue}
-          className="px-4 py-2 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 transition cursor-pointer"
+          className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold shadow-md shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
         >
           <span>พร้อมแล้ว ไปฝึกบทสนทนา 💬</span>
         </button>
@@ -109,16 +110,18 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
           {/* Audio & Mic practice controls */}
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
             <button
+              type="button"
               onClick={() => handlePlayWord(currentWord)}
-              className="px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-2xs transition cursor-pointer"
+              className="px-5 py-3 rounded-xl bg-white hover:bg-slate-100 text-slate-800 text-xs font-bold flex items-center gap-2 border border-slate-200 shadow-2xs transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
             >
               <Volume2 className="w-4 h-4 text-rose-500" />
               <span>ฟังเสียงอ่าน (0.75x)</span>
             </button>
 
             <button
+              type="button"
               onClick={handleTestWord}
-              className={`px-5 py-2.5 rounded-xl text-xs font-bold flex items-center gap-2 shadow-2xs transition cursor-pointer ${
+              className={`px-5 py-3 rounded-xl text-xs font-bold flex items-center gap-2 shadow-2xs transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px] ${
                 isListening
                   ? 'bg-rose-600 text-white animate-pulse shadow-rose-600/30'
                   : 'bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200'
@@ -164,11 +167,12 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
           return (
             <button
               key={idx}
+              type="button"
               onClick={() => {
                 setActiveWordIndex(idx);
                 handlePlayWord(word);
               }}
-              className={`p-3 rounded-xl border text-left transition-all cursor-pointer ${
+              className={`p-3.5 rounded-2xl border text-left transition-all cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px] ${
                 isActive
                   ? 'bg-amber-100/80 border-amber-400 ring-2 ring-amber-400/50 scale-[1.02]'
                   : 'bg-slate-50 border-slate-200 hover:bg-amber-50/60 hover:border-amber-300'
@@ -184,6 +188,17 @@ export function VocabPrep({ words, onStartDialogue }: VocabPrepProps) {
             </button>
           );
         })}
+      </div>
+
+      {/* Bottom Call-To-Action Button to Start Dialogue */}
+      <div className="mt-8 pt-6 border-t border-slate-100 flex justify-center">
+        <button
+          type="button"
+          onClick={onStartDialogue}
+          className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-sm font-bold shadow-lg shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[48px] flex items-center justify-center gap-2"
+        >
+          <span>พร้อมแล้ว ไปฝึกบทสนทนา 💬</span>
+        </button>
       </div>
     </div>
   );

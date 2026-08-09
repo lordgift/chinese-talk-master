@@ -58,6 +58,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
   };
 
   const handleFavoriteToggle = (e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
     toggleFavorite(scenario.id);
   };
@@ -69,7 +70,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
   return (
     <div
       onClick={handleCardClick}
-      className={`group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between cursor-pointer ${
+      className={`group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between cursor-pointer touch-manipulation select-none active:scale-[0.99] ${
         isFoundation
           ? 'hover:border-indigo-300 hover:shadow-indigo-500/10'
           : scenario.categoryId === 'travel-transport'
@@ -108,7 +109,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             <button
               type="button"
               onClick={handleFavoriteToggle}
-              className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${
+              className={`p-2 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer touch-manipulation z-10 ${
                 isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
               }`}
               title={isFavorited ? 'ยกเลิกบทเรียนที่ชอบ' : 'บันทึกเป็นบทเรียนที่ชอบ'}

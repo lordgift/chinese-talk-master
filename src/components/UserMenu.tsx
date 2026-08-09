@@ -2,27 +2,31 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
-import { LogOut, Cloud, CloudCheck, Loader2 } from 'lucide-react';
+import { LogOut, CloudCheck, Loader2 } from 'lucide-react';
 
 export function UserMenu() {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  // Close dropdown on outside click
+  // Close dropdown on outside click (supports both desktop mousedown and mobile touchstart)
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (event: MouseEvent | TouchEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('touchstart', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('touchstart', handleClickOutside);
+    };
   }, []);
 
   if (loading) {
     return (
-      <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center animate-pulse border border-slate-200">
+      <div className="w-9 h-9 rounded-full bg-slate-100 flex items-center justify-center animate-pulse border border-slate-200">
         <Loader2 className="w-4 h-4 text-slate-400 animate-spin" />
       </div>
     );
@@ -31,8 +35,9 @@ export function UserMenu() {
   if (!user) {
     return (
       <button
+        type="button"
         onClick={loginWithGoogle}
-        className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 shadow-2xs font-semibold text-xs transition active:scale-95 cursor-pointer"
+        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 shadow-2xs font-semibold text-xs transition active:scale-95 cursor-pointer touch-manipulation min-h-[40px]"
         title="เข้าสู่ระบบด้วย Google เพื่อบันทึกประวัติการเรียนลง Cloud"
       >
         {/* Google G SVG */}
@@ -63,17 +68,18 @@ export function UserMenu() {
   return (
     <div className="relative" ref={dropdownRef}>
       <button
+        type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 p-1 rounded-full hover:bg-slate-100 border border-slate-200 transition focus:outline-hidden"
+        className="flex items-center gap-2 p-1.5 rounded-full hover:bg-slate-100 border border-slate-200 transition focus:outline-hidden touch-manipulation cursor-pointer active:scale-95"
       >
         {user.photoURL ? (
           <img
             src={user.photoURL}
             alt={user.displayName || 'User Avatar'}
-            className="w-8 h-8 rounded-full border border-rose-200 object-cover"
+            className="w-9 h-9 rounded-full border border-rose-200 object-cover"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center font-bold text-xs">
+          <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-rose-500 to-amber-500 text-white flex items-center justify-center font-bold text-xs">
             {user.displayName ? user.displayName.charAt(0).toUpperCase() : 'U'}
           </div>
         )}
@@ -97,14 +103,15 @@ export function UserMenu() {
           {/* Actions */}
           <div className="pt-1">
             <button
+              type="button"
               onClick={() => {
                 setIsOpen(false);
                 logout();
               }}
-              className="w-full text-left px-4 py-2 text-xs text-rose-600 hover:bg-rose-50 font-semibold flex items-center gap-2 transition"
+              className="w-full px-4 py-2.5 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition touch-manipulation cursor-pointer active:bg-rose-100"
             >
-              <LogOut className="w-3.5 h-3.5" />
-              <span>ออกจากระบบ (Sign Out)</span>
+              <LogOut className="w-4 h-4 text-rose-500" />
+              <span>ออกจากระบบ (Logout)</span>
             </button>
           </div>
         </div>

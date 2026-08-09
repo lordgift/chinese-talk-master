@@ -113,8 +113,9 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
             return (
               <button
                 key={idx}
+                type="button"
                 onClick={() => handleWordClick(word.hanzi)}
-                className={`group relative flex flex-col items-center p-2.5 rounded-xl border transition-all ${evalBorderClass}`}
+                className={`group relative flex flex-col items-center p-3 rounded-2xl border transition-all touch-manipulation select-none active:scale-95 cursor-pointer min-h-[44px] ${evalBorderClass}`}
               >
                 {/* Large Tone styled Pinyin */}
                 <span className="text-sm sm:text-base font-extrabold text-slate-800 font-pinyin group-hover:text-amber-900 tracking-wide mb-0.5">

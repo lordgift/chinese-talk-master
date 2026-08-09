@@ -120,8 +120,9 @@ export function ScoreModal({ scenarioId, scenarioTitle, totalScore, onRetry }: S
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 mt-4">
           <button
+            type="button"
             onClick={onRetry}
-            className="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 border border-slate-200 transition shadow-2xs cursor-pointer"
+            className="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 border border-slate-200 transition shadow-2xs cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
           >
             <RotateCcw className="w-4 h-4" />
             <span>ฝึกใหม่อีกครั้ง</span>
@@ -129,7 +130,7 @@ export function ScoreModal({ scenarioId, scenarioTitle, totalScore, onRetry }: S
 
           <Link
             href="/"
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-rose-500/20 transition"
+            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-rose-500/20 transition touch-manipulation select-none active:scale-95 min-h-[44px]"
           >
             <Home className="w-4 h-4" />
             <span>เลือกบทอื่น</span>

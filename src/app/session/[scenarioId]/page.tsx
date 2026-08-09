@@ -69,6 +69,17 @@ export default function SessionPage({ params }: PageProps) {
     setEvaluations((prev) => ({ ...prev, [currentIndex]: evalResult }));
   };
 
+  const handleStartDialogue = () => {
+    setMode('step');
+    setCurrentIndex(0);
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    if (scenario.dialogues[0]?.speaker === 'ai') {
+      speak(scenario.dialogues[0].hanzi);
+    }
+  };
+
   const handleNext = () => {
     if (currentIndex < scenario.dialogues.length - 1) {
       const nextIndex = currentIndex + 1;
@@ -120,10 +131,11 @@ export default function SessionPage({ params }: PageProps) {
           </Link>
 
           {/* Practice Mode Toggle */}
-          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-xl border border-slate-200">
+          <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200 overflow-x-auto max-w-full">
             <button
+              type="button"
               onClick={() => setMode('vocab')}
-              className={`px-3 py-1.5 rounded-lg transition font-semibold flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
                 mode === 'vocab'
                   ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -134,8 +146,9 @@ export default function SessionPage({ params }: PageProps) {
             </button>
 
             <button
+              type="button"
               onClick={() => setMode('step')}
-              className={`px-3 py-1.5 rounded-lg transition font-semibold flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
                 mode === 'step'
                   ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
@@ -146,8 +159,9 @@ export default function SessionPage({ params }: PageProps) {
             </button>
 
             <button
+              type="button"
               onClick={() => setMode('overview')}
-              className={`px-3 py-1.5 rounded-lg transition font-semibold flex items-center gap-1.5 ${
+              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
                 mode === 'overview'
                   ? 'bg-white text-slate-900 shadow-xs border border-slate-200'
                   : 'text-slate-600 hover:text-slate-900'
@@ -191,15 +205,15 @@ export default function SessionPage({ params }: PageProps) {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {mode === 'vocab' ? (
           /* Step 1: Vocabulary Prep Mode */
-          <VocabPrep words={allScenarioWords} onStartDialogue={() => setMode('step')} />
+          <VocabPrep words={allScenarioWords} onStartDialogue={handleStartDialogue} />
         ) : mode === 'step' ? (
           /* Step 2: Step-by-Step Dialogue Practice Mode */
           <div className="space-y-6">
-            {/* Step Progress Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
-              <div className="flex items-center justify-between text-xs mb-2">
+            {/* Step Progress & Roleplay Helper Bar */}
+            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+              <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-600 font-medium">
-                  ความคืบหน้าประโยคที่ {currentIndex + 1} จาก {scenario.dialogues.length}
+                  ความคืบหน้าประโยคที่ <span className="font-bold text-slate-900">{currentIndex + 1}</span> จาก {scenario.dialogues.length}
                 </span>
                 <span className="text-amber-700 font-mono font-bold">
                   {Math.round(((currentIndex + 1) / scenario.dialogues.length) * 100)}%
@@ -213,7 +227,56 @@ export default function SessionPage({ params }: PageProps) {
                   }}
                 />
               </div>
+
+              {/* Clear Turn Status Banner */}
+              {!isUserTurn ? (
+                <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2 text-indigo-900 font-bold">
+                    <Bot className="w-4 h-4 text-indigo-600 animate-pulse" />
+                    <span>🔊 1. ฟังคู่สนทนาพูด ({currentDialogue.speakerName})</span>
+                  </div>
+                  <span className="text-[11px] text-indigo-700 font-medium">
+                    ฟังเสียงบทพูดของคู่สนทนาเพื่อทำความเข้าใจ แล้วกด &quot;ตาคุณพูดตอบ&quot;
+                  </span>
+                </div>
+              ) : (
+                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                  <div className="flex items-center gap-2 text-amber-900 font-bold">
+                    <User className="w-4 h-4 text-amber-600" />
+                    <span>🎙️ 2. คิวคุณออกเสียงพูดตอบ ({currentDialogue.speakerName})</span>
+                  </div>
+                  <span className="text-[11px] text-amber-700 font-medium">
+                    กดปุ่มไมโครโฟนสีแดงด้านล่าง แล้วลองอ่านประโยคตอบภาษาจีน
+                  </span>
+                </div>
+              )}
             </div>
+
+            {/* IF USER TURN & PRECEDING DIALOGUE IS AI: Show Preceding AI Context Bubble */}
+            {isUserTurn && currentIndex > 0 && scenario.dialogues[currentIndex - 1].speaker === 'ai' && (
+              <div className="bg-indigo-50/90 border border-indigo-200/90 rounded-2xl p-4 shadow-2xs space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-indigo-900 border-b border-indigo-200/80 pb-2">
+                  <div className="flex items-center gap-1.5">
+                    <Bot className="w-4 h-4 text-indigo-600" />
+                    <span>💬 คู่สนทนา ({scenario.dialogues[currentIndex - 1].speakerName}) เพิ่งพูดว่า:</span>
+                  </div>
+                  <AudioPlayer text={scenario.dialogues[currentIndex - 1].hanzi} />
+                </div>
+
+                <div className="flex flex-wrap items-baseline gap-2">
+                  <span className="text-base sm:text-lg font-black text-slate-900">
+                    {scenario.dialogues[currentIndex - 1].hanzi}
+                  </span>
+                  <span className="text-xs text-rose-600 font-serif font-semibold">
+                    ({scenario.dialogues[currentIndex - 1].pinyin})
+                  </span>
+                </div>
+
+                <p className="text-xs text-slate-600 font-medium">
+                  คำแปล: <span className="text-slate-800 font-bold">&quot;{scenario.dialogues[currentIndex - 1].thai}&quot;</span>
+                </p>
+              </div>
+            )}
 
             {/* Current Sentence Card with Green/Yellow/Red highlights */}
             <PinyinCard
@@ -222,49 +285,29 @@ export default function SessionPage({ params }: PageProps) {
               wordEvaluations={evaluations[currentIndex]?.wordEvaluations}
             />
 
-            {/* Distinct Role Card: AI Staff Speaking VS User Customer Practice */}
+            {/* Action Area: AI Turn Action vs User Speech Recorder */}
             {!isUserTurn ? (
-              /* AI Staff Speaking Card */
-              <div className="bg-indigo-50/90 border border-indigo-200 rounded-2xl p-5 shadow-xs text-slate-900">
-                <div className="flex items-center justify-between border-b border-indigo-200/80 pb-3 mb-3">
-                  <div className="flex items-center gap-2 text-indigo-900 font-bold text-xs">
-                    <Bot className="w-4 h-4 text-indigo-600" />
-                    <span>บทพูดของ {currentDialogue.speakerName} (ฟังเพื่อเตรียมตอบในฐานะลูกค้า)</span>
-                  </div>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200">
-                    🔊 ฟังเสียงโต้ตอบจากพนักงาน
+              /* AI Staff Speaking Action Box */
+              <div className="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-3">
+                  <AudioPlayer text={currentDialogue.hanzi} />
+                  <span className="text-xs text-indigo-900 font-bold">
+                    ฟังเสียง {currentDialogue.speakerName} อีกครั้ง
                   </span>
                 </div>
 
-                <p className="text-xs text-slate-700 mb-3">
-                  ประโยคนี้เป็นคำถาม/คำพูดของคู่สนทนา ให้กดฟังเสียงอ่านแล้วเตรียมตอบกลับในประโยคถัดไปครับ
-                </p>
-
-                <div className="flex items-center justify-between gap-3">
-                  <AudioPlayer text={currentDialogue.hanzi} />
-
-                  <button
-                    onClick={handleNext}
-                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition"
-                  >
-                    <span>ไปยังประโยคตอบของคุณ (ลูกค้า)</span>
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </div>
+                <button
+                  type="button"
+                  onClick={handleNext}
+                  className="px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
+                >
+                  <span>🎙️ ฟังจบแล้ว ➔ ไปที่คิวออกเสียงพูดของคุณ</span>
+                  <ChevronRight className="w-4 h-4" />
+                </button>
               </div>
             ) : (
-              /* User Customer Speech Practice Card */
+              /* User Speech Recorder Practice Box */
               <div className="space-y-3">
-                <div className="flex items-center justify-between text-xs px-3.5 py-2 rounded-xl bg-amber-50 border border-amber-200 font-bold text-amber-900 shadow-2xs">
-                  <span className="flex items-center gap-2">
-                    <User className="w-4 h-4 text-amber-600" />
-                    <span>บทพูดของคุณในฐานะลูกค้า ({currentDialogue.speakerName}): กดไมค์เพื่อออกเสียงโต้ตอบ</span>
-                  </span>
-                  <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 border border-amber-200">
-                    🎙️ ถึงคิวคุณออกเสียง
-                  </span>
-                </div>
-
                 <SpeechRecorder
                   targetHanzi={currentDialogue.hanzi}
                   targetPinyin={currentDialogue.pinyin}
@@ -277,12 +320,13 @@ export default function SessionPage({ params }: PageProps) {
             {/* Step Navigation Controls */}
             <div className="flex items-center justify-between gap-4 pt-4 border-t border-slate-200">
               <button
+                type="button"
                 onClick={handlePrev}
                 disabled={currentIndex === 0}
-                className={`px-4 py-2.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 border transition ${
+                className={`px-4.5 py-3 rounded-xl text-xs sm:text-sm font-semibold flex items-center gap-1.5 border transition touch-manipulation select-none min-h-[44px] ${
                   currentIndex === 0
                     ? 'opacity-40 cursor-not-allowed bg-slate-100 border-slate-200 text-slate-400'
-                    : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 shadow-2xs'
+                    : 'bg-white hover:bg-slate-100 border-slate-200 text-slate-700 shadow-2xs cursor-pointer active:scale-95'
                 }`}
               >
                 <ChevronLeft className="w-4 h-4" />
@@ -290,8 +334,9 @@ export default function SessionPage({ params }: PageProps) {
               </button>
 
               <button
+                type="button"
                 onClick={handleNext}
-                className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
               >
                 <span>
                   {currentIndex === scenario.dialogues.length - 1 ? 'เสร็จสิ้นบทเรียน' : 'ประโยคถัดไป'}

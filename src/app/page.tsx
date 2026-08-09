@@ -55,6 +55,16 @@ export default function HomePage() {
 
   const favoriteScenarios = SCENARIOS.filter((sc) => !!userFavorites[sc.id]);
 
+  const scrollToSection = (id: string) => {
+    if (id === 'survival-foundation') {
+      setIsFoundationExpanded(true);
+    }
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
       <Header />
@@ -129,41 +139,43 @@ export default function HomePage() {
         {/* Sticky Filter & Section Jump Bar */}
         <div className="bg-white/90 backdrop-blur-md sticky top-16 z-30 p-3 sm:p-4 rounded-2xl border border-slate-200/90 shadow-sm flex flex-wrap items-center justify-between gap-3">
           {/* Quick jump to sections */}
-          <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 text-xs font-semibold text-slate-700">
-            <span className="text-slate-400 flex items-center gap-1 mr-1">
+          <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 text-xs font-semibold text-slate-700 max-w-full">
+            <span className="text-slate-400 flex items-center gap-1 mr-1 shrink-0">
               <Layers className="w-4 h-4 text-slate-500" />
               หมวดการเรียนรู้:
             </span>
 
             {foundationCategory && (
-              <a
-                href="#survival-foundation"
-                onClick={() => setIsFoundationExpanded(true)}
-                className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+              <button
+                type="button"
+                onClick={() => scrollToSection('survival-foundation')}
+                className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold touch-manipulation select-none active:scale-95 min-h-[40px] cursor-pointer"
               >
                 <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
                 <span>คอร์สปูพื้นฐาน ({foundationScenarios.length})</span>
-              </a>
+              </button>
             )}
 
             {favoriteScenarios.length > 0 && (
-              <a
-                href="#favorites"
-                className="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+              <button
+                type="button"
+                onClick={() => scrollToSection('favorites')}
+                className="px-3.5 py-2 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition flex items-center gap-1.5 whitespace-nowrap font-bold touch-manipulation select-none active:scale-95 min-h-[40px] cursor-pointer"
               >
                 <Heart className="w-3.5 h-3.5 fill-rose-500 text-rose-500" />
                 <span>บทเรียนที่ชอบ ({favoriteScenarios.length})</span>
-              </a>
+              </button>
             )}
 
             {otherCategories.map((cat) => (
-              <a
+              <button
                 key={cat.id}
-                href={`#${cat.id}`}
-                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap"
+                type="button"
+                onClick={() => scrollToSection(cat.id)}
+                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap touch-manipulation select-none active:scale-95 min-h-[40px] cursor-pointer"
               >
                 <span>{cat.title}</span>
-              </a>
+              </button>
             ))}
           </div>
 
@@ -175,8 +187,9 @@ export default function HomePage() {
             </span>
 
             <button
+              type="button"
               onClick={() => setSelectedLevel('all')}
-              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[40px] ${
                 selectedLevel === 'all'
                   ? 'bg-slate-800 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200'
@@ -186,8 +199,9 @@ export default function HomePage() {
             </button>
 
             <button
+              type="button"
               onClick={() => setSelectedLevel('easy')}
-              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[40px] ${
                 selectedLevel === 'easy'
                   ? 'bg-emerald-600 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-emerald-700 hover:bg-emerald-50'
@@ -197,8 +211,9 @@ export default function HomePage() {
             </button>
 
             <button
+              type="button"
               onClick={() => setSelectedLevel('medium')}
-              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
+              className={`px-3.5 py-2 rounded-xl transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[40px] ${
                 selectedLevel === 'medium'
                   ? 'bg-amber-500 text-white font-bold shadow-xs'
                   : 'bg-slate-100 text-slate-600 hover:text-amber-700 hover:bg-amber-50'
@@ -217,8 +232,9 @@ export default function HomePage() {
           >
             {/* Header with Toggle */}
             <button
+              type="button"
               onClick={() => setIsFoundationExpanded(!isFoundationExpanded)}
-              className="w-full flex items-center justify-between text-left cursor-pointer group"
+              className="w-full flex items-center justify-between text-left cursor-pointer group touch-manipulation select-none active:scale-[0.99] transition-transform"
             >
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
