@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import { Scenario } from '@/lib/pinyinUtils';
-import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart, ShoppingBag, GraduationCap } from 'lucide-react';
+import { Clock, MapPin, ChevronRight, CupSoda, Compass, Car, Hotel, Soup, Utensils, User, CheckCircle2, Heart, ShoppingBag, GraduationCap, Calculator } from 'lucide-react';
 import { useAuth } from '@/context/AuthContext';
 import { ScorePieChart } from './ScorePieChart';
 
@@ -16,6 +16,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
   const progress = userProgress[scenario.id];
   const isFavorited = !!userFavorites[scenario.id];
   const isPinyinCourse = scenario.categoryId === 'pinyin-course';
+  const isFoundationCourse = scenario.categoryId === 'pinyin-course' || scenario.categoryId === 'numbers-course';
 
   const getLevelBadge = (level: Scenario['level']) => {
     switch (level) {
@@ -32,6 +33,8 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
     switch (iconName) {
       case 'GraduationCap':
         return <GraduationCap className="w-5 h-5 text-indigo-600" />;
+      case 'Calculator':
+        return <Calculator className="w-5 h-5 text-emerald-600" />;
       case 'ShoppingBag':
         return <ShoppingBag className="w-5 h-5 text-emerald-600" />;
       case 'User':
@@ -66,7 +69,11 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
     <div
       onClick={handleCardClick}
       className={`group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between cursor-pointer ${
-        isPinyinCourse ? 'hover:border-indigo-300 hover:shadow-indigo-500/10' : 'hover:border-rose-300 hover:shadow-rose-500/10'
+        isPinyinCourse
+          ? 'hover:border-indigo-300 hover:shadow-indigo-500/10'
+          : scenario.categoryId === 'numbers-course'
+          ? 'hover:border-emerald-300 hover:shadow-emerald-500/10'
+          : 'hover:border-rose-300 hover:shadow-rose-500/10'
       }`}
     >
       <div>

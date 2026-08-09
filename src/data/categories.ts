@@ -13,6 +13,17 @@ export const CATEGORIES: Category[] = [
     isAvailable: true,
   },
   {
+    id: 'numbers-course',
+    title: 'คอร์สปูพื้นฐานตัวเลข จำนวน & ราคา',
+    titleZh: '数字、数量与价格基础教程 (Shùzì, Shùliàng yǔ Jiàgé Jīchǔ Jiàochéng)',
+    description: 'ปูพื้นฐานนับเลข 0-10,000, การใช้ 二 vs 两, คำลักษณนามสำคัญ (个, 杯, 瓶, 块), และการถาม/บอกราคาอย่างมั่นใจ',
+    icon: 'Calculator',
+    color: 'from-emerald-500 to-teal-500',
+    bgGradient: 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent',
+    scenariosCount: 5,
+    isAvailable: true,
+  },
+  {
     id: 'food-ordering',
     title: 'สั่งอาหาร & ร้านอาหาร',
     titleZh: '点餐与美食 (Diǎncān yǔ Měishí)',

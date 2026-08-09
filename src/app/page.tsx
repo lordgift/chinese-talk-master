@@ -17,6 +17,7 @@ import {
   Filter,
   Heart,
   GraduationCap,
+  Calculator,
   ChevronDown,
   ChevronUp,
 } from 'lucide-react';
@@ -29,7 +30,9 @@ export default function HomePage() {
   const getCategoryIcon = (iconName: string) => {
     switch (iconName) {
       case 'GraduationCap':
-        return <GraduationCap className="w-5 h-5 text-rose-500" />;
+        return <GraduationCap className="w-5 h-5 text-indigo-500" />;
+      case 'Calculator':
+        return <Calculator className="w-5 h-5 text-emerald-500" />;
       case 'UtensilsCrossed':
         return <UtensilsCrossed className="w-5 h-5 text-amber-500" />;
       case 'Compass':
@@ -43,14 +46,20 @@ export default function HomePage() {
   };
 
   const pinyinCategory = CATEGORIES.find((c) => c.id === 'pinyin-course');
-  const pinyinScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'pinyin-course');
+  const numbersCategory = CATEGORIES.find((c) => c.id === 'numbers-course');
 
-  const scenarioCategories = CATEGORIES.filter((c) => c.id !== 'pinyin-course').sort((a, b) => {
+  const pinyinScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'pinyin-course');
+  const numbersScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'numbers-course');
+  const totalFoundationCount = pinyinScenarios.length + numbersScenarios.length;
+
+  const scenarioCategories = CATEGORIES.filter(
+    (c) => c.id !== 'pinyin-course' && c.id !== 'numbers-course'
+  ).sort((a, b) => {
     if (a.isAvailable === b.isAvailable) return 0;
     return a.isAvailable ? -1 : 1;
   });
 
-  const favoriteScenarios = SCENARIOS.filter((sc) => sc.categoryId !== 'pinyin-course' && !!userFavorites[sc.id]);
+  const favoriteScenarios = SCENARIOS.filter((sc) => !!userFavorites[sc.id]);
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
@@ -132,16 +141,14 @@ export default function HomePage() {
               หมวดบทเรียน:
             </span>
 
-            {pinyinCategory && (
-              <a
-                href="#pinyin-course"
-                onClick={() => setIsPinyinExpanded(true)}
-                className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
-              >
-                <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
-                <span>คอร์ส Pinyin</span>
-              </a>
-            )}
+            <a
+              href="#foundation-course"
+              onClick={() => setIsPinyinExpanded(true)}
+              className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+              <span>คอร์สปูพื้นฐาน (Pinyin & ตัวเลข)</span>
+            </a>
 
             {favoriteScenarios.length > 0 && (
               <a
@@ -219,59 +226,83 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* 1. ACADEMIC INDIGO-VIOLET COLLAPSIBLE PINYIN FOUNDATION COURSE */}
-        {pinyinCategory && (
-          <section
-            id="pinyin-course"
-            className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-white border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
+        {/* 1. ACADEMIC INDIGO-VIOLET COLLAPSIBLE FOUNDATION COURSE (PINYIN & NUMBERS) */}
+        <section
+          id="foundation-course"
+          className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-emerald-50/30 border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
+        >
+          {/* Collapsible Header Toggle */}
+          <button
+            onClick={() => setIsPinyinExpanded(!isPinyinExpanded)}
+            className="w-full flex items-center justify-between text-left cursor-pointer group"
           >
-            {/* Collapsible Header Toggle */}
-            <button
-              onClick={() => setIsPinyinExpanded(!isPinyinExpanded)}
-              className="w-full flex items-center justify-between text-left cursor-pointer group"
-            >
-              <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
-                  <GraduationCap className="w-5 h-5 text-indigo-600" />
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
+                <GraduationCap className="w-5 h-5 text-indigo-600" />
+              </div>
+              <div>
+                <div className="flex flex-wrap items-center gap-2">
+                  <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
+                    🎓 คอร์สปูพื้นฐานภาษาจีน (Pinyin & ตัวเลข)
+                  </h2>
+                  <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
+                    拼音与数字基础教程
+                  </span>
+                  <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                    {totalFoundationCount} บทเรียน
+                  </span>
                 </div>
-                <div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
-                      🎓 คอร์สปูพื้นฐาน Pinyin
-                    </h2>
-                    <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
-                      拼音基础教程
-                    </span>
-                    <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
-                      {pinyinScenarios.length} บทเรียน
-                    </span>
-                  </div>
-                  <p className="text-xs text-slate-500 mt-0.5">
-                    ปูพื้นฐานพยัญชนะ สระ วรรณยุกต์ และกฎการผันเสียงสำหรับคนที่ไม่เคยเรียนมาก่อน
-                  </p>
+                <p className="text-xs text-slate-500 mt-0.5">
+                  ปูพื้นฐานภาษาจีนสำหรับผู้เริ่มต้น: พยัญชนะ สระ วรรณยุกต์ Pinyin และการนับตัวเลข 0-10,000 ปริมาณ และราคา
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
+              <span>{isPinyinExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียนปูพื้นฐาน'}</span>
+              {isPinyinExpanded ? (
+                <ChevronUp className="w-4 h-4 text-indigo-600" />
+              ) : (
+                <ChevronDown className="w-4 h-4 text-indigo-600" />
+              )}
+            </div>
+          </button>
+
+          {/* Collapsed / Expanded Content */}
+          {isPinyinExpanded && (
+            <div className="pt-4 border-t border-indigo-200/60 space-y-6 animate-in fade-in duration-200">
+              {/* Pinyin Sub-section */}
+              <div className="space-y-3">
+                <div className="flex items-center gap-2 text-sm font-bold text-indigo-900">
+                  <span className="p-1 rounded-md bg-indigo-100 text-indigo-700">🔤</span>
+                  <span>หมวดปูพื้นฐาน Pinyin ({pinyinScenarios.length} บทเรียน)</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                  {pinyinScenarios
+                    .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
+                    .map((scenario) => (
+                      <ScenarioCard key={scenario.id} scenario={scenario} />
+                    ))}
                 </div>
               </div>
 
-              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
-                <span>{isPinyinExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียน Pinyin'}</span>
-                {isPinyinExpanded ? (
-                  <ChevronUp className="w-4 h-4 text-indigo-600" />
-                ) : (
-                  <ChevronDown className="w-4 h-4 text-indigo-600" />
-                )}
+              {/* Numbers Sub-section */}
+              <div className="space-y-3 pt-3 border-t border-indigo-100">
+                <div className="flex items-center gap-2 text-sm font-bold text-emerald-900">
+                  <span className="p-1 rounded-md bg-emerald-100 text-emerald-700">🔢</span>
+                  <span>หมวดปูพื้นฐานตัวเลข ปริมาณ & ราคา ({numbersScenarios.length} บทเรียน)</span>
+                </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {numbersScenarios
+                    .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
+                    .map((scenario) => (
+                      <ScenarioCard key={scenario.id} scenario={scenario} />
+                    ))}
+                </div>
               </div>
-            </button>
-
-            {/* Collapsed / Expanded Content */}
-            {isPinyinExpanded && (
-              <div className="pt-3 border-t border-indigo-200/60 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 animate-in fade-in duration-200">
-                {pinyinScenarios.map((scenario) => (
-                  <ScenarioCard key={scenario.id} scenario={scenario} />
-                ))}
-              </div>
-            )}
-          </section>
-        )}
+            </div>
+          )}
+        </section>
 
         {/* 2. REAL-LIFE SCENARIOS HEADER DIVIDER */}
         <div className="pt-6 pb-2 border-t border-slate-200/90">
