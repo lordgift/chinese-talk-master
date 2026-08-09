@@ -5,6 +5,7 @@ import { CATEGORIES } from '@/data/categories';
 import { SCENARIOS } from '@/data/scenarios';
 import { Header } from '@/components/Header';
 import { ScenarioCard } from '@/components/ScenarioCard';
+import { SuggestLessonModal } from '@/components/SuggestLessonModal';
 import { useAuth } from '@/context/AuthContext';
 import {
   Sparkles,
@@ -20,11 +21,13 @@ import {
   Calculator,
   ChevronDown,
   ChevronUp,
+  Lightbulb,
 } from 'lucide-react';
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
   const [isFoundationExpanded, setIsFoundationExpanded] = useState<boolean>(true);
+  const [isSuggestOpen, setIsSuggestOpen] = useState<boolean>(false);
   const { userFavorites } = useAuth();
 
   const getCategoryIcon = (iconName: string) => {
@@ -370,6 +373,29 @@ export default function HomePage() {
             );
           })}
         </div>
+
+        {/* Suggest Lesson Section Banner */}
+        <div className="mt-12 rounded-3xl bg-gradient-to-r from-amber-500 via-rose-500 to-amber-600 p-6 text-white shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4 relative overflow-hidden">
+          <div className="flex items-center gap-4 relative z-10">
+            <div className="w-12 h-12 rounded-2xl bg-white/20 backdrop-blur-md flex items-center justify-center shrink-0 border border-white/30 text-white shadow-inner">
+              <Lightbulb className="w-6 h-6" />
+            </div>
+            <div>
+              <h3 className="text-base sm:text-lg font-extrabold">อยากได้บทเรียนสถานการณ์ไหนเพิ่มอีกไหม? 💡</h3>
+              <p className="text-xs text-amber-100 mt-0.5">
+                พิมพ์บอกทีมงานได้เลย! เราพร้อมสร้างบทเรียนสนทนาภาษาจีนสถานการณ์ใหม่ๆ ให้ตามคำขอของคุณ
+              </p>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={() => setIsSuggestOpen(true)}
+            className="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 text-amber-700 font-extrabold text-xs shadow-lg transition cursor-pointer shrink-0 active:scale-95 touch-manipulation min-h-[44px] flex items-center gap-2"
+          >
+            <span>✉️ เสนอบทเรียนที่คุณต้องการ</span>
+          </button>
+        </div>
       </main>
 
       {/* Footer */}
@@ -378,6 +404,8 @@ export default function HomePage() {
           <p>© 2026 华语Talk Master - คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน</p>
         </div>
       </footer>
+
+      <SuggestLessonModal isOpen={isSuggestOpen} onClose={() => setIsSuggestOpen(false)} />
     </div>
   );
 }
