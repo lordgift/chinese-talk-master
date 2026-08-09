@@ -2,7 +2,7 @@ import { Scenario } from '@/lib/pinyinUtils';
 
 export const SCENARIOS: Scenario[] = [
   // ==========================================
-  // 1. SURVIVAL FOUNDATION (ปูพื้นฐานเอาตัวรอด - แบบฝึกออกเสียงเดี่ยว)
+  // 1. SURVIVAL FOUNDATION (ปูพื้นฐานเอาตัวรอด - แบบฝึกออกเสียงเดี่ยว & คำทักทาย)
   // ==========================================
   {
     id: 'foundation-pinyin-initials',
@@ -349,72 +349,70 @@ export const SCENARIOS: Scenario[] = [
   },
 
   // ==========================================
-  // 2. TRAVEL & TRANSPORTATION (การเดินทาง & ถามทาง - มีคู่สนทนาโต้ตอบ)
+  // 2. TRAVEL & TRANSPORTATION (การเดินทาง & ถามทาง - บทสนทนาโต้ตอบ 2 คนอย่างสมเหตุสมผล)
   // ==========================================
   {
     id: 'travel-subway-metro',
     categoryId: 'travel-transport',
     level: 'easy',
     levelTitle: 'ง่าย 🌱 (รถไฟฟ้าใต้ดิน Metro)',
-    title: '🚇 ถามหาสถานีรถไฟฟ้าใต้ดิน (Metro/Subway) & ซื้อตั๋วเดินทาง',
-    titleZh: '乘坐地铁与买票 (Chéngzuò Dìtiě yǔ Mǎi Piào)',
-    description: 'ฝึกโต้ตอบถามหาสถานีรถไฟฟ้าใต้ดิน (地铁站) และซื้อตั๋วเดินทางกับพนักงาน',
+    title: '🚇 ซื้อตั๋วเดินทางรถไฟฟ้าใต้ดิน (Metro/Subway)',
+    titleZh: '购买地铁车票 (Gòumǎi Dìtiě Chēpiào)',
+    description: 'ฝึกโต้ตอบซื้อตั๋วรถไฟฟ้าใต้ดิน (地铁票) กับพนักงานขายตั๋วที่เคาน์เตอร์',
     icon: 'Compass',
-    location: 'สถานีรถไฟฟ้าใต้ดิน (地铁站)',
+    location: 'เคาน์เตอร์ขายตั๋วรถไฟฟ้าใต้ดิน (地铁售票处)',
     estimatedMinutes: 3,
     dialogues: [
       {
         id: 'ts-1',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '请问，地铁站在在哪里？',
-        pinyin: 'Qǐngwèn, dìtiězhàn zài nǎlǐ?',
-        thai: 'ขอถามหน่อยครับ/ค่ะ สถานีรถไฟฟ้าใต้ดิน (Metro) อยู่ที่ไหน?',
-        audioHint: '💡 "地铁站" (dìtiězhàn) = สถานีรถไฟฟ้าใต้ดิน',
+        speaker: 'ai',
+        speakerName: 'พนักงานขายตั๋ว (票务员)',
+        avatar: '👩‍💼',
+        hanzi: '您好！请问买票吗？',
+        pinyin: 'Nín hǎo! Qǐngwèn mǎi piào ma?',
+        thai: 'พนักงานถาม: สวัสดีครับ/ค่ะ ซื้อตั๋วเดินทางไหมครับ/คะ?',
         words: [
-          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
-          { hanzi: '地铁站', pinyin: 'dì tiě zhàn', thai: 'สถานีรถไฟฟ้าใต้ดิน (Metro)', tones: [4, 3, 4] },
-          { hanzi: '在哪里', pinyin: 'zài nǎ lǐ', thai: 'อยู่ที่ไหน', tones: [4, 3, 3] },
+          { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
+          { hanzi: '买票', pinyin: 'mǎi piào', thai: 'ซื้อตั๋ว', tones: [3, 4] },
         ],
       },
       {
         id: 'ts-2',
-        speaker: 'ai',
-        speakerName: 'คนแถวนั้น (路人)',
-        avatar: '👨‍💼',
-        hanzi: '往前走，就在前面。',
-        pinyin: 'Wǎng qián zǒu, jiù zài qiánmiàn.',
-        thai: 'คู่สนทนาตอบ: เดินตรงไปข้างหน้า อยู่ข้างหน้านี้ครับ',
+        speaker: 'user',
+        speakerName: 'คุณ (游客)',
+        avatar: '🧑',
+        hanzi: '你好！买一张票。',
+        pinyin: 'Nǐ hǎo! Mǎi yī zhāng piào.',
+        thai: 'สวัสดีครับ/ค่ะ ซื้อตั๋ว 1 ใบครับ/ค่ะ',
         words: [
-          { hanzi: '往前走', pinyin: 'wǎng qián zǒu', thai: 'เดินตรงไปข้างหน้า', tones: [3, 2, 3] },
-          { hanzi: '就在前面', pinyin: 'jiù zài qián miàn', thai: 'ก็อยู่ข้างหน้า', tones: [4, 4, 2, 4] },
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '买一张票', pinyin: 'mǎi yī zhāng piào', thai: 'ซื้อตั๋ว 1 ใบ', tones: [3, 1, 1, 4] },
         ],
       },
       {
         id: 'ts-3',
-        speaker: 'user',
-        speakerName: 'คุณ (游客)',
-        avatar: '🧑',
-        hanzi: '买一张票。',
-        pinyin: 'Mǎi yī zhāng piào.',
-        thai: 'ซื้อตั๋ว 1 ใบครับ/ค่ะ',
-        words: [
-          { hanzi: '买', pinyin: 'mǎi', thai: 'ซื้อ', tones: [3] },
-          { hanzi: '一张票', pinyin: 'yī zhāng piào', thai: 'ตั๋ว 1 ใบ', tones: [1, 1, 4] },
-        ],
-      },
-      {
-        id: 'ts-4',
         speaker: 'ai',
         speakerName: 'พนักงานขายตั๋ว (票务员)',
         avatar: '👩‍💼',
         hanzi: '好的，五块钱。',
         pinyin: 'Hǎo de, wǔ kuài qián.',
-        thai: 'พนักงานตอบ: ได้ครับ/ค่ะ 5 หยวนครับ',
+        thai: 'พนักงานตอบ: ได้ครับ/ค่ะ 5 หยวนครับ/ค่ะ',
         words: [
           { hanzi: '好的', pinyin: 'hǎo de', thai: 'ได้ครับ', tones: [3, 5] },
           { hanzi: '五块钱', pinyin: 'wǔ kuài qián', thai: '5 หยวน', tones: [3, 4, 2] },
+        ],
+      },
+      {
+        id: 'ts-4',
+        speaker: 'user',
+        speakerName: 'คุณ (游客)',
+        avatar: '🧑',
+        hanzi: '给您，谢谢！',
+        pinyin: 'Gěi nín, xièxie!',
+        thai: 'ยื่นเงินให้ครับ/ค่ะ ขอบคุณครับ/ค่ะ',
+        words: [
+          { hanzi: '给您', pinyin: 'gěi nín', thai: 'ยื่นให้ท่าน', tones: [3, 2] },
+          { hanzi: '谢谢', pinyin: 'xiè xie', thai: 'ขอบคุณ', tones: [4, 5] },
         ],
       },
     ],
