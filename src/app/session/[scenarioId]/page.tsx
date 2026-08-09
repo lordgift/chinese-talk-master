@@ -19,6 +19,7 @@ import {
   User,
   Bot,
   Sparkles,
+  Volume2,
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { DetailedSpeechEvaluation, WordBreakdown } from '@/lib/pinyinUtils';
@@ -278,42 +279,102 @@ export default function SessionPage({ params }: PageProps) {
               </div>
             )}
 
-            {/* Current Sentence Card with Green/Yellow/Red highlights */}
-            <PinyinCard
-              dialogue={currentDialogue}
-              isCurrent={true}
-              wordEvaluations={evaluations[currentIndex]?.wordEvaluations}
-            />
-
-            {/* Action Area: AI Turn Action vs User Speech Recorder */}
+            {/* AI Partner Turn VS User Speech Practice Box */}
             {!isUserTurn ? (
-              /* AI Staff Speaking Action Box */
-              <div className="bg-indigo-50/80 border border-indigo-200 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-wrap items-center justify-between gap-4">
-                <div className="flex items-center gap-3">
+              /* Dedicated AI Partner Cool Sky-Indigo Theme Card */
+              <div className="rounded-3xl bg-gradient-to-br from-sky-950 via-indigo-950 to-slate-950 border-2 border-sky-400/60 p-5 sm:p-8 shadow-2xl space-y-6 text-white relative overflow-hidden">
+                {/* Glow Ambient background lights */}
+                <div className="absolute -top-20 -left-20 w-60 h-60 bg-sky-500/20 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none" />
+
+                {/* Header: AI Avatar & Speaking Badge */}
+                <div className="flex flex-wrap items-center justify-between border-b border-sky-800/70 pb-4 gap-3 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl p-3 rounded-2xl bg-sky-900/80 border border-sky-600/80 shadow-inner">
+                      {currentDialogue.avatar || '👨‍💼'}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-black text-white">
+                          {currentDialogue.speakerName}
+                        </h3>
+                        <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-400/20 text-sky-200 border border-sky-400/40">
+                          🤖 คู่สนทนา (AI Partner)
+                        </span>
+                      </div>
+                      <p className="text-xs text-sky-300 font-medium mt-1 flex items-center gap-1.5">
+                        <Volume2 className="w-4 h-4 text-sky-400 animate-pulse" />
+                        <span>กำลังพูดเปิดบทสนทนา / ถามคำถามกับคุณ</span>
+                      </p>
+                    </div>
+                  </div>
+
                   <AudioPlayer text={currentDialogue.hanzi} />
-                  <span className="text-xs text-indigo-900 font-bold">
-                    ฟังเสียง {currentDialogue.speakerName} อีกครั้ง
-                  </span>
                 </div>
 
-                <button
-                  type="button"
-                  onClick={handleNext}
-                  className="px-5 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
-                >
-                  <span>🎙️ ฟังจบแล้ว ➔ ไปที่คิวออกเสียงพูดของคุณ</span>
-                  <ChevronRight className="w-4 h-4" />
-                </button>
+                {/* Main Speech Content Display */}
+                <div className="bg-slate-900/90 backdrop-blur-md rounded-2xl p-4 sm:p-6 border border-sky-700/50 shadow-inner relative z-10 text-slate-900">
+                  <PinyinCard
+                    dialogue={currentDialogue}
+                    isCurrent={true}
+                    wordEvaluations={evaluations[currentIndex]?.wordEvaluations}
+                  />
+                </div>
+
+                {/* Prominent Action Button to Proceed to User Turn */}
+                <div className="pt-2 flex justify-center relative z-10">
+                  <button
+                    type="button"
+                    onClick={handleNext}
+                    className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-rose-500 via-amber-500 to-rose-600 hover:from-rose-600 hover:to-amber-600 text-white text-sm sm:text-base font-black shadow-xl shadow-rose-500/30 transition-all cursor-pointer touch-manipulation select-none active:scale-95 flex items-center justify-center gap-3 group"
+                  >
+                    <span>🎙️ ฟังจบแล้ว ➔ ไปที่คิวออกเสียงพูดของคุณ</span>
+                    <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </button>
+                </div>
               </div>
             ) : (
-              /* User Speech Recorder Practice Box */
-              <div className="space-y-3">
-                <SpeechRecorder
-                  targetHanzi={currentDialogue.hanzi}
-                  targetPinyin={currentDialogue.pinyin}
-                  words={currentDialogue.words}
-                  onComplete={handleScoreUpdate}
-                />
+              /* User Customer Speech Practice Warm Emerald-Amber Card */
+              <div className="rounded-3xl bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-emerald-500/10 border-2 border-amber-400/90 p-5 sm:p-7 shadow-xl space-y-5 relative overflow-hidden bg-white">
+                {/* Glow Ambient lights for User Stage */}
+                <div className="absolute -top-16 -right-16 w-48 h-48 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
+
+                {/* Header: User Avatar & Mic Badge */}
+                <div className="flex items-center justify-between border-b border-amber-200/90 pb-4 relative z-10">
+                  <div className="flex items-center gap-3">
+                    <span className="text-3xl p-2.5 rounded-2xl bg-amber-50 border border-amber-200 shadow-2xs">
+                      {currentDialogue.avatar || '🙋‍♂️'}
+                    </span>
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <h3 className="text-base sm:text-lg font-black text-amber-950">
+                          {currentDialogue.speakerName} (คุณ)
+                        </h3>
+                        <span className="text-[11px] font-extrabold px-3 py-0.5 rounded-full bg-amber-500 text-white shadow-xs">
+                          🎙️ ตาคุณออกเสียงพูดตอบ
+                        </span>
+                      </div>
+                      <p className="text-xs text-amber-800 font-medium mt-0.5">
+                        ลองกดไมค์สีแดงด้านล่าง แล้วพูดประโยคภาษาจีนโต้ตอบคู่สนทนา
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="relative z-10 space-y-4">
+                  <PinyinCard
+                    dialogue={currentDialogue}
+                    isCurrent={true}
+                    wordEvaluations={evaluations[currentIndex]?.wordEvaluations}
+                  />
+
+                  <SpeechRecorder
+                    targetHanzi={currentDialogue.hanzi}
+                    targetPinyin={currentDialogue.pinyin}
+                    words={currentDialogue.words}
+                    onComplete={handleScoreUpdate}
+                  />
+                </div>
               </div>
             )}
 

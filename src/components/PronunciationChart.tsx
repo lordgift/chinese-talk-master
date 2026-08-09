@@ -181,19 +181,19 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
             </h4>
           </div>
           <p className="text-xs text-slate-400 mt-1">
-            เปรียบเทียบระดับเสียง (Pitch 1-5) ระหว่าง <span className="text-indigo-400 font-bold">เส้นมาตรฐานเจ้าของภาษา (Target)</span> กับ <span className="text-emerald-400 font-bold">เสียงพูดของคุณ (Actual)</span>
+            เปรียบเทียบระดับเสียงพูดสูง-ต่ำ (ระดับ 1-5) ระหว่าง <span className="text-emerald-400 font-bold">เส้นมาตรฐานเจ้าของภาษา (Target)</span> กับ <span className="text-amber-400 font-bold">เสียงพูดของคุณ (Actual)</span>
           </p>
         </div>
 
         {/* Legend */}
         <div className="flex items-center gap-3 text-xs font-semibold bg-slate-800/80 px-3 py-2 rounded-xl border border-slate-700/60">
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-1 rounded-full bg-indigo-400 shadow-xs shadow-indigo-400/50" />
-            <span className="text-indigo-300">เจ้าของภาษา (Target)</span>
+            <span className="w-3.5 h-1 rounded-full bg-emerald-400 shadow-xs shadow-emerald-400/50" />
+            <span className="text-emerald-300">เจ้าของภาษา (Target)</span>
           </div>
           <div className="flex items-center gap-1.5">
-            <span className="w-3.5 h-1 rounded-full bg-emerald-400 shadow-xs shadow-emerald-400/50" />
-            <span className="text-emerald-300">เสียงของคุณ (Actual)</span>
+            <span className="w-3.5 h-1 rounded-full bg-amber-400 shadow-xs shadow-amber-400/50" />
+            <span className="text-amber-300">เสียงของคุณ (Actual)</span>
           </div>
         </div>
       </div>
@@ -204,8 +204,9 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
           <TrendingUp className="w-3.5 h-3.5 text-amber-400" /> เลือกดูเจาะจงรายคำ:
         </span>
         <button
+          type="button"
           onClick={() => setSelectedWordIdx(null)}
-          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 border ${
+          className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1 border cursor-pointer touch-manipulation select-none active:scale-95 ${
             selectedWordIdx === null
               ? 'bg-rose-500 text-white border-rose-400 shadow-md shadow-rose-500/20'
               : 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
@@ -217,8 +218,9 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
         {wordEvaluations.map((we, idx) => (
           <button
             key={idx}
+            type="button"
             onClick={() => setSelectedWordIdx(selectedWordIdx === idx ? null : idx)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border ${
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold transition flex items-center gap-1.5 border cursor-pointer touch-manipulation select-none active:scale-95 ${
               selectedWordIdx === idx
                 ? 'bg-indigo-600 text-white border-indigo-400 shadow-md shadow-indigo-500/20'
                 : we.status === 'correct'
@@ -239,16 +241,16 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
         <div className="w-full overflow-x-auto">
           <svg viewBox={`0 0 ${svgWidth} ${svgHeight}`} className="w-full h-auto min-w-[500px]">
             <defs>
-              {/* Target Line Gradient */}
+              {/* Target Line Gradient (Green) */}
               <linearGradient id="targetGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-                <stop offset="0%" stopColor="#818cf8" />
-                <stop offset="100%" stopColor="#6366f1" />
-              </linearGradient>
-
-              {/* User Line Gradient */}
-              <linearGradient id="userGrad" x1="0%" y1="0%" x2="100%" y2="0%">
                 <stop offset="0%" stopColor="#34d399" />
                 <stop offset="100%" stopColor="#10b981" />
+              </linearGradient>
+
+              {/* User Line Gradient (Amber/Orange) */}
+              <linearGradient id="userGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="#fbbf24" />
+                <stop offset="100%" stopColor="#f59e0b" />
               </linearGradient>
 
               {/* Drop Shadow Filters */}
@@ -273,14 +275,14 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
                     strokeDasharray={pitch % 2 === 0 ? '4 4' : 'none'}
                   />
                   <text
-                    x={paddingX - 12}
+                    x={paddingX - 8}
                     y={y + 4}
-                    fill="#64748b"
-                    fontSize="11"
+                    fill="#94a3b8"
+                    fontSize="10"
                     fontWeight="bold"
                     textAnchor="end"
                   >
-                    {pitch}
+                    {pitch === 5 ? '5 (สูง)' : pitch === 3 ? '3 (กลาง)' : pitch === 1 ? '1 (ต่ำ)' : pitch}
                   </text>
                 </g>
               );
@@ -288,7 +290,7 @@ export function PronunciationChart({ targetHanzi, evaluation, recognizedText }: 
 
             {/* Y-Axis Label */}
             <text x="14" y={paddingY - 10} fill="#94a3b8" fontSize="10" fontWeight="bold">
-              Pitch (ระดับเสียง)
+              ระดับเสียง (สูง ➔ ต่ำ)
             </text>
 
             {/* Syllable Separators & Bottom Labels */}

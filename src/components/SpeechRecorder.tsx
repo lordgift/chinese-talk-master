@@ -116,36 +116,65 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
         <p className="text-xs text-amber-800 font-bold">{targetPinyin}</p>
       </div>
 
-      {/* Mic Record Controls */}
-      <div className="flex flex-col items-center justify-center gap-3 my-4">
+      {/* Prominent Mic Callout Badge */}
+      <div className="text-center my-2">
+        <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-rose-100 via-amber-100 to-rose-100 border border-rose-300 text-rose-800 text-xs font-black shadow-xs animate-bounce">
+          <Sparkles className="w-4 h-4 text-amber-600" />
+          <span>👇 กดปุ่มไมค์สีแดงด้านล่าง แล้วลองออกเสียงประโยคจีน! 👇</span>
+        </span>
+      </div>
+
+      {/* Mic Record Controls - Giant Hero Button */}
+      <div className="flex flex-col items-center justify-center gap-4 my-5 bg-gradient-to-b from-rose-50/70 via-amber-50/40 to-slate-50 p-6 rounded-3xl border border-rose-200/80 shadow-xs">
         <button
           type="button"
           onClick={handleToggleListening}
-          className={`relative w-22 h-22 sm:w-24 sm:h-24 rounded-full flex items-center justify-center transition-all duration-200 shadow-lg touch-manipulation select-none active:scale-95 cursor-pointer ${
+          className={`relative w-28 h-28 sm:w-32 sm:h-32 rounded-full flex flex-col items-center justify-center transition-all duration-300 shadow-2xl touch-manipulation select-none active:scale-95 cursor-pointer ring-8 ${
             isListening
-              ? 'bg-rose-600 text-white scale-110 shadow-rose-600/40 animate-pulse'
-              : 'bg-gradient-to-tr from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white shadow-rose-500/25 hover:scale-105'
+              ? 'bg-rose-600 text-white scale-110 shadow-rose-600/50 ring-rose-500/40 animate-pulse'
+              : 'bg-gradient-to-tr from-rose-500 via-rose-600 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white shadow-rose-500/40 ring-rose-500/20 hover:scale-105'
           }`}
         >
           {isListening ? (
             <>
               <span className="absolute inset-0 rounded-full bg-rose-500 opacity-75 animate-ping" />
-              <MicOff className="w-9 h-9 relative z-10" />
+              <MicOff className="w-12 h-12 relative z-10" />
+              <span className="text-[11px] font-black relative z-10 mt-1 uppercase tracking-wider text-rose-100">
+                หยุดบันทึก
+              </span>
             </>
           ) : (
-            <Mic className="w-9 h-9" />
+            <>
+              <Mic className="w-12 h-12 drop-shadow-md" />
+              <span className="text-[11px] font-black mt-1 uppercase tracking-wider text-rose-100">
+                แตะเพื่อเริ่มพูด
+              </span>
+            </>
           )}
         </button>
 
-        <p className="text-xs text-slate-600 font-medium">
+        <div className="text-center max-w-sm">
           {isListening ? (
-            <span className="text-rose-600 font-bold animate-pulse flex items-center gap-1">
-              🎙️ กำลังรับฟังเสียงพูด... (พูดจบระบบจะตรวจและแสดงผลทันที)
-            </span>
+            <div className="space-y-1">
+              <p className="text-sm text-rose-700 font-extrabold animate-pulse flex items-center justify-center gap-1.5">
+                <span className="w-2.5 h-2.5 rounded-full bg-rose-600 animate-ping" />
+                🔴 กำลังบันทึกเสียงพูดของคุณ...
+              </p>
+              <p className="text-xs text-slate-600 font-medium">
+                พูดประโยคภาษาจีนจบแล้ว แตะปุ่มไมค์ซ้ำ หรือหยุดพูด ระบบจะประมวลผลทันที
+              </p>
+            </div>
           ) : (
-            'แตะปุ่มไมโครโฟน แล้วพูดประโยคภาษาจีน (กดไมค์ซ้ำเมื่อต้องการพูดใหม่)'
+            <div className="space-y-1">
+              <p className="text-xs sm:text-sm font-extrabold text-slate-800">
+                🎙️ ลองแตะไมค์แล้วออกเสียงบทพูดของคุณ
+              </p>
+              <p className="text-[11px] text-slate-600 font-medium">
+                พูดจบระบบจะวิเคราะห์ความถูกต้อง เปรียบเทียบสำเนียง และให้คะแนนรายตัวอักษรทันที 📊
+              </p>
+            </div>
           )}
-        </p>
+        </div>
       </div>
 
       {/* Error message */}
