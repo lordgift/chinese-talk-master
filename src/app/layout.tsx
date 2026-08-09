@@ -21,21 +21,34 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
-  description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+  title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
+  description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Talk Master",
+  },
   openGraph: {
-    title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
-    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+    title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
+    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
     siteName: "华语Talk Master",
     locale: "th_TH",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "华语Talk Master - แอปฝึกสนทนาภาษาจีน & ออกเสียง Pinyin",
-    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย",
+    title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
+    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+  },
+  icons: {
+    icon: "/app-icon.png",
+    shortcut: "/app-icon.png",
+    apple: "/apple-touch-icon.png",
   },
 };
+
+import { PWAInstallPrompt } from "@/components/PWAInstallPrompt";
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
@@ -49,6 +62,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
             <FirebaseAnalytics />
           </Suspense>
           {children}
+          <PWAInstallPrompt />
         </AuthProvider>
       </body>
     </html>

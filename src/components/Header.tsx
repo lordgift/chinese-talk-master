@@ -10,9 +10,11 @@ export function Header() {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-3 group touch-manipulation active:scale-95 transition-transform">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-rose-500 to-amber-500 flex items-center justify-center text-white shadow-md shadow-rose-500/20 group-hover:scale-105 transition-transform">
-            <Languages className="w-5 h-5" />
-          </div>
+          <img
+            src="/app-icon.png"
+            alt="华语Talk Master Icon"
+            className="w-10 h-10 rounded-xl shadow-md shadow-rose-500/10 group-hover:scale-105 transition-transform object-cover overflow-hidden"
+          />
           <div>
             <div className="font-extrabold text-lg leading-tight tracking-wide text-slate-900 flex items-center gap-2">
               华语Talk Master
