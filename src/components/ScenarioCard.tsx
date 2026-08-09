@@ -15,8 +15,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
   const { userProgress, userFavorites, toggleFavorite } = useAuth();
   const progress = userProgress[scenario.id];
   const isFavorited = !!userFavorites[scenario.id];
-  const isPinyinCourse = scenario.categoryId === 'pinyin-course';
-  const isFoundationCourse = scenario.categoryId === 'pinyin-course' || scenario.categoryId === 'numbers-course';
+  const isFoundation = scenario.categoryId === 'survival-foundation';
 
   const getLevelBadge = (level: Scenario['level']) => {
     switch (level) {
@@ -41,6 +40,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
         return <User className="w-5 h-5 text-indigo-600" />;
       case 'CupSoda':
         return <CupSoda className="w-5 h-5 text-amber-600" />;
+      case 'UtensilsCrossed':
       case 'Utensils':
         return <Utensils className="w-5 h-5 text-rose-600" />;
       case 'Soup':
@@ -50,6 +50,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
       case 'Car':
         return <Car className="w-5 h-5 text-indigo-600" />;
       case 'Hotel':
+      case 'Building2':
         return <Hotel className="w-5 h-5 text-purple-600" />;
       default:
         return <Compass className="w-5 h-5 text-teal-600" />;
@@ -69,15 +70,17 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
     <div
       onClick={handleCardClick}
       className={`group relative rounded-2xl bg-white hover:bg-slate-50/80 border border-slate-200/80 hover:border-slate-300 p-5 transition-all duration-300 shadow-xs hover:shadow-xl flex flex-col justify-between cursor-pointer ${
-        isPinyinCourse
+        isFoundation
           ? 'hover:border-indigo-300 hover:shadow-indigo-500/10'
-          : scenario.categoryId === 'numbers-course'
-          ? 'hover:border-emerald-300 hover:shadow-emerald-500/10'
-          : 'hover:border-rose-300 hover:shadow-rose-500/10'
+          : scenario.categoryId === 'travel-transport'
+          ? 'hover:border-sky-300 hover:shadow-sky-500/10'
+          : scenario.categoryId === 'dining-shopping'
+          ? 'hover:border-amber-300 hover:shadow-amber-500/10'
+          : 'hover:border-emerald-300 hover:shadow-emerald-500/10'
       }`}
     >
       <div>
-        {/* Top bar with level badge & estimated time & favorite heart (if not Pinyin course) */}
+        {/* Top bar with level badge & estimated time & favorite heart */}
         <div className="flex items-center justify-between gap-2 mb-3">
           <div className="flex items-center gap-1.5 flex-wrap">
             <span
@@ -88,7 +91,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
               {scenario.levelTitle}
             </span>
 
-            {!isPinyinCourse && progress && (
+            {progress && (
               <span className="inline-flex items-center gap-1 text-[11px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-2xs">
                 <CheckCircle2 className="w-3 h-3 text-emerald-600" />
                 <span>ผ่านแล้ว</span>
@@ -102,49 +105,41 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
               {scenario.estimatedMinutes} นาที
             </span>
 
-            {!isPinyinCourse && (
-              <button
-                type="button"
-                onClick={handleFavoriteToggle}
-                className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${
-                  isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
+            <button
+              type="button"
+              onClick={handleFavoriteToggle}
+              className={`p-1.5 rounded-full transition-transform active:scale-75 hover:bg-rose-50 cursor-pointer ${
+                isFavorited ? 'text-rose-500' : 'text-slate-300 hover:text-rose-400'
+              }`}
+              title={isFavorited ? 'ยกเลิกบทเรียนที่ชอบ' : 'บันทึกเป็นบทเรียนที่ชอบ'}
+            >
+              <Heart
+                className={`w-4 h-4 transition-colors ${
+                  isFavorited ? 'fill-rose-500 text-rose-500' : ''
                 }`}
-                title={isFavorited ? 'ยกเลิกบทเรียนที่ชอบ' : 'บันทึกเป็นบทเรียนที่ชอบ'}
-              >
-                <Heart
-                  className={`w-4 h-4 transition-colors ${
-                    isFavorited ? 'fill-rose-500 text-rose-500' : ''
-                  }`}
-                />
-              </button>
-            )}
+              />
+            </button>
           </div>
         </div>
 
-        {/* Icon, Title & Score Pie Chart (if not Pinyin course) */}
+        {/* Icon, Title & Score Pie Chart */}
         <div className="flex items-start justify-between gap-3 my-2">
           <div className="flex items-start gap-3">
             <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:scale-105 transition-transform shrink-0">
               {renderIcon(scenario.icon)}
             </div>
             <div>
-              <h3 className={`text-base font-bold text-slate-900 transition ${
-                isPinyinCourse ? 'group-hover:text-indigo-600' : 'group-hover:text-rose-600'
-              }`}>
+              <h3 className="text-base font-bold text-slate-900 group-hover:text-rose-600 transition">
                 {scenario.title}
               </h3>
-              <p className={`text-xs font-serif font-semibold ${
-                isPinyinCourse ? 'text-indigo-600' : 'text-rose-600'
-              }`}>{scenario.titleZh}</p>
+              <p className="text-xs font-serif font-semibold text-rose-600">{scenario.titleZh}</p>
             </div>
           </div>
 
-          {/* Mini Pie Chart for Score (only for regular scenario lessons) */}
-          {!isPinyinCourse && (
-            <div className="shrink-0">
-              <ScorePieChart score={progress ? progress.bestScore : 0} />
-            </div>
-          )}
+          {/* Mini Pie Chart for Score */}
+          <div className="shrink-0">
+            <ScorePieChart score={progress ? progress.bestScore : 0} />
+          </div>
         </div>
 
         {/* Description */}
@@ -160,11 +155,9 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
           {scenario.location}
         </span>
 
-        <span className={`inline-flex items-center gap-1 font-bold group-hover:translate-x-1 transition ${
-          isPinyinCourse ? 'text-indigo-600 group-hover:text-indigo-700' : 'text-rose-600 group-hover:text-rose-700'
-        }`}>
-          {!isPinyinCourse && <span>{progress ? 'ฝึกซ้อมอีกครั้ง' : 'เริ่มฝึกสนทนา'}</span>}
-          <ChevronRight className={isPinyinCourse ? "w-5 h-5 text-indigo-600" : "w-4 h-4"} />
+        <span className="inline-flex items-center gap-1 font-bold text-rose-600 group-hover:text-rose-700 group-hover:translate-x-1 transition">
+          <span>{progress ? 'ฝึกซ้อมอีกครั้ง' : 'เริ่มฝึกสนทนา'}</span>
+          <ChevronRight className="w-4 h-4" />
         </span>
       </div>
     </div>

@@ -19,7 +19,7 @@ export interface DialogueLine {
 
 export interface Scenario {
   id: string;
-  categoryId: 'pinyin-course' | 'numbers-course' | 'food-ordering' | 'travel' | 'shopping' | 'hotel';
+  categoryId: 'survival-foundation' | 'travel-transport' | 'dining-shopping' | 'hotel-stay';
   level: 'easy' | 'medium' | 'hard';
   levelTitle: string;
   title: string;
@@ -32,7 +32,7 @@ export interface Scenario {
 }
 
 export interface Category {
-  id: 'pinyin-course' | 'numbers-course' | 'food-ordering' | 'travel' | 'shopping' | 'hotel';
+  id: 'survival-foundation' | 'travel-transport' | 'dining-shopping' | 'hotel-stay';
   title: string;
   titleZh: string;
   description: string;
@@ -80,6 +80,22 @@ export function getToneColorClass(tone?: number): { text: string; bg: string; bo
   }
 }
 
+function getCleanComparableText(text: string): string {
+  if (!text) return '';
+  // Convert Pinyin ü / v variants to normalized yu for flexible matching
+  const normalized = text
+    .toLowerCase()
+    .replace(/ü|ǖ|ǘ|ǚ|ǜ|v/gi, 'yu')
+    .replace(/于|迂|余|鱼/g, 'yu');
+
+  // If text has Chinese characters, use Chinese characters + letters
+  const clean = normalized.replace(/[^\u4e00-\u9fa5a-z0-9]/g, '');
+  if (clean.length > 0) return clean;
+
+  // Fallback: strip punctuation only
+  return normalized.replace(/[^\w]/g, '');
+}
+
 /**
  * Calculate similarity between user speech input and target Chinese text
  */
@@ -98,9 +114,8 @@ export function evaluateSpeechAccuracy(recognizedText: string, targetHanzi: stri
     };
   }
 
-  // Clean punctuation from target and recognized text
-  const cleanTarget = targetHanzi.replace(/[^\u4e00-\u9fa5]/g, '');
-  const cleanRecognized = recognizedText.replace(/[^\u4e00-\u9fa5]/g, '');
+  const cleanTarget = getCleanComparableText(targetHanzi);
+  const cleanRecognized = getCleanComparableText(recognizedText);
 
   if (cleanTarget.length === 0) {
     return {
@@ -162,14 +177,14 @@ export function evaluateWordByWordPronunciation(
   words: WordBreakdown[]
 ): DetailedSpeechEvaluation {
   const baseResult = evaluateSpeechAccuracy(recognizedText, targetHanzi);
-  const cleanRecognized = (recognizedText || '').replace(/[^\u4e00-\u9fa5]/g, '');
-  const cleanTarget = targetHanzi.replace(/[^\u4e00-\u9fa5]/g, '');
+  const cleanRecognized = getCleanComparableText(recognizedText);
+  const cleanTarget = getCleanComparableText(targetHanzi);
 
   let correctCount = 0;
   let missedCount = 0;
 
   const wordEvaluations: WordEvaluation[] = (words || []).map((w) => {
-    const cleanWordHanzi = w.hanzi.replace(/[^\u4e00-\u9fa5]/g, '');
+    const cleanWordHanzi = getCleanComparableText(w.hanzi || w.pinyin);
     let matchedCount = 0;
 
     for (const char of cleanWordHanzi) {

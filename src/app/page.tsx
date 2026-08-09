@@ -24,7 +24,7 @@ import {
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
-  const [isPinyinExpanded, setIsPinyinExpanded] = useState<boolean>(false);
+  const [isFoundationExpanded, setIsFoundationExpanded] = useState<boolean>(true);
   const { userFavorites } = useAuth();
 
   const getCategoryIcon = (iconName: string) => {
@@ -45,16 +45,10 @@ export default function HomePage() {
     }
   };
 
-  const pinyinCategory = CATEGORIES.find((c) => c.id === 'pinyin-course');
-  const numbersCategory = CATEGORIES.find((c) => c.id === 'numbers-course');
+  const foundationCategory = CATEGORIES.find((c) => c.id === 'survival-foundation');
+  const foundationScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'survival-foundation');
 
-  const pinyinScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'pinyin-course');
-  const numbersScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'numbers-course');
-  const totalFoundationCount = pinyinScenarios.length + numbersScenarios.length;
-
-  const scenarioCategories = CATEGORIES.filter(
-    (c) => c.id !== 'pinyin-course' && c.id !== 'numbers-course'
-  ).sort((a, b) => {
+  const otherCategories = CATEGORIES.filter((c) => c.id !== 'survival-foundation').sort((a, b) => {
     if (a.isAvailable === b.isAvailable) return 0;
     return a.isAvailable ? -1 : 1;
   });
@@ -74,15 +68,15 @@ export default function HomePage() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10 text-center">
           <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-rose-100/80 border border-rose-200 text-rose-700 text-xs font-bold mb-6 shadow-2xs">
             <Sparkles className="w-3.5 h-3.5 text-amber-600 animate-spin" />
-            <span>เรียนรู้ภาษาจีนแบบโต้ตอบจริง พร้อมระบบประเมินเสียง Pinyin</span>
+            <span>หลักสูตรภาษาจีนเอาตัวรอดสำหรับผู้ไม่มีพื้นฐาน 🇨🇳</span>
           </div>
 
           <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-slate-900 max-w-3xl mx-auto leading-tight">
-            ฝึกสนทนาภาษาจีน & ออกเสียง <span className="bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 bg-clip-text text-transparent">Pinyin</span> ได้ถูกต้องแม่นยำ
+            ภาษาจีนเอาตัวรอด <span className="bg-gradient-to-r from-amber-600 via-rose-600 to-indigo-600 bg-clip-text text-transparent">ท่องเที่ยวจีน</span> สำหรับผู้เริ่มต้น
           </h1>
 
           <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-            เลือกลองฝึกบทสนทนาจำลองในสถานการณ์จริงตั้งแต่ <span className="text-amber-700 font-bold">สั่งอาหาร/กาแฟ 🍜</span> <span className="text-purple-700 font-bold">เช็คอินโรงแรม 🏨</span> ไปจนถึง <span className="text-sky-700 font-bold">การเดินทางท่องเที่ยว 🏖️</span>
+            ไม่ต้องท่องศัพท์เยอะ! เน้นสถานการณ์จริงที่ต้องเจอในทริปตั้งแต่ <span className="text-indigo-700 font-bold">ปูพื้นฐานสั้นๆ 🔰</span> <span className="text-sky-700 font-bold">เดินทางขึ้นรถไฟฟ้า Metro/เรียกรถ 🚇</span> <span className="text-amber-700 font-bold">สั่งอาหาร/สแกน Alipay 🍜</span> ไปจนถึง <span className="text-emerald-700 font-bold">เช็คอินโรงแรม 🏨</span>
           </p>
 
           {/* Tone Guide Bar */}
@@ -138,17 +132,19 @@ export default function HomePage() {
           <div className="flex items-center gap-1.5 overflow-x-auto py-0.5 text-xs font-semibold text-slate-700">
             <span className="text-slate-400 flex items-center gap-1 mr-1">
               <Layers className="w-4 h-4 text-slate-500" />
-              หมวดบทเรียน:
+              หมวดการเรียนรู้:
             </span>
 
-            <a
-              href="#foundation-course"
-              onClick={() => setIsPinyinExpanded(true)}
-              className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
-            >
-              <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
-              <span>คอร์สปูพื้นฐาน (Pinyin & ตัวเลข)</span>
-            </a>
+            {foundationCategory && (
+              <a
+                href="#survival-foundation"
+                onClick={() => setIsFoundationExpanded(true)}
+                className="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold"
+              >
+                <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
+                <span>คอร์สปูพื้นฐาน ({foundationScenarios.length})</span>
+              </a>
+            )}
 
             {favoriteScenarios.length > 0 && (
               <a
@@ -160,17 +156,15 @@ export default function HomePage() {
               </a>
             )}
 
-            {scenarioCategories
-              .filter((c) => c.isAvailable)
-              .map((cat) => (
-                <a
-                  key={cat.id}
-                  href={`#${cat.id}`}
-                  className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap"
-                >
-                  <span>{cat.title}</span>
-                </a>
-              ))}
+            {otherCategories.map((cat) => (
+              <a
+                key={cat.id}
+                href={`#${cat.id}`}
+                className="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap"
+              >
+                <span>{cat.title}</span>
+              </a>
+            ))}
           </div>
 
           {/* Filter Buttons */}
@@ -212,99 +206,68 @@ export default function HomePage() {
             >
               🟡 ปานกลาง
             </button>
-
-            <button
-              onClick={() => setSelectedLevel('hard')}
-              className={`px-3 py-1.5 rounded-xl transition cursor-pointer ${
-                selectedLevel === 'hard'
-                  ? 'bg-rose-600 text-white font-bold shadow-xs'
-                  : 'bg-slate-100 text-slate-600 hover:text-rose-700 hover:bg-rose-50'
-              }`}
-            >
-              🔴 ท้าทาย
-            </button>
           </div>
         </div>
 
-        {/* 1. ACADEMIC INDIGO-VIOLET COLLAPSIBLE FOUNDATION COURSE (PINYIN & NUMBERS) */}
-        <section
-          id="foundation-course"
-          className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-emerald-50/30 border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
-        >
-          {/* Collapsible Header Toggle */}
-          <button
-            onClick={() => setIsPinyinExpanded(!isPinyinExpanded)}
-            className="w-full flex items-center justify-between text-left cursor-pointer group"
+        {/* COLLAPSIBLE FOUNDATION COURSE SECTION */}
+        {foundationCategory && (
+          <section
+            id="survival-foundation"
+            className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-emerald-50/30 border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
           >
-            <div className="flex items-center gap-3">
-              <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
-                <GraduationCap className="w-5 h-5 text-indigo-600" />
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
-                    🎓 คอร์สปูพื้นฐานภาษาจีน (Pinyin & ตัวเลข)
-                  </h2>
-                  <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
-                    拼音与数字基础教程
-                  </span>
-                  <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
-                    {totalFoundationCount} บทเรียน
-                  </span>
+            {/* Header with Toggle */}
+            <button
+              onClick={() => setIsFoundationExpanded(!isFoundationExpanded)}
+              className="w-full flex items-center justify-between text-left cursor-pointer group"
+            >
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-xl bg-white border border-indigo-200 shadow-2xs text-indigo-600 group-hover:scale-105 transition-transform">
+                  <GraduationCap className="w-5 h-5 text-indigo-600" />
                 </div>
-                <p className="text-xs text-slate-500 mt-0.5">
-                  ปูพื้นฐานภาษาจีนสำหรับผู้เริ่มต้น: พยัญชนะ สระ วรรณยุกต์ Pinyin และการนับตัวเลข 0-10,000 ปริมาณ และราคา
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
-              <span>{isPinyinExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียนปูพื้นฐาน'}</span>
-              {isPinyinExpanded ? (
-                <ChevronUp className="w-4 h-4 text-indigo-600" />
-              ) : (
-                <ChevronDown className="w-4 h-4 text-indigo-600" />
-              )}
-            </div>
-          </button>
-
-          {/* Collapsed / Expanded Content */}
-          {isPinyinExpanded && (
-            <div className="pt-4 border-t border-indigo-200/60 space-y-6 animate-in fade-in duration-200">
-              {/* Pinyin Sub-section */}
-              <div className="space-y-3">
-                <div className="flex items-center gap-2 text-sm font-bold text-indigo-900">
-                  <span className="p-1 rounded-md bg-indigo-100 text-indigo-700">🔤</span>
-                  <span>หมวดปูพื้นฐาน Pinyin ({pinyinScenarios.length} บทเรียน)</span>
-                </div>
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                  {pinyinScenarios
-                    .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
-                    .map((scenario) => (
-                      <ScenarioCard key={scenario.id} scenario={scenario} />
-                    ))}
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
+                      🎓 {foundationCategory.title}
+                    </h2>
+                    <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
+                      {foundationCategory.titleZh}
+                    </span>
+                    <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
+                      {foundationScenarios.length} บทเรียน
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    {foundationCategory.description}
+                  </p>
                 </div>
               </div>
 
-              {/* Numbers Sub-section */}
-              <div className="space-y-3 pt-3 border-t border-indigo-100">
-                <div className="flex items-center gap-2 text-sm font-bold text-emerald-900">
-                  <span className="p-1 rounded-md bg-emerald-100 text-emerald-700">🔢</span>
-                  <span>หมวดปูพื้นฐานตัวเลข ปริมาณ & ราคา ({numbersScenarios.length} บทเรียน)</span>
-                </div>
+              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
+                <span>{isFoundationExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียนปูพื้นฐาน'}</span>
+                {isFoundationExpanded ? (
+                  <ChevronUp className="w-4 h-4 text-indigo-600" />
+                ) : (
+                  <ChevronDown className="w-4 h-4 text-indigo-600" />
+                )}
+              </div>
+            </button>
+
+            {/* Collapsed / Expanded Content */}
+            {isFoundationExpanded && (
+              <div className="pt-4 border-t border-indigo-200/60 space-y-4 animate-in fade-in duration-200">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {numbersScenarios
+                  {foundationScenarios
                     .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
                     .map((scenario) => (
                       <ScenarioCard key={scenario.id} scenario={scenario} />
                     ))}
                 </div>
               </div>
-            </div>
-          )}
-        </section>
+            )}
+          </section>
+        )}
 
-        {/* 2. FAVORITES SECTION CONTAINER (RIGHT UNDER FOUNDATION COURSE) */}
+        {/* FAVORITES SECTION CONTAINER (IF ANY) */}
         {favoriteScenarios.length > 0 && (
           <section
             id="favorites"
@@ -345,42 +308,9 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* 3. REAL-LIFE SCENARIOS HERO COLOR BANNER */}
-        <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-rose-500 via-amber-500 to-indigo-600 p-6 sm:p-7 text-white shadow-xl shadow-rose-500/20 border border-white/20 my-6">
-          {/* Ambient Glows */}
-          <div className="absolute top-0 right-0 -mt-10 -mr-10 w-48 h-48 bg-white/20 rounded-full blur-2xl pointer-events-none" />
-          <div className="absolute bottom-0 left-10 -mb-10 w-48 h-48 bg-amber-400/30 rounded-full blur-2xl pointer-events-none" />
-
-          <div className="relative z-10 flex flex-wrap items-center justify-between gap-4">
-            <div className="flex items-center gap-4">
-              <div className="p-3 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white shadow-md">
-                <Compass className="w-7 h-7 text-white animate-pulse" />
-              </div>
-              <div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white drop-shadow-xs">
-                    🎭 จำลองสถานการณ์ต่างๆ
-                  </h2>
-                  <span className="text-xs font-serif font-extrabold text-amber-900 bg-amber-200/90 backdrop-blur-md px-3 py-1 rounded-full border border-amber-300 shadow-2xs">
-                    情景对话模拟
-                  </span>
-                </div>
-                <p className="text-xs sm:text-sm text-rose-50/95 font-medium mt-1 max-w-xl">
-                  ฝึกบทสนทนาโต้ตอบในสถานการณ์จริงที่พบบ่อย (สั่งอาหาร, โรงแรม, ท่องเที่ยว) พร้อมพินอิน คำแปล และระบบช่วยประเมินเสียงอ่าน
-                </p>
-              </div>
-            </div>
-
-            <div className="hidden sm:flex items-center gap-2 px-4 py-2 rounded-2xl bg-white/20 backdrop-blur-md border border-white/30 text-white text-xs font-extrabold shadow-2xs">
-              <Sparkles className="w-4 h-4 text-amber-200" />
-              <span>เรียนรู้วิถีชีวิตจริง</span>
-            </div>
-          </div>
-        </div>
-
-        {/* 4. RENDER LESSON CATEGORIES */}
-        <div className="space-y-8">
-          {scenarioCategories.map((cat) => {
+        {/* RENDER OTHER ROADMAP CATEGORIES */}
+        <div className="space-y-10">
+          {otherCategories.map((cat) => {
             const categoryScenarios = SCENARIOS.filter((sc) => {
               const matchCategory = sc.categoryId === cat.id;
               if (!matchCategory) return false;
@@ -388,28 +318,7 @@ export default function HomePage() {
               return sc.level === selectedLevel;
             });
 
-            // Skip empty categories if filtering
-            if (categoryScenarios.length === 0) {
-              if (!cat.isAvailable) {
-                return (
-                  <section key={cat.id} id={cat.id} className="scroll-mt-24">
-                    <div className="bg-slate-100/80 rounded-2xl p-6 border border-slate-200/80 text-center">
-                      <div className="inline-flex p-3 rounded-2xl bg-white border border-slate-200 mb-2">
-                        {getCategoryIcon(cat.icon)}
-                      </div>
-                      <h3 className="text-base font-bold text-slate-800">{cat.title}</h3>
-                      <p className="text-xs text-rose-600 font-serif font-semibold">{cat.titleZh}</p>
-                      <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">{cat.description}</p>
-                      <span className="inline-block mt-3 px-3 py-1 rounded-full bg-slate-200 text-slate-600 text-xs font-semibold">
-                        🚧 เปิดให้บริการบทเรียนหมวดนี้เร็วๆ นี้
-                      </span>
-                    </div>
-                  </section>
-                );
-              }
-
-              return null;
-            }
+            if (categoryScenarios.length === 0) return null;
 
             return (
               <section key={cat.id} id={cat.id} className="scroll-mt-24 space-y-4">
@@ -450,7 +359,7 @@ export default function HomePage() {
       {/* Footer */}
       <footer className="border-t border-slate-200 bg-white py-6 text-center text-xs text-slate-500">
         <div className="max-w-6xl mx-auto px-4">
-          <p>© 2026 华语Talk Master - แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย</p>
+          <p>© 2026 华语Talk Master - คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน</p>
         </div>
       </footer>
     </div>
