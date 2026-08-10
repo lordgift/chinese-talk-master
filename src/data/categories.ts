@@ -5,11 +5,11 @@ export const CATEGORIES: Category[] = [
     id: 'survival-foundation',
     title: 'ปูพื้นฐานเอาตัวรอด (Zero-Foundation)',
     titleZh: '生存基础 (Shēngchún Jīchǔ)',
-    description: 'สำหรับผู้ไม่มีพื้นฐานเลย: ฝึกพยัญชนะ (b p m f), สระ & วรรณยุกต์ Pinyin, 5 คำทักทายติดปาก, นับเลข 0-100 และ 5 ประโยคไม้ตาย',
+    description: 'สำหรับผู้ไม่มีพื้นฐานเลย: ฝึกพยัญชนะ (b p m f), สระ & วรรณยุกต์ Pinyin, คำทักทายติดปาก, นับเลข 0-100, ประโยคไม้ตายเอาตัวรอด และการฟังไม่ออก',
     icon: 'GraduationCap',
     color: 'from-indigo-500 to-purple-500',
     bgGradient: 'bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent',
-    scenariosCount: 5,
+    scenariosCount: 6,
     isAvailable: true,
   },
   {
@@ -21,17 +21,6 @@ export const CATEGORIES: Category[] = [
     color: 'from-sky-500 to-blue-500',
     bgGradient: 'bg-gradient-to-br from-sky-500/10 via-blue-500/5 to-transparent',
     scenariosCount: 4,
-    isAvailable: true,
-  },
-  {
-    id: 'weather-climate',
-    title: 'สภาพอากาศ & ฤดูกาล',
-    titleZh: '天气与季节 (Tiānqì yǔ Jìjié)',
-    description: 'ฝึกถามสภาพอากาศวันนี้ ฝนจะตกไหม รู้สึกหนาว/ร้อนไหม และถามสภาพอากาศทั่วไปของเมือง/ฤดูกาล',
-    icon: 'CloudSun',
-    color: 'from-sky-400 to-indigo-500',
-    bgGradient: 'bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent',
-    scenariosCount: 1,
     isAvailable: true,
   },
   {
@@ -56,4 +45,15 @@ export const CATEGORIES: Category[] = [
     scenariosCount: 4,
     isAvailable: true,
   },
+  {
+    id: 'weather-climate',
+    title: 'สภาพอากาศ & ฤดูกาล',
+    titleZh: '天气与季节 (Tiānqì yǔ Jìjié)',
+    description: 'ฝึกถามสภาพอากาศวันนี้ ฝนจะตกไหม รู้สึกหนาว/ร้อนไหม และถามสภาพอากาศทั่วไปของเมือง/ฤดูกาล',
+    icon: 'CloudSun',
+    color: 'from-sky-400 to-indigo-500',
+    bgGradient: 'bg-gradient-to-br from-sky-500/10 via-indigo-500/5 to-transparent',
+    scenariosCount: 1,
+    isAvailable: true,
+  }
 ];
