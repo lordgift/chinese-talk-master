@@ -1,7 +1,7 @@
 {
   "name": "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
   "short_name": "Talk Master",
-  "description": "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+  "description": "คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

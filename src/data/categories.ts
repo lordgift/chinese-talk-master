@@ -38,7 +38,7 @@ export const CATEGORIES: Category[] = [
     id: 'dining-shopping',
     title: 'สั่งอาหาร & สแกนจ่ายเงิน (Alipay)',
     titleZh: '点餐与支付 (Diǎncān yǔ Zhīfù)',
-    description: 'ฝึกชี้สั่งอาหารบอกไม่เผ็ด/ไม่ผักชี, สั่งชานม/กาแฟปรับหวาน, ถามราคา และสแกนจ่าย Alipay/WeChat',
+    description: 'ฝึกชี้สั่งอาหารบอกระดับความเผ็ด (เผ็ดคนไทย!), สั่งชานม/กาแฟปรับหวาน, ถามราคา และสแกนจ่าย Alipay/WeChat',
     icon: 'UtensilsCrossed',
     color: 'from-amber-500 to-rose-500',
     bgGradient: 'bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-transparent',
@@ -53,7 +53,7 @@ export const CATEGORIES: Category[] = [
     icon: 'Building2',
     color: 'from-emerald-500 to-teal-500',
     bgGradient: 'bg-gradient-to-br from-emerald-500/10 via-teal-500/5 to-transparent',
-    scenariosCount: 3,
+    scenariosCount: 4,
     isAvailable: true,
   },
 ];

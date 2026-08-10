@@ -22,7 +22,7 @@ const outfit = Outfit({
 
 export const metadata: Metadata = {
   title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
-  description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+  description: "คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน",
   manifest: "/manifest.json",
   appleWebApp: {
     capable: true,
@@ -31,7 +31,7 @@ export const metadata: Metadata = {
   },
   openGraph: {
     title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
-    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+    description: "คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน",
     siteName: "华语Talk Master",
     locale: "th_TH",
     type: "website",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   twitter: {
     card: "summary_large_image",
     title: "华语Talk Master - ภาษาจีนเอาตัวรอดสำหรับคนไทย",
-    description: "แอปพลิเคชันฝึกสนทนาภาษาจีน & ออกเสียง Pinyin สำหรับคนไทย ท่องเที่ยวจีน",
+    description: "คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน",
   },
   icons: {
     icon: "/app-icon.png",

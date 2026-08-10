@@ -26,7 +26,7 @@ export function Header() {
               </span>
             </div>
             <p className="hidden md:block text-[11px] text-slate-500 font-light truncate leading-none mt-0.5">
-              ฝึกสนทนาภาษาจีน & ออกเสียงวรรณยุกต์ถูกต้อง
+              คอร์สภาษาจีนเอาตัวรอดเที่ยวจีน สำหรับคนไทยผู้ไม่มีพื้นฐาน
             </p>
           </div>
         </Link>
