@@ -99,7 +99,7 @@ export default function HomePage() {
           <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-white/90 border border-slate-200 shadow-2xs text-xs font-bold text-slate-700">
             <span className="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900">1. 📚 จำศัพท์สำคัญ</span>
             <span className="text-slate-400">➔</span>
-            <span className="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-900">2. 🧱 ต่อประโยคสั้น➔ยาว</span>
+            <span className="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-900">2. 🧩 เรียงคำเป็นประโยค</span>
             <span className="text-slate-400">➔</span>
             <span className="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-900">3. 💬 สวมบทบาทสนทนา</span>
             <span className="text-slate-400">➔</span>

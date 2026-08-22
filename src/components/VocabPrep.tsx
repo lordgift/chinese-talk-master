@@ -12,7 +12,7 @@ import {
   EyeOff,
   ChevronRight,
   ChevronLeft,
-  Layers,
+  Puzzle,
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
@@ -384,8 +384,8 @@ export function VocabPrep({
           onClick={onStartExpansion || onStartDialogue}
           className="w-full sm:w-auto px-8 py-3.5 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white text-sm font-bold shadow-lg shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[48px] flex items-center justify-center gap-2"
         >
-          <Layers className="w-4 h-4" />
-          <span>จำศัพท์ได้แล้ว ➔ ไปต่อประโยคสั้น-ยาว (ขั้นที่ 2) 🧱</span>
+          <Puzzle className="w-4 h-4" />
+          <span>จำศัพท์ได้แล้ว ➔ ไปฝึกเรียงประโยค (ขั้นที่ 2) 🧩</span>
           <ChevronRight className="w-4 h-4" />
         </button>
       </div>

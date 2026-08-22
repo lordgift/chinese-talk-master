@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   BookOpen,
   Layers,
+  Puzzle,
   ListOrdered,
   Mic,
   Brain,
@@ -181,8 +182,8 @@ export default function SessionPage({ params }: PageProps) {
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Layers className="w-3.5 h-3.5" />
-              <span>2. 🧱 ต่อประโยคสั้น➔ยาว</span>
+              <Puzzle className="w-3.5 h-3.5" />
+              <span>2. 🧩 เรียงคำเป็นประโยค</span>
             </button>
 
             <button
