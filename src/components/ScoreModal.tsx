@@ -72,11 +72,10 @@ export function ScoreModal({
           {[1, 2, 3].map((star) => (
             <Star
               key={star}
-              className={`w-8 h-8 ${
-                star <= (totalScore >= 80 ? 3 : totalScore >= 60 ? 2 : totalScore > 0 ? 1 : 0)
-                  ? 'text-amber-500 fill-amber-500 animate-pulse'
-                  : 'text-slate-300'
-              }`}
+              className={`w-8 h-8 ${star <= (totalScore >= 80 ? 3 : totalScore >= 60 ? 2 : totalScore > 0 ? 1 : 0)
+                ? 'text-amber-500 fill-amber-500 animate-pulse'
+                : 'text-slate-300'
+                }`}
             />
           ))}
         </div>
@@ -91,10 +90,10 @@ export function ScoreModal({
             {totalScore >= 80
               ? '🌟 ยอดเยี่ยมมาก! คุณมีความแม่นยำในการออกเสียงวรรณยุกต์ Pinyin ระดับสูง'
               : totalScore >= 60
-              ? '👍 ทำได้ดีมาก! ฝึกฝนบ่อยๆ จะช่วยให้ออกเสียงเป็นธรรมชาติยิ่งขึ้น'
-              : totalScore > 0
-              ? '💪 ฝึกซ้อมอย่างต่อเนื่อง แล้วคุณจะเชี่ยวชาญขึ้นแน่นอน!'
-              : '🔇 คุณยังไม่ได้ลองกดพูดบันทึกเสียงในบทนี้ กด "ฝึกใหม่อีกครั้ง" แล้วเริ่มกดไมค์เพื่อฝึกพูดได้เลยนะครับ'}
+                ? '👍 ทำได้ดีมาก! ฝึกฝนบ่อยๆ จะช่วยให้ออกเสียงเป็นธรรมชาติยิ่งขึ้น'
+                : totalScore > 0
+                  ? '💪 ฝึกซ้อมอย่างต่อเนื่อง แล้วคุณจะเชี่ยวชาญขึ้นแน่นอน!'
+                  : '🔇 คุณยังไม่ได้ลองกดพูดบันทึกเสียงในบทนี้ กด "ฝึกใหม่อีกครั้ง" แล้วเริ่มกดไมค์เพื่อฝึกพูดได้เลยนะครับ'}
           </p>
         </div>
 
@@ -103,7 +102,7 @@ export function ScoreModal({
           {user ? (
             <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-semibold">
               <CloudCheck className="w-4 h-4 text-emerald-600" />
-              <span>บันทึกผลการเรียนลง Cloud แล้ว ☁️</span>
+              <span>บันทึกผลการเรียนแล้ว ☁️</span>
             </div>
           ) : (
             <div className="bg-amber-50/80 p-3 rounded-xl border border-amber-200 text-left text-xs text-amber-900 flex items-start justify-between gap-2">
@@ -112,7 +111,7 @@ export function ScoreModal({
                 <div>
                   <p className="font-semibold">บันทึกผลลงในเครื่องแล้ว 💾</p>
                   <p className="text-[11px] text-amber-800 font-normal">
-                    เข้าสู่ระบบ Google เพื่อสำรองประวัติการเรียนลง Cloud ☁️
+                    เข้าสู่ระบบ Google เพื่อสำรองประวัติการเรียน
                   </p>
                 </div>
               </div>

@@ -38,7 +38,7 @@ export function UserMenu() {
         type="button"
         onClick={loginWithGoogle}
         className="inline-flex items-center gap-2 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 border border-slate-200 shadow-2xs font-semibold text-xs transition active:scale-95 cursor-pointer touch-manipulation min-h-[40px]"
-        title="เข้าสู่ระบบด้วย Google เพื่อบันทึกประวัติการเรียนลง Cloud"
+        title="เข้าสู่ระบบด้วย Google เพื่อบันทึกประวัติการเรียน"
       >
         {/* Google G SVG */}
         <svg className="w-4 h-4" viewBox="0 0 24 24">
@@ -96,7 +96,6 @@ export function UserMenu() {
             <p className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</p>
             <div className="flex items-center gap-1 text-[10px] text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full w-fit mt-2 border border-emerald-200">
               <CloudCheck className="w-3 h-3" />
-              <span>ซิงค์ข้อมูล Cloud</span>
             </div>
           </div>
 

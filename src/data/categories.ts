@@ -2,14 +2,25 @@ import { Category } from '@/lib/pinyinUtils';
 
 export const CATEGORIES: Category[] = [
   {
-    id: 'survival-foundation',
-    title: 'ปูพื้นฐานเอาตัวรอด (Zero-Foundation)',
-    titleZh: '生存基础 (Shēngchún Jīchǔ)',
-    description: 'สำหรับผู้ไม่มีพื้นฐานเลย: ฝึกพยัญชนะ (b p m f), สระ & วรรณยุกต์ Pinyin, คำทักทายติดปาก, นับเลข 0-100, คำคู่ตรงข้าม & ประโยคสถานการณ์, ประโยคไม้ตายเอาตัวรอด และการฟังไม่ออก',
+    id: 'language-basics',
+    title: 'พื้นฐานภาษา & พินอิน',
+    titleZh: '拼音发音与声调 (Pīnyīn Fāyīn yǔ Shēngdiào)',
+    description: 'ฝึกออกเสียงพยัญชนะ (b p m f, d t n l, g k h), สระเดี่ยว และการผันวรรณยุกต์ทั้ง 4 เสียง พร้อมระบบสีวรรณยุกต์',
     icon: 'GraduationCap',
     color: 'from-indigo-500 to-purple-500',
     bgGradient: 'bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent',
-    scenariosCount: 7,
+    scenariosCount: 2,
+    isAvailable: true,
+  },
+  {
+    id: 'survival-foundation',
+    title: 'ปูพื้นฐานเอาตัวรอด (Survival Foundation)',
+    titleZh: '生存基础常用句 (Shēngchún Jīchǔ Chángyòng Jù)',
+    description: 'ฝึก 5 คำทักทายติดปาก, นับเลข 0-100 & บอกจำนวน, ประโยคไม้ตายถามราคา/ปฏิเสธ, ฟังไม่ออกขอพูดอังกฤษ, และ 16 ประโยคคำตรงข้าม',
+    icon: 'GraduationCap',
+    color: 'from-violet-500 to-indigo-600',
+    bgGradient: 'bg-gradient-to-br from-violet-500/10 via-indigo-500/5 to-transparent',
+    scenariosCount: 5,
     isAvailable: true,
   },
   {

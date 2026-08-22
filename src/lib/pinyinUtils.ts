@@ -18,6 +18,7 @@ export interface DialogueLine {
 }
 
 export type CategoryId =
+  | 'language-basics'
   | 'survival-foundation'
   | 'travel-transport'
   | 'dining-shopping'

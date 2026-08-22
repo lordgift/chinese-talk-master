@@ -2,11 +2,11 @@ import { Scenario } from '@/lib/pinyinUtils';
 
 export const SCENARIOS: Scenario[] = [
   // ==========================================
-  // 1. SURVIVAL FOUNDATION (ปูพื้นฐานเอาตัวรอด - แบบฝึกออกเสียงเดี่ยว & คำทักทาย)
+  // 0. LANGUAGE BASICS (พื้นฐานภาษา - แบบฝึกออกเสียงพยัญชนะ สระ วรรณยุกต์)
   // ==========================================
   {
     id: 'foundation-pinyin-initials',
-    categoryId: 'survival-foundation',
+    categoryId: 'language-basics',
     level: 'easy',
     levelTitle: 'ง่ายมาก 🌱 (พยัญชนะ Pinyin)',
     title: '🔤 ฝึกออกเสียงพยัญชนะ Pinyin เบื้องต้น (b, p, m, f, d, t, n, l)',
@@ -67,7 +67,7 @@ export const SCENARIOS: Scenario[] = [
   },
   {
     id: 'foundation-pinyin-finals',
-    categoryId: 'survival-foundation',
+    categoryId: 'language-basics',
     level: 'easy',
     levelTitle: 'ง่ายมาก 🌱 (สระ & วรรณยุกต์)',
     title: '🎵 ฝึกออกเสียงสระเดี่ยว & วรรณยุกต์ทั้ง 4 เสียง (a, o, e, i, u, ü)',

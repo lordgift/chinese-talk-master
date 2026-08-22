@@ -23,11 +23,12 @@ import {
   ChevronUp,
   Lightbulb,
   CloudSun,
+  ShieldCheck,
 } from 'lucide-react';
 
 export default function HomePage() {
   const [selectedLevel, setSelectedLevel] = useState<string>('all');
-  const [isFoundationExpanded, setIsFoundationExpanded] = useState<boolean>(true);
+  const [isLanguageBasicsExpanded, setIsLanguageBasicsExpanded] = useState<boolean>(false);
   const [isSuggestOpen, setIsSuggestOpen] = useState<boolean>(false);
   const { userFavorites } = useAuth();
 
@@ -35,6 +36,8 @@ export default function HomePage() {
     switch (iconName) {
       case 'GraduationCap':
         return <GraduationCap className="w-5 h-5 text-indigo-500" />;
+      case 'ShieldCheck':
+        return <ShieldCheck className="w-5 h-5 text-indigo-600" />;
       case 'Calculator':
         return <Calculator className="w-5 h-5 text-emerald-500" />;
       case 'UtensilsCrossed':
@@ -51,10 +54,10 @@ export default function HomePage() {
     }
   };
 
-  const foundationCategory = CATEGORIES.find((c) => c.id === 'survival-foundation');
-  const foundationScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'survival-foundation');
+  const languageCategory = CATEGORIES.find((c) => c.id === 'language-basics');
+  const languageScenarios = SCENARIOS.filter((sc) => sc.categoryId === 'language-basics');
 
-  const otherCategories = CATEGORIES.filter((c) => c.id !== 'survival-foundation').sort((a, b) => {
+  const roadmapCategories = CATEGORIES.filter((c) => c.id !== 'language-basics').sort((a, b) => {
     if (a.isAvailable === b.isAvailable) return 0;
     return a.isAvailable ? -1 : 1;
   });
@@ -62,8 +65,8 @@ export default function HomePage() {
   const favoriteScenarios = SCENARIOS.filter((sc) => !!userFavorites[sc.id]);
 
   const scrollToSection = (id: string) => {
-    if (id === 'survival-foundation') {
-      setIsFoundationExpanded(true);
+    if (id === 'language-basics') {
+      setIsLanguageBasicsExpanded(true);
     }
     const element = document.getElementById(id);
     if (element) {
@@ -92,7 +95,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mt-4 text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed font-normal">
-            ไม่ต้องท่องศัพท์เยอะ! เน้นสถานการณ์จริงที่ต้องเจอในทริปตั้งแต่ <span className="text-indigo-700 font-bold">ปูพื้นฐานสั้นๆ 🔰</span> <span className="text-sky-700 font-bold">เดินทางขึ้นรถไฟฟ้า Metro/เรียกรถ 🚇</span> <span className="text-amber-700 font-bold">สั่งอาหาร/สแกน Alipay 🍜</span> ไปจนถึง <span className="text-emerald-700 font-bold">เช็คอินโรงแรม 🏨</span>
+            ไม่ต้องท่องศัพท์เยอะ! เน้นประโยคเอาตัวรอดที่ต้องเจอในทริปจริง <span className="text-indigo-700 font-bold">ปูพื้นฐานเอาตัวรอด 🛡️</span> <span className="text-sky-700 font-bold">เดินทางขึ้นรถไฟฟ้า Metro/เรียกรถ 🚇</span> <span className="text-amber-700 font-bold">สั่งอาหาร/สแกน Alipay 🍜</span> ไปจนถึง <span className="text-emerald-700 font-bold">เช็คอินโรงแรม 🏨</span>
           </p>
 
           {/* 4-Step Learning Method Banner */}
@@ -104,49 +107,6 @@ export default function HomePage() {
             <span className="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-900">3. 💬 สวมบทบาทสนทนา</span>
             <span className="text-slate-400">➔</span>
             <span className="px-2.5 py-1 rounded-xl bg-indigo-100 text-indigo-900">4. 🧠 ทบทวนความจำ</span>
-          </div>
-
-          {/* Tone Guide Bar */}
-          <div className="mt-8 max-w-2xl mx-auto bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
-            <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">
-              <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
-                <Volume2 className="w-4 h-4 text-amber-600" />
-                คู่มือสัญลักษณ์สีวรรณยุกต์ Pinyin (Pinyin Tone Color System)
-              </span>
-            </div>
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-rose-500 text-white font-bold flex items-center justify-center text-[11px]">1</span>
-                <div className="text-left">
-                  <div className="font-bold text-rose-700">Tone 1 (ˉ)</div>
-                  <div className="text-[10px] text-slate-500">เสียงสามัญ (mā)</div>
-                </div>
-              </div>
-
-              <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-emerald-600 text-white font-bold flex items-center justify-center text-[11px]">2</span>
-                <div className="text-left">
-                  <div className="font-bold text-emerald-700">Tone 2 (ˊ)</div>
-                  <div className="text-[10px] text-slate-500">เสียงจัตวา (má)</div>
-                </div>
-              </div>
-
-              <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-amber-500 text-white font-bold flex items-center justify-center text-[11px]">3</span>
-                <div className="text-left">
-                  <div className="font-bold text-amber-700">Tone 3 (ˇ)</div>
-                  <div className="text-[10px] text-slate-500">เสียงเอก (mǎ)</div>
-                </div>
-              </div>
-
-              <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center gap-2">
-                <span className="w-5 h-5 rounded-md bg-indigo-600 text-white font-bold flex items-center justify-center text-[11px]">4</span>
-                <div className="text-left">
-                  <div className="font-bold text-indigo-700">Tone 4 (ˋ)</div>
-                  <div className="text-[10px] text-slate-500">เสียงโท (mà)</div>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -162,14 +122,14 @@ export default function HomePage() {
               หมวดการเรียนรู้:
             </span>
 
-            {foundationCategory && (
+            {languageCategory && (
               <button
                 type="button"
-                onClick={() => scrollToSection('survival-foundation')}
+                onClick={() => scrollToSection('language-basics')}
                 className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200/90 transition flex items-center gap-1.5 whitespace-nowrap font-bold touch-manipulation min-h-[40px] cursor-pointer"
               >
                 <GraduationCap className="w-3.5 h-3.5 text-indigo-600" />
-                <span>คอร์สปูพื้นฐาน ({foundationScenarios.length})</span>
+                <span>พื้นฐานภาษา & สีพินอิน ({languageScenarios.length})</span>
               </button>
             )}
 
@@ -184,12 +144,16 @@ export default function HomePage() {
               </button>
             )}
 
-            {otherCategories.map((cat) => (
+            {roadmapCategories.map((cat) => (
               <button
                 key={cat.id}
                 type="button"
                 onClick={() => scrollToSection(cat.id)}
-                className="px-3.5 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 transition flex items-center gap-1.5 whitespace-nowrap touch-manipulation min-h-[40px] cursor-pointer"
+                className={`px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 whitespace-nowrap touch-manipulation min-h-[40px] cursor-pointer border ${
+                  cat.id === 'survival-foundation'
+                    ? 'bg-violet-50 hover:bg-violet-100 text-violet-800 border-violet-200 font-bold'
+                    : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border-slate-200 font-semibold'
+                }`}
               >
                 <span>{cat.title}</span>
               </button>
@@ -253,16 +217,16 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* COLLAPSIBLE FOUNDATION COURSE SECTION */}
-        {foundationCategory && (
+        {/* COLLAPSIBLE LANGUAGE BASICS & TONE SYSTEM SECTION (DEFAULT COLLAPSED) */}
+        {languageCategory && (
           <section
-            id="survival-foundation"
-            className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-emerald-50/30 border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
+            id="language-basics"
+            className="scroll-mt-24 rounded-2xl bg-gradient-to-r from-indigo-50/90 via-purple-50/50 to-slate-50 border border-indigo-200/90 p-4 sm:p-5 shadow-2xs space-y-4"
           >
             {/* Header with Toggle */}
             <button
               type="button"
-              onClick={() => setIsFoundationExpanded(!isFoundationExpanded)}
+              onClick={() => setIsLanguageBasicsExpanded(!isLanguageBasicsExpanded)}
               className="w-full flex items-center justify-between text-left cursor-pointer group touch-manipulation"
             >
               <div className="flex items-center gap-3">
@@ -272,24 +236,24 @@ export default function HomePage() {
                 <div>
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-base sm:text-lg font-extrabold text-slate-900">
-                      🎓 {foundationCategory.title}
+                      🔤 {languageCategory.title}
                     </h2>
                     <span className="text-xs font-serif font-semibold text-indigo-600 px-2 py-0.5 rounded-md bg-white border border-indigo-200 shadow-2xs">
-                      {foundationCategory.titleZh}
+                      {languageCategory.titleZh}
                     </span>
                     <span className="text-[11px] font-bold text-indigo-700 bg-indigo-100/80 px-2.5 py-0.5 rounded-full border border-indigo-200">
-                      {foundationScenarios.length} บทเรียน
+                      {languageScenarios.length} แบบฝึกออกเสียง
                     </span>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {foundationCategory.description}
+                    {languageCategory.description}
                   </p>
                 </div>
               </div>
 
               <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-white hover:bg-indigo-50 px-3.5 py-1.5 rounded-xl border border-indigo-200 transition shadow-2xs whitespace-nowrap ml-2">
-                <span>{isFoundationExpanded ? 'ย่อซ่อนบทเรียน' : 'ขยายดูบทเรียนปูพื้นฐาน'}</span>
-                {isFoundationExpanded ? (
+                <span>{isLanguageBasicsExpanded ? 'ย่อซ่อนพื้นฐานภาษา' : 'ขยายดูพื้นฐานภาษา & สีวรรณยุกต์'}</span>
+                {isLanguageBasicsExpanded ? (
                   <ChevronUp className="w-4 h-4 text-indigo-600" />
                 ) : (
                   <ChevronDown className="w-4 h-4 text-indigo-600" />
@@ -298,10 +262,55 @@ export default function HomePage() {
             </button>
 
             {/* Collapsed / Expanded Content */}
-            {isFoundationExpanded && (
+            {isLanguageBasicsExpanded && (
               <div className="pt-4 border-t border-indigo-200/60 space-y-4 animate-in fade-in duration-200">
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {foundationScenarios
+                {/* Tone Guide Box embedded with Language Basics */}
+                <div className="bg-white border border-indigo-100 rounded-2xl p-4 shadow-2xs space-y-3">
+                  <div className="flex items-center justify-between border-b border-slate-100 pb-2">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <Volume2 className="w-4 h-4 text-indigo-600" />
+                      คู่มือสัญลักษณ์สีวรรณยุกต์ Pinyin (Pinyin Tone Color System)
+                    </span>
+                    <span className="text-[11px] text-slate-500">ช่วยจำระดับเสียงได้อย่างแม่นยำ</span>
+                  </div>
+                  <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                    <div className="p-2 rounded-xl bg-rose-50 border border-rose-200 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-rose-500 text-white font-bold flex items-center justify-center text-[11px]">1</span>
+                      <div className="text-left">
+                        <div className="font-bold text-rose-700">Tone 1 (ˉ)</div>
+                        <div className="text-[10px] text-slate-500">เสียงสามัญ (mā)</div>
+                      </div>
+                    </div>
+
+                    <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-emerald-600 text-white font-bold flex items-center justify-center text-[11px]">2</span>
+                      <div className="text-left">
+                        <div className="font-bold text-emerald-700">Tone 2 (ˊ)</div>
+                        <div className="text-[10px] text-slate-500">เสียงจัตวา (má)</div>
+                      </div>
+                    </div>
+
+                    <div className="p-2 rounded-xl bg-amber-50 border border-amber-200 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-amber-500 text-white font-bold flex items-center justify-center text-[11px]">3</span>
+                      <div className="text-left">
+                        <div className="font-bold text-amber-700">Tone 3 (ˇ)</div>
+                        <div className="text-[10px] text-slate-500">เสียงเอก (mǎ)</div>
+                      </div>
+                    </div>
+
+                    <div className="p-2 rounded-xl bg-indigo-50 border border-indigo-200 flex items-center gap-2">
+                      <span className="w-5 h-5 rounded-md bg-indigo-600 text-white font-bold flex items-center justify-center text-[11px]">4</span>
+                      <div className="text-left">
+                        <div className="font-bold text-indigo-700">Tone 4 (ˋ)</div>
+                        <div className="text-[10px] text-slate-500">เสียงโท (mà)</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Scenarios Grid */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {languageScenarios
                     .filter((sc) => selectedLevel === 'all' || sc.level === selectedLevel)
                     .map((scenario) => (
                       <ScenarioCard key={scenario.id} scenario={scenario} />
@@ -353,9 +362,9 @@ export default function HomePage() {
           </section>
         )}
 
-        {/* RENDER OTHER ROADMAP CATEGORIES */}
+        {/* RENDER MAIN ROADMAP CATEGORIES (INCLUDING SURVIVAL FOUNDATION) */}
         <div className="space-y-10">
-          {otherCategories.map((cat) => {
+          {roadmapCategories.map((cat) => {
             const categoryScenarios = SCENARIOS.filter((sc) => {
               const matchCategory = sc.categoryId === cat.id;
               if (!matchCategory) return false;

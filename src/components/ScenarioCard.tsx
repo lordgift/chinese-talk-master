@@ -14,7 +14,7 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
   const { userProgress, userFavorites, toggleFavorite } = useAuth();
   const progress = userProgress[scenario.id];
   const isFavorited = !!userFavorites[scenario.id];
-  const isFoundation = scenario.categoryId === 'survival-foundation';
+  const isFoundation = scenario.categoryId === 'survival-foundation' || scenario.categoryId === 'language-basics';
 
   const getLevelBadge = (level: Scenario['level']) => {
     switch (level) {
