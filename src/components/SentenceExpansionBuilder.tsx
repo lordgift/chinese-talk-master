@@ -299,7 +299,7 @@ export function SentenceExpansionBuilder({
 
           {/* Scrambled Word Bank */}
           <div className="space-y-2.5">
-            <span className="text-xs font-bold text-slate-600">คำศัพท์สำหรับเลือก:</span>
+            <span className="text-xs font-bold text-slate-600">คำศัพท์สำหรับเลือก (แตะเพื่อเลือก หรือแตะซ้ำเพื่อนำออก):</span>
             <div className="flex flex-wrap items-center gap-2.5 justify-center">
               {puzzleWords.map((word, idx) => {
                 const isSelected = selectedWordIndices.includes(idx);
@@ -307,21 +307,24 @@ export function SentenceExpansionBuilder({
                   <button
                     key={idx}
                     type="button"
-                    disabled={isSelected}
                     onClick={() => handleSelectPuzzleWord(idx)}
-                    className={`px-4 py-3 rounded-2xl border transition-all cursor-pointer touch-manipulation select-none text-center ${
+                    className={`px-4 py-3 rounded-2xl border transition-all cursor-pointer touch-manipulation text-center ${
                       isSelected
-                        ? 'opacity-25 bg-slate-200 border-slate-300 cursor-not-allowed scale-95'
+                        ? 'opacity-40 bg-amber-100/60 border-amber-300 ring-2 ring-amber-300/40 scale-95'
                         : 'bg-white hover:bg-amber-50/80 border-slate-300 hover:border-amber-400 shadow-2xs hover:shadow-md active:scale-95'
                     }`}
                   >
                     <div className="text-xl font-black text-slate-900 font-serif tracking-wide">
                       {word.hanzi}
                     </div>
-                    <div className="text-xs font-pinyin font-bold text-rose-600 mt-0.5">
-                      {word.pinyin}
-                    </div>
-                    <div className="text-[11px] text-slate-500 font-medium">{word.thai}</div>
+                    {word.pinyin && (
+                      <div className="text-xs font-pinyin font-bold text-rose-600 mt-0.5">
+                        {word.pinyin}
+                      </div>
+                    )}
+                    {word.thai && (
+                      <div className="text-[11px] text-slate-500 font-medium">{word.thai}</div>
+                    )}
                   </button>
                 );
               })}

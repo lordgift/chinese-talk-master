@@ -291,8 +291,9 @@ export const SCENARIOS: Scenario[] = [
         audioHint: '💡 "这是什么" (zhè shì shénme) = นี่คืออะไร',
         words: [
           { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
           { hanzi: '这是什么', pinyin: 'zhè shì shén me', thai: 'นี่คืออะไร', tones: [4, 4, 2, 5] },
-        ],
+        ]
       },
       {
         id: 'fq-2',
@@ -303,9 +304,10 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Zhè shì tèchǎn cháyè. Nǐ yào mǎi ma?',
         thai: 'แม่ค้าตอบ: นี่คือใบชาของขึ้นชื่อค่ะ คุณต้องการซื้อไหมคะ?',
         words: [
-          { hanzi: '特产', pinyin: 'tè chǎn', thai: 'ของขึ้นชื่อ/ของท้องถิ่น', tones: [4, 3] },
-          { hanzi: '要买吗', pinyin: 'yào mǎi ma', thai: 'ต้องการซื้อไหม', tones: [4, 3, 5] },
-        ],
+          { hanzi: '这是', pinyin: 'zhè shì', thai: 'นี่คือ', tones: [4, 4] },
+          { hanzi: '特产茶叶', pinyin: 'tè chǎn chá yè', thai: 'ใบชาของฝากขึ้นชื่อ', tones: [4, 3, 2, 4] },
+          { hanzi: '你要买吗', pinyin: 'nǐ yào mǎi ma', thai: 'คุณจะซื้อไหม', tones: [3, 4, 3, 5] },
+        ]
       },
       {
         id: 'fq-3',
@@ -331,8 +333,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'แม่ค้าตอบ: 100 หยวนค่ะ คุณต้องการกล่องใหญ่อันนี้เพิ่มด้วยไหมคะ?',
         words: [
           { hanzi: '一百块', pinyin: 'yī bǎi kuài', thai: '100 หยวน', tones: [1, 3, 4] },
-          { hanzi: '还要...吗', pinyin: 'hái yào ... ma', thai: 'ยังต้องการ...เพิ่มไหม', tones: [2, 4, 5] },
-        ],
+          { hanzi: '你还要', pinyin: 'nǐ hái yào', thai: 'คุณยังเอาอีกไหม', tones: [3, 2, 4] },
+          { hanzi: '这个大盒的吗', pinyin: 'zhè ge dà hé de ma', thai: 'กล่องใหญ่อันนี้ไหม', tones: [4, 5, 4, 2, 5, 5] },
+        ]
       },
       {
         id: 'fq-5',
@@ -357,9 +360,9 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Hǎo de. Nǐ shì Zhōngguórén ma?',
         thai: 'แม่ค้าถาม: ตกลงค่ะ คุณเป็นคนจีนหรือเปล่าคะ?',
         words: [
-          { hanzi: '好的', pinyin: 'hǎo de', thai: 'ตกลง/ได้ค่ะ', tones: [3, 5] },
-          { hanzi: '中国人吗', pinyin: 'zhōng guó rén ma', thai: 'คนจีนไหม', tones: [1, 2, 2, 5] },
-        ],
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'ตกลง/โอเค', tones: [3, 5] },
+          { hanzi: '你是中国人吗', pinyin: 'nǐ shì zhōng guó rén ma', thai: 'คุณเป็นคนจีนใช่ไหม', tones: [3, 4, 1, 2, 2, 5] },
+        ]
       },
       {
         id: 'fq-7',
@@ -399,9 +402,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'คนจีนถาม: สวัสดีครับ/ค่ะ! ขอถามหน่อยว่าคุณต้องการความช่วยเหลืออะไรไหมครับ/คะ?',
         words: [
           { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
-          { hanzi: '需要', pinyin: 'xū yào', thai: 'ต้องการ', tones: [1, 4] },
-          { hanzi: '帮助', pinyin: 'bāng zhù', thai: 'ความช่วยเหลือ', tones: [1, 4] },
-        ],
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
+          { hanzi: '您', pinyin: 'nín', thai: 'คุณ/ท่าน', tones: [2] },
+          { hanzi: '需要什么帮助', pinyin: 'xū yào shén me bāng zhù', thai: 'ต้องการความช่วยเหลืออะไร', tones: [1, 4, 2, 5, 1, 4] },
+        ]
       },
       {
         id: 'fue-2',
@@ -414,8 +418,9 @@ export const SCENARIOS: Scenario[] = [
         audioHint: '💡 "不好意思" (bù hǎoyìsi) = ขอโทษที/เกรงใจ, "听不懂" (tīng bù dǒng) = ฟังไม่ออก',
         words: [
           { hanzi: '不好意思', pinyin: 'bù hǎo yì si', thai: 'ขอโทษที/เกรงใจ', tones: [4, 3, 4, 5] },
-          { hanzi: '听不懂', pinyin: 'tīng bù dǒng', thai: 'ฟังไม่ออก', tones: [1, 4, 3] },
-        ],
+          { hanzi: '我', pinyin: 'wǒ', thai: 'ฉัน', tones: [3] },
+          { hanzi: '听不懂', pinyin: 'tīng bù dǒng', thai: 'ฟังไม่ออก/ฟังไม่เข้าใจ', tones: [1, 4, 3] },
+        ]
       },
       {
         id: 'fue-3',
@@ -427,9 +432,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ขอถามหน่อยครับ/คะ คุณพูดภาษาอังกฤษได้ไหม?',
         audioHint: '💡 "说英语" (shuō Yīngyǔ) = พูดภาษาอังกฤษ',
         words: [
-          { hanzi: '你会', pinyin: 'nǐ huì', thai: 'คุณสามารถ/เป็น', tones: [3, 4] },
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
+          { hanzi: '你会', pinyin: 'nǐ huì', thai: 'คุณสามารถ/พูดเป็น', tones: [3, 4] },
           { hanzi: '说英语吗', pinyin: 'shuō yīng yǔ ma', thai: 'พูดภาษาอังกฤษไหม', tones: [1, 1, 3, 5] },
-        ],
+        ]
       },
       {
         id: 'fue-4',
@@ -440,9 +446,10 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Wǒ néng tīng dǒng yīdiǎndiǎn Yīngyǔ.',
         thai: 'คนจีนตอบ: ฉันฟังภาษาอังกฤษออกนิดหน่อยครับ/ค่ะ',
         words: [
+          { hanzi: '我', pinyin: 'wǒ', thai: 'ฉัน', tones: [3] },
           { hanzi: '能听懂', pinyin: 'néng tīng dǒng', thai: 'สามารถฟังเข้าใจ', tones: [2, 1, 3] },
-          { hanzi: '一点点', pinyin: 'yī diǎn diǎn', thai: 'นิดหน่อย', tones: [1, 3, 3] },
-        ],
+          { hanzi: '一点点英语', pinyin: 'yī diǎn diǎn yīng yǔ', thai: 'ภาษาอังกฤษนิดหน่อย', tones: [1, 3, 3, 1, 3] },
+        ]
       },
       {
         id: 'fue-5',
@@ -455,9 +462,10 @@ export const SCENARIOS: Scenario[] = [
         audioHint: '💡 "太好了" (tài hǎo le) = ดีมากๆ/เยี่ยมเลย, "聊" (liáo) = คุย/สนทนา',
         words: [
           { hanzi: '太好了', pinyin: 'tài hǎo le', thai: 'ดีจัง/เยี่ยมเลย', tones: [4, 3, 5] },
+          { hanzi: '我们', pinyin: 'wǒ men', thai: 'พวกเรา', tones: [3, 5] },
           { hanzi: '用英语', pinyin: 'yòng yīng yǔ', thai: 'ใช้ภาษาอังกฤษ', tones: [4, 1, 3] },
           { hanzi: '聊吧', pinyin: 'liáo ba', thai: 'คุยกันเถอะ', tones: [2, 5] },
-        ],
+        ]
       },
     ],
   },
@@ -716,15 +724,15 @@ export const SCENARIOS: Scenario[] = [
         speaker: 'user',
         speakerName: 'คุณ (游客)',
         avatar: '🧑',
-        hanzi: '请问，地铁站在在哪里？',
+        hanzi: '请问，地铁站在哪里？',
         pinyin: 'Qǐngwèn, dìtiězhàn zài nǎlǐ?',
         thai: 'ขอถามหน่อยครับ/ค่ะ สถานีรถไฟฟ้าใต้ดิน (Metro) อยู่ที่ไหน?',
         audioHint: '💡 "地铁站" (dìtiězhàn) = สถานีรถไฟฟ้าใต้ดิน',
         words: [
           { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
-          { hanzi: '地铁站', pinyin: 'dì tiě zhàn', thai: 'สถานีรถไฟฟ้าใต้ดิน (Metro)', tones: [4, 3, 4] },
+          { hanzi: '地铁站', pinyin: 'dì tiě zhàn', thai: 'สถานีรถไฟฟ้าใต้ดิน', tones: [4, 3, 4] },
           { hanzi: '在哪里', pinyin: 'zài nǎ lǐ', thai: 'อยู่ที่ไหน', tones: [4, 3, 3] },
-        ],
+        ]
       },
       {
         id: 'ad-2',
@@ -896,8 +904,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'พนักงานถาม: สวัสดีครับ/ค่ะ ซื้อตั๋วเดินทางไหมครับ/คะ?',
         words: [
           { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
-          { hanzi: '买票', pinyin: 'mǎi piào', thai: 'ซื้อตั๋ว', tones: [3, 4] },
-        ],
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
+          { hanzi: '买票吗', pinyin: 'mǎi piào ma', thai: 'ซื้อตั๋วไหม', tones: [3, 4, 5] },
+        ]
       },
       {
         id: 'ts-2',
@@ -1155,9 +1164,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'เพื่อนตอบ: ฉันไม่หนาว ใส่เสื้อคลุมตัวนี้พอดีเลยครับ/ค่ะ',
         words: [
           { hanzi: '我不冷', pinyin: 'wǒ bù lěng', thai: 'ฉันไม่หนาว', tones: [3, 4, 3] },
-          { hanzi: '穿外套', pinyin: 'chuān wài tào', thai: 'ใส่เสื้อคลุม', tones: [1, 4, 4] },
-          { hanzi: '刚刚好', pinyin: 'gāng gāng hǎo', thai: 'พอดีเลย', tones: [1, 1, 3] },
-        ],
+          { hanzi: '穿这件外套', pinyin: 'chuān zhè jiàn wài tào', thai: 'ใส่เสื้อตัวนี้', tones: [1, 4, 4, 4, 4] },
+          { hanzi: '刚刚好', pinyin: 'gāng gāng hǎo', thai: 'กำลังพอดี', tones: [1, 1, 3] },
+        ]
       },
       {
         id: 'tw-7',
@@ -1183,8 +1192,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'เพื่อนตอบ: ร้อนนิดหน่อย พวกเราไปซื้อเครื่องดื่มเย็นกันเถอะ',
         words: [
           { hanzi: '有一点热', pinyin: 'yǒu yī diǎn rè', thai: 'ร้อนนิดหน่อย', tones: [3, 1, 3, 4] },
-          { hanzi: '买冰饮料', pinyin: 'mǎi bīng yǐn liào', thai: 'ซื้อเครื่องดื่มเย็น', tones: [3, 1, 3, 4] },
-        ],
+          { hanzi: '我们', pinyin: 'wǒ men', thai: 'พวกเรา', tones: [3, 5] },
+          { hanzi: '去买冰饮料吧', pinyin: 'qù mǎi bīng yǐn liào ba', thai: 'ไปซื้อเครื่องดื่มเย็นกันเถอะ', tones: [4, 3, 1, 3, 4, 5] },
+        ]
       },
       {
         id: 'tw-9',
@@ -1210,11 +1220,12 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Zhèlǐ píngshí zhǔyào shì rè, zhǐyǒu dōngtiān bǐjiào lěng.',
         thai: 'เพื่อนตอบ: ปกติที่นี่ส่วนใหญ่จะร้อน มีแค่ฤดูหนาวที่ค่อนข้างหนาว',
         words: [
-          { hanzi: '这里平时', pinyin: 'zhè lǐ píng shí', thai: 'ปกติที่นี่', tones: [4, 3, 2, 2] },
+          { hanzi: '这里平时', pinyin: 'zhè lǐ píng shí', thai: 'ที่นี่ปกติ', tones: [4, 3, 2, 2] },
           { hanzi: '主要是热', pinyin: 'zhǔ yào shì rè', thai: 'ส่วนใหญ่จะร้อน', tones: [3, 4, 4, 4] },
+          { hanzi: '只有', pinyin: 'zhǐ yǒu', thai: 'มีแค่/เพียงแต่', tones: [3, 3] },
           { hanzi: '冬天', pinyin: 'dōng tiān', thai: 'ฤดูหนาว', tones: [1, 1] },
           { hanzi: '比较冷', pinyin: 'bǐ jiào lěng', thai: 'ค่อนข้างหนาว', tones: [3, 4, 3] },
-        ],
+        ]
       },
       {
         id: 'tw-11',
@@ -1241,9 +1252,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'เพื่อนตอบ: ตอนนี้คือฤดูฝน (ในจีนเดือนสิงหาคมจะเป็นฤดูร้อน) ครับ/ค่ะ',
         words: [
           { hanzi: '现在是', pinyin: 'xiàn zài shì', thai: 'ตอนนี้คือ', tones: [4, 4, 4] },
-          { hanzi: '雨季', pinyin: 'yǔ jì', thai: 'ฤดูฝน', tones: [3, 4] },
-          { hanzi: '夏天', pinyin: 'xià tiān', thai: 'ฤดูร้อน', tones: [4, 1] },
-        ],
+          { hanzi: '雨季', pinyin: 'yǔ jì', thai: 'หน้าฝน', tones: [3, 4] },
+          { hanzi: '在中国的八月', pinyin: 'zài zhōng guó de bā yuè', thai: 'ในเดือนสิงหาคมของจีน', tones: [4, 1, 2, 5, 1, 4] },
+          { hanzi: '是夏天', pinyin: 'shì xià tiān', thai: 'คือฤดูร้อน', tones: [4, 4, 1] },
+        ]
       },
     ],
   },
@@ -1555,11 +1567,12 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Yǒu zhūròu, jīròu háishi yúròu?',
         thai: 'มีเนื้อหมู เนื้อไก่ หรือเนื้อปลาไหมครับ/คะ?',
         words: [
+          { hanzi: '有', pinyin: 'yǒu', thai: 'มี', tones: [3] },
           { hanzi: '猪肉', pinyin: 'zhū ròu', thai: 'เนื้อหมู', tones: [1, 4] },
           { hanzi: '鸡肉', pinyin: 'jī ròu', thai: 'เนื้อไก่', tones: [1, 4] },
           { hanzi: '还是', pinyin: 'hái shi', thai: 'หรือว่า', tones: [2, 5] },
           { hanzi: '鱼肉', pinyin: 'yú ròu', thai: 'เนื้อปลา', tones: [2, 4] },
-        ],
+        ]
       },
       {
         id: 'dm-4',
@@ -1570,10 +1583,11 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Yǒu de, zhè dào cài shì zhūròu.',
         thai: 'พนักงานตอบ: มีครับ/ค่ะ จานนี้คือเนื้อหมูครับ/ค่ะ',
         words: [
-          { hanzi: '有的', pinyin: 'yǒu de', thai: 'มีครับ/มีค่ะ', tones: [3, 5] },
-          { hanzi: '这道菜', pinyin: 'zhè dào cài', thai: 'เมนู/จานนี้', tones: [4, 4, 4] },
+          { hanzi: '有的', pinyin: 'yǒu de', thai: 'มีครับ/ค่ะ', tones: [3, 5] },
+          { hanzi: '这道菜', pinyin: 'zhè dào cài', thai: 'จานนี้/เมนูนี้', tones: [4, 4, 4] },
+          { hanzi: '是', pinyin: 'shì', thai: 'คือ/เป็น', tones: [4] },
           { hanzi: '猪肉', pinyin: 'zhū ròu', thai: 'เนื้อหมู', tones: [1, 4] },
-        ],
+        ]
       },
       {
         id: 'dm-5',
@@ -1584,11 +1598,12 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Hǎo de, wǒ yào yī fèn zhūròu, xièxie!',
         thai: 'โอเคครับ/ค่ะ ฉันเอาเนื้อหมู 1 จาน ขอบคุณครับ/ค่ะ!',
         words: [
-          { hanzi: '好的', pinyin: 'hǎo de', thai: 'โอเค/ได้ครับ', tones: [3, 5] },
-          { hanzi: '我要', pinyin: 'wǒ yào', thai: 'ฉันเอา', tones: [3, 4] },
-          { hanzi: '一份', pinyin: 'yī fèn', thai: '1 จาน/1 ที่', tones: [1, 4] },
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'โอเคครับ/ค่ะ', tones: [3, 5] },
+          { hanzi: '我要', pinyin: 'wǒ yào', thai: 'ฉันต้องการ', tones: [3, 4] },
+          { hanzi: '一份', pinyin: 'yī fèn', thai: 'หนึ่งที่/หนึ่งจาน', tones: [1, 4] },
           { hanzi: '猪肉', pinyin: 'zhū ròu', thai: 'เนื้อหมู', tones: [1, 4] },
-        ],
+          { hanzi: '谢谢', pinyin: 'xiè xie', thai: 'ขอบคุณ', tones: [4, 5] },
+        ]
       },
     ],
   },
@@ -1626,10 +1641,11 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Nǐ hǎo! Wǒ yào yī bēi nǎichá.',
         thai: 'สวัสดีครับ/ค่ะ ฉันขอชานม 1 แก้วครับ/ค่ะ',
         words: [
-          { hanzi: '我要', pinyin: 'wǒ yào', thai: 'ฉันเอา', tones: [3, 4] },
-          { hanzi: '一杯', pinyin: 'yī bēi', thai: '1 แก้ว', tones: [1, 1] },
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '我要', pinyin: 'wǒ yào', thai: 'ฉันเอา/ฉันต้องการ', tones: [3, 4] },
+          { hanzi: '一杯', pinyin: 'yī bēi', thai: 'หนึ่งแก้ว', tones: [1, 1] },
           { hanzi: '奶茶', pinyin: 'nǎi chá', thai: 'ชานม', tones: [3, 2] },
-        ],
+        ]
       },
       {
         id: 'db-3',
@@ -1830,8 +1846,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'แพงไปแล้ว! ลดราคาลงหน่อยได้ไหมครับ/คะ?',
         words: [
           { hanzi: '太贵了', pinyin: 'tài guì le', thai: 'แพงเกินไปแล้ว', tones: [4, 4, 5] },
-          { hanzi: '便宜一点', pinyin: 'pián yi yī diǎn', thai: 'ลดลงหน่อย/ถูกหน่อย', tones: [2, 5, 1, 3] },
-        ],
+          { hanzi: '可以', pinyin: 'kě yǐ', thai: 'ได้/สามารถ', tones: [3, 3] },
+          { hanzi: '便宜一点吗', pinyin: 'pián yi yī diǎn ma', thai: 'ลดราคาหน่อยได้ไหม', tones: [2, 5, 1, 3, 5] },
+        ]
       },
       {
         id: 'sp-4',
@@ -1856,9 +1873,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ฉันใช้ Alipay ครับ/ค่ะ โปรดสแกนตรงนี้',
         words: [
           { hanzi: '我用', pinyin: 'wǒ yòng', thai: 'ฉันใช้', tones: [3, 4] },
-          { hanzi: '支付宝', pinyin: 'zhī fù bào', thai: 'Alipay', tones: [1, 4, 4] },
+          { hanzi: '支付宝', pinyin: 'zhī fù bào', thai: 'Alipay (อาลีเพย์)', tones: [1, 4, 4] },
+          { hanzi: '请', pinyin: 'qǐng', thai: 'กรุณา/โปรด', tones: [3] },
           { hanzi: '扫这里', pinyin: 'sǎo zhè lǐ', thai: 'สแกนตรงนี้', tones: [3, 4, 3] },
-        ],
+        ]
       },
     ],
     coreKeywords: [
@@ -2087,8 +2105,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'สวัสดีครับ/ค่ะ ฉันต้องการเช็คอินเข้าพักครับ/ค่ะ',
         words: [
           { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
+          { hanzi: '我要', pinyin: 'wǒ yào', thai: 'ฉันต้องการ', tones: [3, 4] },
           { hanzi: '办理入住', pinyin: 'bàn lǐ rù zhù', thai: 'เช็คอินเข้าพัก', tones: [4, 3, 4, 4] },
-        ],
+        ]
       },
       {
         id: 'hc-2',
@@ -2100,9 +2119,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'พนักงานตอบ: สวัสดีครับ/ค่ะ โปรดยื่นพาสปอร์ตของคุณครับ/ค่ะ',
         words: [
           { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
-          { hanzi: '请出示', pinyin: 'qǐng chū shì', thai: 'โปรดยื่น/แสดง', tones: [3, 1, 4] },
+          { hanzi: '请出示', pinyin: 'qǐng chū shì', thai: 'โปรดแสดง', tones: [3, 1, 4] },
+          { hanzi: '您的', pinyin: 'nín de', thai: 'ของคุณ', tones: [2, 5] },
           { hanzi: '护照', pinyin: 'hù zhào', thai: 'พาสปอร์ต', tones: [4, 4] },
-        ],
+        ]
       },
       {
         id: 'hc-3',
@@ -2114,8 +2134,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'นี่คือพาสปอร์ต (หนังสือเดินทาง) ของฉันครับ/ค่ะ',
         words: [
           { hanzi: '这是', pinyin: 'zhè shì', thai: 'นี่คือ', tones: [4, 4] },
+          { hanzi: '我的', pinyin: 'wǒ de', thai: 'ของฉัน', tones: [3, 5] },
           { hanzi: '护照', pinyin: 'hù zhào', thai: 'พาสปอร์ต', tones: [4, 4] },
-        ],
+        ]
       },
     ],
   },
@@ -2141,11 +2162,12 @@ export const SCENARIOS: Scenario[] = [
         thai: 'สวัสดีครับ/ค่ะ ขอถามหน่อยว่าขอฝากกระเป๋าเดินทางไว้ก่อนได้ไหมครับ/คะ?',
         audioHint: '💡 "先" (xiān) = ก่อน, "寄行李" (jì xíngli) = ฝากกระเป๋าเดินทาง',
         words: [
+          { hanzi: '你好', pinyin: 'nǐ hǎo', thai: 'สวัสดี', tones: [3, 3] },
           { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
-          { hanzi: '可以', pinyin: 'kě yǐ', thai: 'ได้ไหม/สามารถ', tones: [3, 3] },
-          { hanzi: '先', pinyin: 'xiān', thai: 'ก่อน', tones: [1] },
-          { hanzi: '寄行李', pinyin: 'jì xíng li', thai: 'ฝากกระเป๋า/สัมภาระ', tones: [4, 2, 5] },
-        ],
+          { hanzi: '可以', pinyin: 'kě yǐ', thai: 'ได้/สามารถ', tones: [3, 3] },
+          { hanzi: '先', pinyin: 'xiān', thai: 'ก่อน/ไว้ก่อน', tones: [1] },
+          { hanzi: '寄行李吗', pinyin: 'jì xíng li ma', thai: 'ฝากกระเป๋าเดินทางไหม', tones: [4, 2, 5, 5] },
+        ]
       },
       {
         id: 'hl-2',
@@ -2157,8 +2179,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'พนักงานตอบ: ได้ครับ/ค่ะ ขอถามหน่อยครับ/ค่ะว่าคุณมีกระเป๋าเดินทางกี่ใบ?',
         words: [
           { hanzi: '可以的', pinyin: 'kě yǐ de', thai: 'ได้ครับ/ค่ะ', tones: [3, 3, 5] },
-          { hanzi: '几件行李', pinyin: 'jǐ jiàn xíng li', thai: 'กระเป๋าเดินทางกี่ใบ', tones: [3, 4, 2, 5] },
-        ],
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
+          { hanzi: '您有', pinyin: 'nín yǒu', thai: 'คุณมี', tones: [2, 3] },
+          { hanzi: '几件行李', pinyin: 'jǐ jiàn xíng li', thai: 'สัมภาระกี่ชิ้น', tones: [3, 4, 2, 5] },
+        ]
       },
       {
         id: 'hl-3',
@@ -2170,10 +2194,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'มีกระเป๋าเดินทางใบใหญ่ 2 ใบ และเป้สะพายหลัง 1 ใบครับ/ค่ะ',
         audioHint: '💡 "行李箱" (xíngli xiāng) = กระเป๋าเดินทาง, "背包" (bèibāo) = กระเป๋าเป้',
         words: [
-          { hanzi: '两件', pinyin: 'liǎng jiàn', thai: 'สองใบ', tones: [3, 4] },
-          { hanzi: '行李箱', pinyin: 'xíng li xiāng', thai: 'กระเป๋าเดินทาง', tones: [2, 5, 1] },
-          { hanzi: '背包', pinyin: 'bèi bāo', thai: 'กระเป๋าเป้', tones: [4, 1] },
-        ],
+          { hanzi: '有', pinyin: 'yǒu', thai: 'มี', tones: [3] },
+          { hanzi: '两件大行李箱', pinyin: 'liǎng jiàn dà xíng li xiāng', thai: 'กระเป๋าเดินทางใบใหญ่ 2 ใบ', tones: [3, 4, 4, 2, 5, 1] },
+          { hanzi: '和一个背包', pinyin: 'hé yī gè bèi bāo', thai: 'และกระเป๋าเป้ 1 ใบ', tones: [2, 1, 4, 4, 1] },
+        ]
       },
       {
         id: 'hl-4',
@@ -2185,9 +2209,11 @@ export const SCENARIOS: Scenario[] = [
         thai: 'พนักงานตอบ: ตกลงครับ/ค่ะ นี่คือป้ายรับกระเป๋าของคุณ โปรดเก็บไว้ให้ดีครับ/ค่ะ',
         words: [
           { hanzi: '好的', pinyin: 'hǎo de', thai: 'ตกลง/ได้ครับ', tones: [3, 5] },
-          { hanzi: '行李牌', pinyin: 'xíng li pái', thai: 'ป้ายกระเป๋า/แท็กฝากกระเป๋า', tones: [2, 5, 2] },
-          { hanzi: '拿好', pinyin: 'ná hǎo', thai: 'ถือ/เก็บไว้ให้ดี', tones: [2, 3] },
-        ],
+          { hanzi: '这是', pinyin: 'zhè shì', thai: 'นี่คือ', tones: [4, 4] },
+          { hanzi: '您的', pinyin: 'nín de', thai: 'ของคุณ', tones: [2, 5] },
+          { hanzi: '行李牌', pinyin: 'xíng li pái', thai: 'ป้ายรับกระเป๋า', tones: [2, 5, 2] },
+          { hanzi: '请拿好', pinyin: 'qǐng ná hǎo', thai: 'โปรดเก็บไว้ให้ดี', tones: [3, 2, 3] },
+        ]
       },
       {
         id: 'hl-5',
@@ -2199,9 +2225,12 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ตกลง ขอบคุณครับ/ค่ะ ฉันมารับกระเป๋าตอนกี่โมงก็ได้ใช่ไหมครับ/คะ?',
         audioHint: '💡 "取" (qǔ) = รับ/มารับ (ของ/กระเป๋า)',
         words: [
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'ตกลง', tones: [3, 5] },
+          { hanzi: '谢谢', pinyin: 'xiè xie', thai: 'ขอบคุณ', tones: [4, 5] },
+          { hanzi: '我', pinyin: 'wǒ', thai: 'ฉัน', tones: [3] },
           { hanzi: '几点取', pinyin: 'jǐ diǎn qǔ', thai: 'รับกี่โมง', tones: [3, 3, 3] },
-          { hanzi: '都可以', pinyin: 'dōu kě yǐ', thai: 'ก็ได้ทั้งหมด', tones: [1, 3, 3] },
-        ],
+          { hanzi: '都可以吗', pinyin: 'dōu kě yǐ ma', thai: 'ก็ได้ใช่ไหม', tones: [1, 3, 3, 5] },
+        ]
       },
       {
         id: 'hl-6',
@@ -2212,10 +2241,11 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Shì de, suíshí píng xíngli pái lái lǐngqǔ.',
         thai: 'พนักงานตอบ: ใช่ครับ/ค่ะ มารับได้ตลอดเวลาโดยแสดงป้ายรับกระเป๋านะครับ/คะ',
         words: [
-          { hanzi: '随时', pinyin: 'suí shí', thai: 'ตลอดเวลา', tones: [2, 2] },
-          { hanzi: '凭行李牌', pinyin: 'píng xíng li pái', thai: 'โดยใช้ป้ายฝากกระเป๋า', tones: [2, 2, 5, 2] },
-          { hanzi: '领取', pinyin: 'lǐng qǔ', thai: 'มารับ/มารับสิ่งของ', tones: [3, 3] },
-        ],
+          { hanzi: '是的', pinyin: 'shì de', thai: 'ใช่ครับ/ค่ะ', tones: [4, 5] },
+          { hanzi: '随时', pinyin: 'suí shí', thai: 'ตลอดเวลา/เมื่อไหร่ก็ได้', tones: [2, 2] },
+          { hanzi: '凭行李牌', pinyin: 'píng xíng li pái', thai: 'โดยแสดงป้ายรับกระเป๋า', tones: [2, 2, 5, 2] },
+          { hanzi: '来领取', pinyin: 'lái lǐng qǔ', thai: 'มารับของ', tones: [2, 3, 3] },
+        ]
       },
     ],
   },
@@ -2240,9 +2270,10 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Qǐngwèn, Wi-Fi mìmǎ shì shénme?',
         thai: 'ขอถามหน่อยครับ/คะ รหัสผ่าน Wi-Fi คืออะไร?',
         words: [
-          { hanzi: '密码', pinyin: 'mì mǎ', thai: 'รหัสผ่าน', tones: [4, 3] },
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
+          { hanzi: 'Wi-Fi 密码', pinyin: 'Wi-Fi mì mǎ', thai: 'รหัสผ่าน Wi-Fi', tones: [4, 3] },
           { hanzi: '是什么', pinyin: 'shì shén me', thai: 'คืออะไร', tones: [4, 2, 5] },
-        ],
+        ]
       },
       {
         id: 'hs-2',
@@ -2253,10 +2284,11 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Mìmǎ shì fángjiān hào, huòzhě shūrù bā gè bā.',
         thai: 'พนักงานตอบ: รหัสผ่านคือหมายเลขห้องพัก หรือกรอกเลข 8 แปดตัว (88888888) ครับ/ค่ะ',
         words: [
+          { hanzi: '密码是', pinyin: 'mì mǎ shì', thai: 'รหัสผ่านคือ', tones: [4, 3, 4] },
           { hanzi: '房间号', pinyin: 'fáng jiān hào', thai: 'หมายเลขห้อง', tones: [2, 1, 4] },
           { hanzi: '或者输入', pinyin: 'huò zhě shū rù', thai: 'หรือกรอก/ใส่', tones: [4, 3, 1, 4] },
-          { hanzi: '八个八', pinyin: 'bā gè bā', thai: 'เลข 8 แปดตัว', tones: [1, 4, 1] },
-        ],
+          { hanzi: '八个八', pinyin: 'bā gè bā', thai: 'เลข 8 แปดตัว (88888888)', tones: [1, 4, 1] },
+        ]
       },
       {
         id: 'hs-3',
@@ -2268,9 +2300,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ต้องกรอกเบอร์โทรศัพท์เพื่อรับรหัสยืนยันไหมครับ/คะ?',
         audioHint: '💡 "验证" (yànzhèng) = ยืนยันตัวตน/รับ SMS ยืนยัน',
         words: [
-          { hanzi: '手机号码', pinyin: 'shǒu jī hào mǎ', thai: 'หมายเลขโทรศัพท์', tones: [3, 1, 4, 3] },
-          { hanzi: '验证', pinyin: 'yàn zhèng', thai: 'ยืนยันตัวตน', tones: [4, 4] },
-        ],
+          { hanzi: '需要输入', pinyin: 'xū yào shū rù', thai: 'จำเป็นต้องกรอก', tones: [1, 4, 1, 4] },
+          { hanzi: '手机号码', pinyin: 'shǒu jī hào mǎ', thai: 'หมายเลขโทรศัพท์มือถือ', tones: [3, 1, 4, 3] },
+          { hanzi: '验证吗', pinyin: 'yàn zhèng ma', thai: 'ยืนยันไหม', tones: [4, 4, 5] },
+        ]
       },
       {
         id: 'hs-4',
@@ -2281,9 +2314,11 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Bù xūyào, zhíjiē liánjiē fángjiān Wi-Fi jiù kěyǐ le.',
         thai: 'พนักงานตอบ: ไม่ต้องครับ/ค่ะ เชื่อมต่อ Wi-Fi ห้องพักโดยตรงได้เลยครับ/ค่ะ',
         words: [
-          { hanzi: '不需要', pinyin: 'bù xū yào', thai: 'ไม่ต้อง', tones: [4, 1, 4] },
+          { hanzi: '不需要', pinyin: 'bù xū yào', thai: 'ไม่ต้องครับ/ค่ะ', tones: [4, 1, 4] },
           { hanzi: '直接连接', pinyin: 'zhí jiē lián jiē', thai: 'เชื่อมต่อโดยตรง', tones: [2, 1, 2, 1] },
-        ],
+          { hanzi: '房间 Wi-Fi', pinyin: 'fáng jiān Wi-Fi', thai: 'Wi-Fi ห้องพัก', tones: [2, 1] },
+          { hanzi: '就可以了', pinyin: 'jiù kě yǐ le', thai: 'ก็ใช้ได้แล้ว', tones: [4, 3, 3, 5] },
+        ]
       },
       {
         id: 'hs-5',
@@ -2294,9 +2329,10 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Hǎo de, wǎnglù sùdù kuài ma?',
         thai: 'โอเคครับ/ค่ะ ความเร็วอินเทอร์เน็ตเร็วไหมครับ/คะ?',
         words: [
-          { hanzi: '网络', pinyin: 'wǎng lù', thai: 'เครือข่าย/อินเทอร์เน็ต', tones: [3, 4] },
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'โอเคครับ/ค่ะ', tones: [3, 5] },
+          { hanzi: '网络', pinyin: 'wǎng lù', thai: 'อินเทอร์เน็ต/เครือข่าย', tones: [3, 4] },
           { hanzi: '速度快吗', pinyin: 'sù dù kuài ma', thai: 'ความเร็วเร็วไหม', tones: [4, 4, 4, 5] },
-        ],
+        ]
       },
       {
         id: 'hs-6',
@@ -2308,9 +2344,9 @@ export const SCENARIOS: Scenario[] = [
         thai: 'พนักงานตอบ: ความเร็วเร็วมาก ดูวิดีโอและทำงานได้สบายไม่มีปัญหาครับ/ค่ะ',
         words: [
           { hanzi: '速度很快', pinyin: 'sù dù hěn kuài', thai: 'ความเร็วเร็วมาก', tones: [4, 4, 3, 4] },
-          { hanzi: '看视频', pinyin: 'kàn shì pín', thai: 'ดูวิดีโอ', tones: [4, 4, 2] },
-          { hanzi: '没问题', pinyin: 'méi wèn tí', thai: 'ไม่มีปัญหา', tones: [2, 4, 2] },
-        ],
+          { hanzi: '看视频和工作', pinyin: 'kàn shì pín hé gōng zuò', thai: 'ดูวิดีโอและทำงาน', tones: [4, 4, 2, 2, 1, 4] },
+          { hanzi: '都没问题', pinyin: 'dōu méi wèn tí', thai: 'ไม่มีปัญหาทั้งหมด', tones: [1, 2, 4, 2] },
+        ]
       },
     ],
   },
@@ -2336,9 +2372,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'แม่บ้านถาม: สวัสดีค่ะ! ขอถามหน่อยนะคะ ต้องการทำความสะอาดห้องพักไหมคะ?',
         words: [
           { hanzi: '您好', pinyin: 'nín hǎo', thai: 'สวัสดี (สุภาพ)', tones: [2, 3] },
+          { hanzi: '请问', pinyin: 'qǐng wèn', thai: 'ขอถามหน่อย', tones: [3, 4] },
           { hanzi: '需要', pinyin: 'xū yào', thai: 'ต้องการ/จำเป็น', tones: [1, 4] },
           { hanzi: '打扫房间吗', pinyin: 'dǎ sǎo fáng jiān ma', thai: 'ทำความสะอาดห้องไหม', tones: [3, 3, 2, 1, 5] },
-        ],
+        ]
       },
       {
         id: 'hk-2',
@@ -2350,10 +2387,12 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ต้องการครับ/ค่ะ ช่วยทำความสะอาดให้หน่อยนะคะ ขอบคุณครับ/ค่ะ!',
         audioHint: '💡 "打扫" (dǎsǎo) = ทำความสะอาด, "帮" (bāng) = ช่วย',
         words: [
-          { hanzi: '需要', pinyin: 'xū yào', thai: 'ต้องการ', tones: [1, 4] },
+          { hanzi: '需要', pinyin: 'xū yào', thai: 'ต้องการครับ/ค่ะ', tones: [1, 4] },
+          { hanzi: '请', pinyin: 'qǐng', thai: 'กรุณา/ช่วย', tones: [3] },
           { hanzi: '帮我打扫', pinyin: 'bāng wǒ dǎ sǎo', thai: 'ช่วยฉันทำความสะอาด', tones: [1, 3, 3, 3] },
           { hanzi: '一下', pinyin: 'yī xià', thai: 'สักหน่อย', tones: [1, 4] },
-        ],
+          { hanzi: '谢谢', pinyin: 'xiè xie', thai: 'ขอบคุณ', tones: [4, 5] },
+        ]
       },
       {
         id: 'hk-3',
@@ -2364,9 +2403,12 @@ export const SCENARIOS: Scenario[] = [
         pinyin: 'Hǎo de, xūyào huàn máojīn hé jiā shuǐ ma?',
         thai: 'แม่บ้านถาม: ได้ค่ะ ต้องการเปลี่ยนผ้าเช็ดตัวและเติมน้ำดื่มไหมคะ?',
         words: [
+          { hanzi: '好的', pinyin: 'hǎo de', thai: 'ได้ค่ะ/ตกลง', tones: [3, 5] },
+          { hanzi: '需要', pinyin: 'xū yào', thai: 'ต้องการ', tones: [1, 4] },
           { hanzi: '换毛巾', pinyin: 'huàn máo jīn', thai: 'เปลี่ยนผ้าเช็ดตัว', tones: [4, 2, 1] },
+          { hanzi: '和', pinyin: 'hé', thai: 'และ', tones: [2] },
           { hanzi: '加水吗', pinyin: 'jiā shuǐ ma', thai: 'เติมน้ำดื่มไหม', tones: [1, 3, 5] },
-        ],
+        ]
       },
       {
         id: 'hk-4',
@@ -2378,10 +2420,13 @@ export const SCENARIOS: Scenario[] = [
         thai: 'ขอเปลี่ยนผ้าเช็ดตัว 2 ผืน และขอน้ำดื่ม 2 ขวดด้วยครับ/ค่ะ',
         audioHint: '💡 "毛巾" (máojīn) = ผ้าเช็ดตัว, "矿泉水" (kuàngquánshuǐ) = น้ำดื่ม/น้ำแร่',
         words: [
+          { hanzi: '请', pinyin: 'qǐng', thai: 'กรุณา/ขอ', tones: [3] },
           { hanzi: '换两条', pinyin: 'huàn liǎng tiáo', thai: 'เปลี่ยน 2 ผืน', tones: [4, 3, 2] },
           { hanzi: '毛巾', pinyin: 'máo jīn', thai: 'ผ้าเช็ดตัว', tones: [2, 1] },
-          { hanzi: '矿泉水', pinyin: 'kuàng quán shuǐ', thai: 'น้ำแร่/น้ำดื่ม', tones: [4, 2, 3] },
-        ],
+          { hanzi: '再拿', pinyin: 'zài ná', thai: 'ขอนำมาเพิ่มอีก', tones: [4, 2] },
+          { hanzi: '两瓶', pinyin: 'liǎng píng', thai: '2 ขวด', tones: [3, 2] },
+          { hanzi: '矿泉水', pinyin: 'kuàng quán shuǐ', thai: 'น้ำดื่ม/น้ำแร่', tones: [4, 2, 3] },
+        ]
       },
       {
         id: 'hk-5',
@@ -2394,9 +2439,10 @@ export const SCENARIOS: Scenario[] = [
         audioHint: '💡 "不用" (bù yòng) = ไม่ต้อง, "下午" (xiàwǔ) = ตอนบ่าย',
         words: [
           { hanzi: '现在不用', pinyin: 'xiàn zài bù yòng', thai: 'ตอนนี้ยังไม่ต้อง', tones: [4, 4, 4, 4] },
+          { hanzi: '请', pinyin: 'qǐng', thai: 'กรุณา/ช่วย', tones: [3] },
           { hanzi: '下午再来', pinyin: 'xià wǔ zài lái', thai: 'ตอนบ่ายค่อยมาอีกที', tones: [4, 3, 4, 2] },
           { hanzi: '打扫吧', pinyin: 'dǎ sǎo ba', thai: 'ทำความสะอาดเถอะ', tones: [3, 3, 5] },
-        ],
+        ]
       },
       {
         id: 'hk-6',
@@ -2408,8 +2454,10 @@ export const SCENARIOS: Scenario[] = [
         thai: 'แม่บ้านตอบ: ได้ค่ะ หากต้องการอะไรเรียกได้ตลอดเวลานะคะ',
         words: [
           { hanzi: '好的', pinyin: 'hǎo de', thai: 'ได้ค่ะ/ตกลง', tones: [3, 5] },
+          { hanzi: '有需要', pinyin: 'yǒu xū yào', thai: 'หากต้องการอะไร', tones: [3, 1, 4] },
+          { hanzi: '请', pinyin: 'qǐng', thai: 'กรุณา/โปรด', tones: [3] },
           { hanzi: '随时叫我', pinyin: 'suí shí jiào wǒ', thai: 'เรียกฉันได้ตลอดเวลา', tones: [2, 2, 4, 3] },
-        ],
+        ]
       },
     ],
   },

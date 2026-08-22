@@ -148,7 +148,7 @@ export default function SessionPage({ params }: PageProps) {
       <Header />
 
       {/* Breadcrumb & 4-Stage Navigation Bar */}
-      <div className="bg-white/90 border-b border-slate-200/80 py-3 px-4 sm:px-6 sticky top-0 z-30 backdrop-blur-md">
+      <div className="bg-white/90 border-b border-slate-200/80 py-3 px-4 sm:px-6 sticky top-14 sm:top-16 z-30 backdrop-blur-md">
         <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <Link
             href="/"

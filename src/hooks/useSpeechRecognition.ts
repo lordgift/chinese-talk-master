@@ -14,7 +14,10 @@ export function useSpeechRecognition() {
   const [isListening, setIsListening] = useState(false);
   const [transcript, setTranscript] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [isSupported, setIsSupported] = useState(true);
+  const [isSupported, setIsSupported] = useState<boolean>(() => {
+    if (typeof window === 'undefined') return true;
+    return !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  });
   const recognitionRef = useRef<any>(null);
 
   useEffect(() => {
@@ -22,7 +25,6 @@ export function useSpeechRecognition() {
 
     const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
     if (!SpeechRecognition) {
-      setIsSupported(false);
       return;
     }
 
@@ -74,6 +76,7 @@ export function useSpeechRecognition() {
         console.warn('Recognition already started or error:', e);
       }
     } else {
+      setIsSupported(false);
       setError('เบราว์เซอร์นี้ไม่รองรับการฟังเสียงอัตโนมัติ (แนะนำ Chrome / Edge / Safari)');
     }
   }, []);
@@ -95,3 +98,4 @@ export function useSpeechRecognition() {
     setTranscript,
   };
 }
+
