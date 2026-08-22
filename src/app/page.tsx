@@ -238,6 +238,18 @@ export default function HomePage() {
             >
               🟡 ปานกลาง
             </button>
+
+            <button
+              type="button"
+              onClick={() => setSelectedLevel('hard')}
+              className={`px-3.5 py-2 rounded-xl transition cursor-pointer touch-manipulation min-h-[40px] ${
+                selectedLevel === 'hard'
+                  ? 'bg-rose-600 text-white font-bold shadow-xs'
+                  : 'bg-slate-100 text-slate-600 hover:text-rose-700 hover:bg-rose-50'
+              }`}
+            >
+              🔴 ท้าทาย
+            </button>
           </div>
         </div>
 

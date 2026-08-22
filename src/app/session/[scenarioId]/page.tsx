@@ -240,7 +240,15 @@ export default function SessionPage({ params }: PageProps) {
         <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+              <span
+                className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
+                  scenario.level === 'easy'
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                    : scenario.level === 'medium'
+                    ? 'bg-amber-50 text-amber-700 border-amber-200'
+                    : 'bg-rose-50 text-rose-700 border-rose-200'
+                }`}
+              >
                 {scenario.levelTitle}
               </span>
               <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
