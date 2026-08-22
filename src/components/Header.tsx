@@ -2,12 +2,16 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { Sliders } from 'lucide-react';
+import { Sliders, Star } from 'lucide-react';
+import { useAuth } from '@/context/AuthContext';
 import { UserMenu } from './UserMenu';
 import { VoiceSettingsModal } from './VoiceSettingsModal';
+import { SavedWordsModal } from './SavedWordsModal';
 
 export function Header() {
+  const { savedWordsCount } = useAuth();
   const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+  const [isSavedWordsOpen, setIsSavedWordsOpen] = useState(false);
 
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 text-slate-900 shadow-xs">
@@ -36,8 +40,24 @@ export function Header() {
           </div>
         </Link>
 
-        {/* Right Action Controls: Voice Settings + User Menu */}
+        {/* Right Action Controls: Saved Words + Voice Settings + User Menu */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Saved Words Button */}
+          <button
+            type="button"
+            onClick={() => setIsSavedWordsOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 shadow-2xs font-bold text-xs transition active:scale-95 cursor-pointer touch-manipulation min-h-[40px]"
+            title="คลังคำศัพท์ที่บันทึกไว้ (Saved Vocabulary)"
+          >
+            <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+            <span className="hidden sm:inline">คำศัพท์ของฉัน</span>
+            {savedWordsCount > 0 && (
+              <span className="px-1.5 py-0.2 rounded-full bg-amber-500 text-white text-[10px] font-black">
+                {savedWordsCount}
+              </span>
+            )}
+          </button>
+
           {/* Voice Settings Button */}
           <button
             type="button"
@@ -53,6 +73,12 @@ export function Header() {
           <UserMenu />
         </div>
       </div>
+
+      {/* Saved Words Modal */}
+      <SavedWordsModal
+        isOpen={isSavedWordsOpen}
+        onClose={() => setIsSavedWordsOpen(false)}
+      />
 
       {/* Voice Settings Modal */}
       <VoiceSettingsModal

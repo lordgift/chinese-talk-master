@@ -45,7 +45,7 @@ export default function SessionPage({ params }: PageProps) {
   const scenario = SCENARIOS.find((s) => s.id === resolvedParams.scenarioId);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [mode, setMode] = useState<'vocab' | 'expansion' | 'step' | 'quiz' | 'overview'>('vocab');
+  const [mode, setMode] = useState<'expansion' | 'step' | 'quiz' | 'vocab' | 'overview'>('expansion');
   const [scores, setScores] = useState<Record<number, number>>({});
   const [evaluations, setEvaluations] = useState<Record<number, DetailedSpeechEvaluation | undefined>>({});
   const [isCompleted, setIsCompleted] = useState(false);
@@ -108,6 +108,13 @@ export default function SessionPage({ params }: PageProps) {
     }
   };
 
+  const handleStartVocabSummary = () => {
+    setMode('vocab');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  };
+
   const handleNext = () => {
     if (currentIndex < scenario.dialogues.length - 1) {
       const nextIndex = currentIndex + 1;
@@ -162,19 +169,6 @@ export default function SessionPage({ params }: PageProps) {
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200 overflow-x-auto max-w-full">
             <button
               type="button"
-              onClick={() => setMode('vocab')}
-              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
-                mode === 'vocab'
-                  ? 'bg-amber-500 text-white shadow-xs'
-                  : 'text-slate-600 hover:text-slate-900'
-              }`}
-            >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>1. 📚 จำศัพท์</span>
-            </button>
-
-            <button
-              type="button"
               onClick={() => setMode('expansion')}
               className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
                 mode === 'expansion'
@@ -183,7 +177,7 @@ export default function SessionPage({ params }: PageProps) {
               }`}
             >
               <Puzzle className="w-3.5 h-3.5" />
-              <span>2. 🧩 เรียงคำเป็นประโยค</span>
+              <span>1. 🧩 เรียงคำเป็นประโยค</span>
             </button>
 
             <button
@@ -196,7 +190,7 @@ export default function SessionPage({ params }: PageProps) {
               }`}
             >
               <Mic className="w-3.5 h-3.5" />
-              <span>3. 💬 สนทนาจริง</span>
+              <span>2. 💬 สนทนาจริง</span>
             </button>
 
             <button
@@ -209,7 +203,20 @@ export default function SessionPage({ params }: PageProps) {
               }`}
             >
               <Brain className="w-3.5 h-3.5" />
-              <span>4. 🧠 ทบทวนความจำ</span>
+              <span>3. 🧠 ควิซทบทวน</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode('vocab')}
+              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
+                mode === 'vocab'
+                  ? 'bg-amber-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <BookOpen className="w-3.5 h-3.5" />
+              <span>4. 📚 สรุปคำศัพท์</span>
             </button>
 
             <button
@@ -257,22 +264,14 @@ export default function SessionPage({ params }: PageProps) {
 
       {/* Main Content Area */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
-        {mode === 'vocab' ? (
-          /* Step 1: Vocabulary Prep & Active Recall Flashcards */
-          <VocabPrep
-            words={allScenarioWords}
-            coreKeywords={scenario.coreKeywords}
-            onStartExpansion={handleStartExpansion}
-            onStartDialogue={handleStartDialogue}
-          />
-        ) : mode === 'expansion' ? (
-          /* Step 2: Progressive Sentence Expansion & Chunk Listening */
+        {mode === 'expansion' ? (
+          /* Step 1: Progressive Sentence Expansion & Chunk Listening */
           <SentenceExpansionBuilder
             expansions={expansions}
             onProceedToDialogue={handleStartDialogue}
           />
         ) : mode === 'step' ? (
-          /* Step 3: Step-by-Step Dialogue Practice Mode */
+          /* Step 2: Step-by-Step Dialogue Practice Mode */
           <div className="space-y-6">
             {/* Step Progress & Roleplay Helper Bar */}
             <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs space-y-3">
@@ -469,11 +468,29 @@ export default function SessionPage({ params }: PageProps) {
             </div>
           </div>
         ) : mode === 'quiz' ? (
-          /* Step 4: Memory Retention Quick-Quiz */
+          /* Step 3: Memory Retention Quick-Quiz */
           <MemoryQuiz
             questions={quizQuestions}
             onComplete={(score) => setQuizScore(score)}
             onRetry={() => setQuizScore(null)}
+            onProceedToVocabSummary={handleStartVocabSummary}
+          />
+        ) : mode === 'vocab' ? (
+          /* Step 4: Vocabulary Summary & Personal Word Bookmark */
+          <VocabPrep
+            words={allScenarioWords}
+            coreKeywords={scenario.coreKeywords}
+            scenarioId={scenario.id}
+            scenarioTitle={scenario.title}
+            onStartExpansion={handleStartExpansion}
+            onStartDialogue={handleStartDialogue}
+            onRetryLesson={() => {
+              setIsCompleted(false);
+              setCurrentIndex(0);
+              setScores({});
+              setEvaluations({});
+              setMode('step');
+            }}
           />
         ) : (
           /* Overview Mode */
@@ -505,6 +522,14 @@ export default function SessionPage({ params }: PageProps) {
             setCurrentIndex(0);
             setScores({});
             setEvaluations({});
+          }}
+          onProceedToQuiz={() => {
+            setIsCompleted(false);
+            handleStartQuiz();
+          }}
+          onProceedToVocabSummary={() => {
+            setIsCompleted(false);
+            handleStartVocabSummary();
           }}
         />
       )}

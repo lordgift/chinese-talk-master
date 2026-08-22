@@ -13,9 +13,18 @@ interface ScoreModalProps {
   scenarioTitle: string;
   totalScore: number;
   onRetry: () => void;
+  onProceedToQuiz?: () => void;
+  onProceedToVocabSummary?: () => void;
 }
 
-export function ScoreModal({ scenarioId, scenarioTitle, totalScore, onRetry }: ScoreModalProps) {
+export function ScoreModal({
+  scenarioId,
+  scenarioTitle,
+  totalScore,
+  onRetry,
+  onProceedToQuiz,
+  onProceedToVocabSummary,
+}: ScoreModalProps) {
   const { user, loginWithGoogle, refreshProgress } = useAuth();
   const [isSaved, setIsSaved] = useState(false);
 
@@ -117,23 +126,42 @@ export function ScoreModal({ scenarioId, scenarioTitle, totalScore, onRetry }: S
           )}
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex flex-col sm:flex-row gap-3 mt-4">
+        {/* Primary Next Action */}
+        {onProceedToQuiz ? (
+          <button
+            type="button"
+            onClick={onProceedToQuiz}
+            className="w-full mb-3 py-3.5 px-4 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-indigo-500/25 transition cursor-pointer touch-manipulation select-none active:scale-95"
+          >
+            <span>ไปทดสอบความจำ (ควิซทบทวน 🧠) ➔</span>
+          </button>
+        ) : onProceedToVocabSummary ? (
+          <button
+            type="button"
+            onClick={onProceedToVocabSummary}
+            className="w-full mb-3 py-3.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white text-sm font-bold flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 transition cursor-pointer touch-manipulation select-none active:scale-95"
+          >
+            <span>ไปดูสรุปคำศัพท์ & บันทึกคำ 📚 ➔</span>
+          </button>
+        ) : null}
+
+        {/* Secondary Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 mt-2">
           <button
             type="button"
             onClick={onRetry}
             className="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 text-xs font-bold flex items-center justify-center gap-2 border border-slate-200 transition shadow-2xs cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
           >
             <RotateCcw className="w-4 h-4" />
-            <span>ฝึกใหม่อีกครั้ง</span>
+            <span>ฝึกสนทนาซ้ำ</span>
           </button>
 
           <Link
             href="/"
-            className="flex-1 py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-rose-500/20 transition touch-manipulation select-none active:scale-95 min-h-[44px]"
+            className="flex-1 py-3 px-4 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200 text-xs font-bold flex items-center justify-center gap-2 transition touch-manipulation select-none active:scale-95 min-h-[44px]"
           >
             <Home className="w-4 h-4" />
-            <span>เลือกบทอื่น</span>
+            <span>กลับหน้าหลัก</span>
           </Link>
         </div>
       </div>

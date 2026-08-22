@@ -223,8 +223,137 @@ export const fetchUserProgress = async (
   }
 };
 
+export interface SavedWord {
+  id: string; // Hanzi-based unique ID, e.g. "w_你好"
+  hanzi: string;
+  pinyin: string;
+  thai: string;
+  tones?: number[];
+  scenarioId?: string;
+  scenarioTitle?: string;
+  savedAt: string;
+}
+
+const LOCAL_SAVED_WORDS_KEY = 'chinese_talk_saved_words';
+
 /**
- * Sync offline LocalStorage data (progress & favorites) to Firestore after Google login
+ * Generate standard unique ID for saved words
+ */
+export const getSavedWordId = (hanzi: string): string => {
+  return `w_${encodeURIComponent(hanzi.trim())}`;
+};
+
+/**
+ * Get all saved words in LocalStorage
+ */
+export const getLocalSavedWords = (): Record<string, SavedWord> => {
+  if (typeof window === 'undefined') return {};
+  try {
+    const raw = localStorage.getItem(LOCAL_SAVED_WORDS_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch (err) {
+    console.error('Error reading local saved words:', err);
+    return {};
+  }
+};
+
+/**
+ * Save all saved words to LocalStorage
+ */
+export const saveLocalSavedWords = (wordsMap: Record<string, SavedWord>) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(LOCAL_SAVED_WORDS_KEY, JSON.stringify(wordsMap));
+  } catch (err) {
+    console.error('Error saving local saved words:', err);
+  }
+};
+
+/**
+ * Fetch all saved words (merges Firestore and LocalStorage)
+ */
+export const fetchUserSavedWords = async (
+  userId: string | null | undefined
+): Promise<Record<string, SavedWord>> => {
+  const localWords = getLocalSavedWords();
+  if (!userId) {
+    return localWords;
+  }
+
+  try {
+    const wordsColRef = collection(db, 'users', userId, 'saved_words');
+    const snapshot = await getDocs(wordsColRef);
+    const firestoreWords: Record<string, SavedWord> = {};
+
+    snapshot.forEach((docSnap) => {
+      if (docSnap.exists()) {
+        const data = docSnap.data() as SavedWord;
+        firestoreWords[data.id || docSnap.id] = data;
+      }
+    });
+
+    const mergedWords: Record<string, SavedWord> = { ...localWords, ...firestoreWords };
+    saveLocalSavedWords(mergedWords);
+    return mergedWords;
+  } catch (err) {
+    console.error('Error fetching saved words from Firestore:', err);
+    return localWords;
+  }
+};
+
+/**
+ * Toggle save status for a vocabulary word (bookmark/un-bookmark)
+ */
+export const toggleSaveUserWord = async (
+  userId: string | null | undefined,
+  word: {
+    hanzi: string;
+    pinyin: string;
+    thai: string;
+    tones?: number[];
+    scenarioId?: string;
+    scenarioTitle?: string;
+  }
+): Promise<{ savedWords: Record<string, SavedWord>; isSaved: boolean }> => {
+  const wordId = getSavedWordId(word.hanzi);
+  const localWords = getLocalSavedWords();
+  const alreadySaved = !!localWords[wordId];
+
+  if (alreadySaved) {
+    delete localWords[wordId];
+  } else {
+    localWords[wordId] = {
+      id: wordId,
+      hanzi: word.hanzi,
+      pinyin: word.pinyin,
+      thai: word.thai,
+      tones: word.tones,
+      scenarioId: word.scenarioId,
+      scenarioTitle: word.scenarioTitle,
+      savedAt: new Date().toISOString(),
+    };
+  }
+
+  saveLocalSavedWords(localWords);
+
+  if (userId) {
+    try {
+      const docRef = doc(db, 'users', userId, 'saved_words', wordId);
+      if (alreadySaved) {
+        await deleteDoc(docRef);
+      } else {
+        await setDoc(docRef, localWords[wordId], { merge: true });
+      }
+    } catch (err) {
+      console.error('Failed to sync saved word to Firestore:', err);
+    }
+  }
+
+  return { savedWords: localWords, isSaved: !alreadySaved };
+};
+
+/**
+ * Sync offline LocalStorage data (progress, favorites & saved words) to Firestore after Google login
  */
 export const syncLocalToFirestore = async (userId: string) => {
   const localMap = getLocalProgress();
@@ -232,6 +361,9 @@ export const syncLocalToFirestore = async (userId: string) => {
 
   const localFavs = getLocalFavorites();
   const favoriteKeys = Object.keys(localFavs);
+
+  const localSavedWords = getLocalSavedWords();
+  const savedWordKeys = Object.keys(localSavedWords);
 
   try {
     const promises: Promise<void>[] = [];
@@ -246,6 +378,11 @@ export const syncLocalToFirestore = async (userId: string) => {
         const favDocRef = doc(db, 'users', userId, 'favorites', scenarioId);
         promises.push(setDoc(favDocRef, { scenarioId, favoritedAt: new Date().toISOString() }));
       }
+    });
+
+    savedWordKeys.forEach((wordId) => {
+      const wordDocRef = doc(db, 'users', userId, 'saved_words', wordId);
+      promises.push(setDoc(wordDocRef, localSavedWords[wordId], { merge: true }));
     });
 
     await Promise.all(promises);

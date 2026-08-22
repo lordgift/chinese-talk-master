@@ -11,9 +11,13 @@ import {
 } from '@/lib/firebase';
 import {
   ScenarioProgress,
+  SavedWord,
   fetchUserProgress,
   fetchUserFavorites,
+  fetchUserSavedWords,
   toggleFavoriteScenario,
+  toggleSaveUserWord,
+  getSavedWordId,
   syncLocalToFirestore,
 } from '@/lib/userProgress';
 
@@ -22,10 +26,21 @@ interface AuthContextType {
   loading: boolean;
   userProgress: Record<string, ScenarioProgress>;
   userFavorites: Record<string, boolean>;
+  userSavedWords: Record<string, SavedWord>;
+  savedWordsCount: number;
   loginWithGoogle: () => Promise<void>;
   logout: () => Promise<void>;
   refreshProgress: () => Promise<void>;
   toggleFavorite: (scenarioId: string) => Promise<void>;
+  toggleSaveWord: (word: {
+    hanzi: string;
+    pinyin: string;
+    thai: string;
+    tones?: number[];
+    scenarioId?: string;
+    scenarioTitle?: string;
+  }) => Promise<boolean>;
+  isWordSaved: (hanzi: string) => boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -33,10 +48,14 @@ const AuthContext = createContext<AuthContextType>({
   loading: true,
   userProgress: {},
   userFavorites: {},
+  userSavedWords: {},
+  savedWordsCount: 0,
   loginWithGoogle: async () => {},
   logout: async () => {},
   refreshProgress: async () => {},
   toggleFavorite: async () => {},
+  toggleSaveWord: async () => false,
+  isWordSaved: () => false,
 });
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
@@ -44,21 +63,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [userProgress, setUserProgress] = useState<Record<string, ScenarioProgress>>({});
   const [userFavorites, setUserFavorites] = useState<Record<string, boolean>>({});
+  const [userSavedWords, setUserSavedWords] = useState<Record<string, SavedWord>>({});
 
   const reloadData = async (u: User | null) => {
-    const [progress, favorites] = await Promise.all([
+    const [progress, favorites, savedWords] = await Promise.all([
       fetchUserProgress(u?.uid),
       fetchUserFavorites(u?.uid),
+      fetchUserSavedWords(u?.uid),
     ]);
     setUserProgress(progress);
     setUserFavorites(favorites);
+    setUserSavedWords(savedWords);
   };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
       if (currentUser) {
-        // Sync local progress & favorites to Firestore on login
+        // Sync local progress, favorites & saved words to Firestore on login
         await syncLocalToFirestore(currentUser.uid);
       }
       await reloadData(currentUser);
@@ -102,6 +124,24 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     setUserFavorites({ ...updatedFavs });
   };
 
+  const toggleSaveWord = async (word: {
+    hanzi: string;
+    pinyin: string;
+    thai: string;
+    tones?: number[];
+    scenarioId?: string;
+    scenarioTitle?: string;
+  }): Promise<boolean> => {
+    const { savedWords, isSaved } = await toggleSaveUserWord(user?.uid, word);
+    setUserSavedWords({ ...savedWords });
+    return isSaved;
+  };
+
+  const isWordSaved = (hanzi: string): boolean => {
+    const wordId = getSavedWordId(hanzi);
+    return !!userSavedWords[wordId];
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -109,10 +149,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         loading,
         userProgress,
         userFavorites,
+        userSavedWords,
+        savedWordsCount: Object.keys(userSavedWords).length,
         loginWithGoogle,
         logout,
         refreshProgress,
         toggleFavorite,
+        toggleSaveWord,
+        isWordSaved,
       }}
     >
       {children}

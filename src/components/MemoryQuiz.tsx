@@ -20,9 +20,15 @@ interface MemoryQuizProps {
   questions: MemoryQuizQuestion[];
   onComplete: (score: number) => void;
   onRetry: () => void;
+  onProceedToVocabSummary?: () => void;
 }
 
-export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) {
+export function MemoryQuiz({ 
+  questions, 
+  onComplete, 
+  onRetry, 
+  onProceedToVocabSummary 
+}: MemoryQuizProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedOptionIndex, setSelectedOptionIndex] = useState<number | null>(null);
   const [isAnswerSubmitted, setIsAnswerSubmitted] = useState(false);
@@ -41,31 +47,21 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
 
   const currentQ = questions[currentIndex];
 
-  const handlePlayAudio = (text?: string) => {
-    if (text) {
-      speak(text, 0.85);
-    }
+  const handlePlayAudio = (text: string) => {
+    speak(text, 0.85);
   };
 
-  const handleSelectOption = (idx: number) => {
+  const handleSelectOption = (index: number) => {
     if (isAnswerSubmitted) return;
-    setSelectedOptionIndex(idx);
+    setSelectedOptionIndex(index);
     setIsAnswerSubmitted(true);
 
-    const isCorrect = currentQ.options[idx].isCorrect;
+    const isCorrect = currentQ.options[index].isCorrect;
     if (isCorrect) {
       setCorrectAnswersCount((prev) => prev + 1);
       if (typeof window !== 'undefined') {
-        confetti({ particleCount: 35, spread: 60, origin: { y: 0.8 } });
+        confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
       }
-    }
-
-    // Auto speak Chinese if option or target has Chinese text
-    const opt = currentQ.options[idx];
-    if (opt.textZh) {
-      speak(opt.textZh, 0.85);
-    } else if (currentQ.audioText) {
-      speak(currentQ.audioText, 0.85);
     }
   };
 
@@ -76,10 +72,10 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
       setIsAnswerSubmitted(false);
     } else {
       setIsQuizFinished(true);
-      const finalScore = Math.round(((correctAnswersCount + (selectedOptionIndex !== null && currentQ.options[selectedOptionIndex].isCorrect ? 0 : 0)) / questions.length) * 100);
+      const finalScore = Math.round((correctAnswersCount / questions.length) * 100);
       onComplete(finalScore);
       if (typeof window !== 'undefined') {
-        confetti({ particleCount: 80, spread: 90, origin: { y: 0.6 } });
+        confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
       }
     }
   };
@@ -106,7 +102,7 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-900 border border-indigo-300">
-                ขั้นตอนที่ 4: ทดสอบความจำสั้นๆ
+                ขั้นตอนที่ 3: ทดสอบความจำสั้นๆ
               </span>
               <span className="text-xs text-slate-500 font-semibold">
                 ข้อที่ {currentIndex + 1} จาก {questions.length}
@@ -148,7 +144,7 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
               {currentQ.audioText && (
                 <button
                   type="button"
-                  onClick={() => handlePlayAudio(currentQ.audioText)}
+                  onClick={() => handlePlayAudio(currentQ.audioText!)}
                   className="px-3.5 py-2 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-bold border border-indigo-200 shadow-2xs flex items-center gap-1.5 transition cursor-pointer active:scale-95 shrink-0"
                 >
                   <Volume2 className="w-4 h-4 text-indigo-600 animate-pulse" />
@@ -158,43 +154,29 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
             </div>
 
             {/* If audio listening type, show big listening card */}
-            {currentQ.type === 'listen-meaning' && currentQ.audioText && (
-              <div className="p-4 rounded-xl bg-white border border-indigo-100 flex items-center justify-between gap-3">
-                <div className="flex items-center gap-3">
-                  <span className="text-2xl p-2 rounded-xl bg-indigo-50 border border-indigo-200">🎧</span>
-                  <div>
-                    <div className="text-2xl font-black text-slate-900 font-serif">
-                      {isAnswerSubmitted ? currentQ.promptZh : '🔊 ? ? ?'}
-                    </div>
-                    {isAnswerSubmitted && currentQ.promptPinyin && (
-                      <div className="text-xs font-pinyin font-bold text-rose-600">
-                        {currentQ.promptPinyin}
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                <button
-                  type="button"
-                  onClick={() => handlePlayAudio(currentQ.audioText)}
-                  className="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5 transition cursor-pointer active:scale-95"
-                >
-                  <Volume2 className="w-4 h-4" />
-                  <span>กดฟังเสียง 0.85x</span>
-                </button>
+            {currentQ.type === 'listen-meaning' && currentQ.promptZh && (
+              <div className="p-4 rounded-xl bg-white border border-slate-200 text-center space-y-1">
+                <span className="text-3xl font-bold text-slate-900 font-serif">
+                  {currentQ.promptZh}
+                </span>
+                {currentQ.promptPinyin && (
+                  <p className="text-xs font-pinyin text-rose-600 font-semibold">
+                    {currentQ.promptPinyin}
+                  </p>
+                )}
               </div>
             )}
 
-            {/* If fill-blank type, show sentence prompt */}
+            {/* If fill-in blank type, show sentence prompt */}
             {currentQ.type === 'fill-blank' && currentQ.promptZh && (
               <div className="p-4 rounded-xl bg-white border border-slate-200 text-center space-y-1">
-                <div className="text-2xl sm:text-3xl font-black text-slate-900 font-serif tracking-wide">
+                <span className="text-xl sm:text-2xl font-bold text-slate-900 font-serif">
                   {currentQ.promptZh}
-                </div>
+                </span>
                 {currentQ.promptPinyin && (
-                  <div className="text-xs font-pinyin font-bold text-amber-800">
+                  <p className="text-xs font-pinyin text-rose-600 font-semibold">
                     {currentQ.promptPinyin}
-                  </div>
+                  </p>
                 )}
               </div>
             )}
@@ -202,36 +184,39 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
 
           {/* Options Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {currentQ.options.map((option, oIdx) => {
-              const isSelected = selectedOptionIndex === oIdx;
-              let optionStyle = 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800';
+            {currentQ.options.map((option, idx) => {
+              const isSelected = selectedOptionIndex === idx;
+              let btnStyle = 'bg-white hover:bg-slate-50 border-slate-200 text-slate-800';
 
               if (isAnswerSubmitted) {
                 if (option.isCorrect) {
-                  optionStyle =
-                    'bg-emerald-50 border-emerald-400 text-emerald-900 ring-2 ring-emerald-400/50 shadow-sm';
-                } else if (isSelected) {
-                  optionStyle =
-                    'bg-rose-50 border-rose-400 text-rose-900 ring-2 ring-rose-400/50 shadow-sm';
+                  btnStyle = 'bg-emerald-50 border-emerald-400 text-emerald-900 ring-2 ring-emerald-400/40';
+                } else if (isSelected && !option.isCorrect) {
+                  btnStyle = 'bg-rose-50 border-rose-400 text-rose-900 ring-2 ring-rose-400/40';
                 } else {
-                  optionStyle = 'opacity-40 bg-slate-100 border-slate-200 text-slate-400';
+                  btnStyle = 'bg-slate-50 border-slate-200 text-slate-400 opacity-60';
                 }
               }
 
               return (
                 <button
-                  key={oIdx}
+                  key={idx}
                   type="button"
                   disabled={isAnswerSubmitted}
-                  onClick={() => handleSelectOption(oIdx)}
-                  className={`p-4 rounded-2xl border text-left transition-all cursor-pointer touch-manipulation select-none active:scale-95 flex items-center justify-between gap-3 min-h-[58px] ${optionStyle}`}
+                  onClick={() => handleSelectOption(idx)}
+                  className={`p-4 rounded-2xl border text-left font-medium text-xs sm:text-sm transition-all flex items-center justify-between gap-3 shadow-2xs ${btnStyle} ${
+                    !isAnswerSubmitted ? 'cursor-pointer active:scale-95' : 'cursor-default'
+                  }`}
                 >
-                  <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center text-xs font-bold text-slate-700 shrink-0">
-                      {String.fromCharCode(65 + oIdx)}
+                  <div className="flex items-center gap-2.5">
+                    <span className="w-6 h-6 rounded-full bg-slate-100 border border-slate-200 text-slate-600 text-xs font-bold flex items-center justify-center shrink-0">
+                      {String.fromCharCode(65 + idx)}
                     </span>
                     <div>
-                      <span className="text-sm sm:text-base font-bold">{option.text}</span>
+                      <div>{option.text}</div>
+                      {option.textZh && (
+                        <div className="text-xs text-slate-500 font-serif mt-0.5">{option.textZh}</div>
+                      )}
                     </div>
                   </div>
 
@@ -314,11 +299,22 @@ export function MemoryQuiz({ questions, onComplete, onRetry }: MemoryQuizProps) 
             <button
               type="button"
               onClick={handleRestartQuiz}
-              className="px-6 py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs sm:text-sm font-bold flex items-center gap-2 shadow-2xs transition cursor-pointer active:scale-95"
+              className="px-5 py-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 text-xs sm:text-sm font-bold flex items-center gap-2 shadow-2xs transition cursor-pointer active:scale-95"
             >
               <RotateCcw className="w-4 h-4" />
               <span>ทำแบบทดสอบอีกครั้ง</span>
             </button>
+
+            {onProceedToVocabSummary && (
+              <button
+                type="button"
+                onClick={onProceedToVocabSummary}
+                className="px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 to-rose-500 hover:from-amber-600 hover:to-rose-600 text-white text-xs sm:text-sm font-bold shadow-md shadow-rose-500/20 flex items-center gap-2 transition cursor-pointer active:scale-95"
+              >
+                <span>ดูสรุปคำศัพท์ & บันทึกคำ ➔</span>
+                <ChevronRight className="w-4 h-4" />
+              </button>
+            )}
           </div>
         </div>
       )}
