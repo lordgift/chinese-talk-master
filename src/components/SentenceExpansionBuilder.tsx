@@ -158,7 +158,7 @@ export function SentenceExpansionBuilder({
             <div>
               <div className="flex items-center gap-2">
                 <span className="text-[11px] font-extrabold px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300">
-                  ขั้นตอนที่ 2: เรียงคำเป็นประโยค
+                  ขั้นตอนที่ 1: เรียงคำเป็นประโยค
                 </span>
                 <span className="text-xs text-slate-500 font-semibold">
                   ประโยคที่ {activeExpIndex + 1} จาก {expansions.length}

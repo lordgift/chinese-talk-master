@@ -25,7 +25,6 @@ import {
   Bot,
   Sparkles,
   Volume2,
-  Maximize2,
   X,
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
@@ -290,25 +289,14 @@ export default function SessionPage({ params }: PageProps) {
                 <div
                   onClick={() => setShowImageModal(true)}
                   className="group relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-[16/9] bg-slate-900/5 ring-1 ring-black/5 hover:ring-rose-400/40"
-                  title="คลิกเพื่อดูภาพบรรยากาศเต็มตา"
+                  title={scenario.title}
                 >
                   <img
                     src={scenario.image}
                     alt={scenario.imageAlt || scenario.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/10 pointer-events-none" />
-                  
-                  {/* Floating Caption on Image */}
-                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
-                    <span className="text-[10px] font-bold text-white/95 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-md border border-white/20 flex items-center gap-1 shadow-2xs">
-                      <span>🎨 บรรยากาศจำลอง</span>
-                    </span>
-                    <span className="text-[10px] font-bold text-white/90 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/10 flex items-center gap-1 group-hover:bg-rose-500 transition-colors">
-                      <Maximize2 className="w-3 h-3" />
-                      <span>ขยายดูรูป</span>
-                    </span>
-                  </div>
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-black/5 pointer-events-none" />
                 </div>
               </div>
             )}
