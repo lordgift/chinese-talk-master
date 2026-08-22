@@ -7,6 +7,8 @@ import { Header } from '@/components/Header';
 import { PinyinCard } from '@/components/PinyinCard';
 import { SpeechRecorder } from '@/components/SpeechRecorder';
 import { VocabPrep } from '@/components/VocabPrep';
+import { SentenceExpansionBuilder } from '@/components/SentenceExpansionBuilder';
+import { MemoryQuiz } from '@/components/MemoryQuiz';
 import { ScoreModal } from '@/components/ScoreModal';
 import { AudioPlayer } from '@/components/AudioPlayer';
 import {
@@ -14,15 +16,22 @@ import {
   ChevronRight,
   ChevronLeft,
   BookOpen,
+  Layers,
   ListOrdered,
   Mic,
+  Brain,
   User,
   Bot,
   Sparkles,
   Volume2,
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
-import { DetailedSpeechEvaluation, WordBreakdown } from '@/lib/pinyinUtils';
+import {
+  DetailedSpeechEvaluation,
+  WordBreakdown,
+  getScenarioExpansions,
+  getScenarioMemoryQuiz,
+} from '@/lib/pinyinUtils';
 
 interface PageProps {
   params: Promise<{
@@ -35,10 +44,11 @@ export default function SessionPage({ params }: PageProps) {
   const scenario = SCENARIOS.find((s) => s.id === resolvedParams.scenarioId);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [mode, setMode] = useState<'vocab' | 'step' | 'overview'>('vocab');
+  const [mode, setMode] = useState<'vocab' | 'expansion' | 'step' | 'quiz' | 'overview'>('vocab');
   const [scores, setScores] = useState<Record<number, number>>({});
   const [evaluations, setEvaluations] = useState<Record<number, DetailedSpeechEvaluation | undefined>>({});
   const [isCompleted, setIsCompleted] = useState(false);
+  const [quizScore, setQuizScore] = useState<number | null>(null);
 
   const { speak } = useSpeechSynthesis();
 
@@ -61,13 +71,22 @@ export default function SessionPage({ params }: PageProps) {
   }
 
   // Extract all words across all dialogue lines in this scenario
-  const allScenarioWords: WordBreakdown[] = scenario.dialogues.flatMap((d) => d.words);
+  const allScenarioWords: WordBreakdown[] = scenario.dialogues.flatMap((d) => d.words || []);
+  const expansions = getScenarioExpansions(scenario);
+  const quizQuestions = getScenarioMemoryQuiz(scenario);
   const currentDialogue = scenario.dialogues[currentIndex];
-  const isUserTurn = currentDialogue.speaker === 'user';
+  const isUserTurn = currentDialogue?.speaker === 'user';
 
   const handleScoreUpdate = (score: number, evalResult?: DetailedSpeechEvaluation) => {
     setScores((prev) => ({ ...prev, [currentIndex]: score }));
     setEvaluations((prev) => ({ ...prev, [currentIndex]: evalResult }));
+  };
+
+  const handleStartExpansion = () => {
+    setMode('expansion');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
   const handleStartDialogue = () => {
@@ -78,6 +97,13 @@ export default function SessionPage({ params }: PageProps) {
     }
     if (scenario.dialogues[0]?.speaker === 'ai') {
       speak(scenario.dialogues[0].hanzi);
+    }
+  };
+
+  const handleStartQuiz = () => {
+    setMode('quiz');
+    if (typeof window !== 'undefined') {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
@@ -120,82 +146,108 @@ export default function SessionPage({ params }: PageProps) {
     <div className="min-h-screen bg-slate-50 text-slate-800 flex flex-col font-sans selection:bg-rose-500 selection:text-white">
       <Header />
 
-      {/* Breadcrumb & Navigation Header */}
-      <div className="bg-white/80 border-b border-slate-200 py-3.5 px-4 sm:px-6">
-        <div className="max-w-4xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
+      {/* Breadcrumb & 4-Stage Navigation Bar */}
+      <div className="bg-white/90 border-b border-slate-200/80 py-3 px-4 sm:px-6 sticky top-0 z-30 backdrop-blur-md">
+        <div className="max-w-5xl mx-auto flex flex-wrap items-center justify-between gap-3 text-xs">
           <Link
             href="/"
             className="inline-flex items-center gap-1.5 font-semibold text-slate-600 hover:text-slate-900 transition"
           >
             <ArrowLeft className="w-4 h-4" />
-            <span>กลับหน้าเลือกบทเรียน</span>
+            <span>กลับหน้าหลัก</span>
           </Link>
 
-          {/* Practice Mode Toggle */}
+          {/* 4-Stage Learning Mode Tabs */}
           <div className="flex items-center gap-1 bg-slate-100 p-1 rounded-2xl border border-slate-200 overflow-x-auto max-w-full">
             <button
               type="button"
               onClick={() => setMode('vocab')}
-              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
                 mode === 'vocab'
-                  ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs'
+                  ? 'bg-amber-500 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <BookOpen className="w-3.5 h-3.5" />
-              <span>📚 1. ปูพื้นฐานคำศัพท์</span>
+              <span>1. 📚 จำศัพท์</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode('expansion')}
+              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
+                mode === 'expansion'
+                  ? 'bg-gradient-to-r from-amber-500 to-rose-500 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Layers className="w-3.5 h-3.5" />
+              <span>2. 🧱 ต่อประโยคสั้น➔ยาว</span>
             </button>
 
             <button
               type="button"
               onClick={() => setMode('step')}
-              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
+              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
                 mode === 'step'
-                  ? 'bg-gradient-to-r from-rose-500 to-amber-500 text-white shadow-xs'
+                  ? 'bg-rose-500 text-white shadow-xs'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
               <Mic className="w-3.5 h-3.5" />
-              <span>💬 2. ฝึกพูดในบทบาทลูกค้า</span>
+              <span>3. 💬 สนทนาจริง</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setMode('quiz')}
+              className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
+                mode === 'quiz'
+                  ? 'bg-indigo-600 text-white shadow-xs'
+                  : 'text-slate-600 hover:text-slate-900'
+              }`}
+            >
+              <Brain className="w-3.5 h-3.5" />
+              <span>4. 🧠 ทบทวนความจำ</span>
             </button>
 
             <button
               type="button"
               onClick={() => setMode('overview')}
-              className={`px-3.5 py-2 rounded-xl transition font-semibold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[38px] whitespace-nowrap ${
+              className={`px-2.5 py-1.5 rounded-xl transition font-semibold flex items-center gap-1 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
                 mode === 'overview'
-                  ? 'bg-white text-slate-900 shadow-xs border border-slate-200'
-                  : 'text-slate-600 hover:text-slate-900'
+                  ? 'bg-white text-slate-900 shadow-2xs border border-slate-200'
+                  : 'text-slate-500 hover:text-slate-800'
               }`}
             >
               <ListOrdered className="w-3.5 h-3.5" />
-              <span>ภาพรวมบทเรียน</span>
+              <span>ภาพรวม</span>
             </button>
           </div>
         </div>
       </div>
 
       {/* Scenario Title Banner */}
-      <div className="bg-gradient-to-b from-slate-100/90 to-slate-50 border-b border-slate-200 py-6">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
+      <div className="bg-gradient-to-b from-slate-100/90 to-slate-50 border-b border-slate-200 py-5 sm:py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
           <div>
             <div className="flex items-center gap-2">
               <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
                 {scenario.levelTitle}
               </span>
               <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
-                <User className="w-3 h-3 text-amber-600" /> คุณสวมบทบาท: ลูกค้า / นักท่องเที่ยว
+                <User className="w-3 h-3 text-amber-600" /> สวมบทบาท: ลูกค้า / นักท่องเที่ยว
               </span>
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 mt-2 flex items-center gap-2">
-              {scenario.title}
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 mt-2 flex flex-wrap items-baseline gap-2">
+              <span>{scenario.title}</span>
               <span className="text-base text-amber-700 font-serif font-semibold">({scenario.titleZh})</span>
             </h1>
             <p className="text-xs text-slate-600 mt-1">{scenario.description}</p>
           </div>
 
-          <div className="text-right text-xs text-slate-600 bg-white/80 p-2.5 rounded-xl border border-slate-200 shadow-2xs">
+          <div className="text-right text-xs text-slate-600 bg-white/90 p-2.5 rounded-2xl border border-slate-200 shadow-2xs">
             <div>สถานที่: <span className="text-slate-900 font-bold">{scenario.location}</span></div>
             <div>จำนวนประโยค: <span className="text-rose-600 font-bold">{scenario.dialogues.length} ประโยค</span></div>
           </div>
@@ -203,15 +255,26 @@ export default function SessionPage({ params }: PageProps) {
       </div>
 
       {/* Main Content Area */}
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
+      <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {mode === 'vocab' ? (
-          /* Step 1: Vocabulary Prep Mode */
-          <VocabPrep words={allScenarioWords} onStartDialogue={handleStartDialogue} />
+          /* Step 1: Vocabulary Prep & Active Recall Flashcards */
+          <VocabPrep
+            words={allScenarioWords}
+            coreKeywords={scenario.coreKeywords}
+            onStartExpansion={handleStartExpansion}
+            onStartDialogue={handleStartDialogue}
+          />
+        ) : mode === 'expansion' ? (
+          /* Step 2: Progressive Sentence Expansion & Chunk Listening */
+          <SentenceExpansionBuilder
+            expansions={expansions}
+            onProceedToDialogue={handleStartDialogue}
+          />
         ) : mode === 'step' ? (
-          /* Step 2: Step-by-Step Dialogue Practice Mode */
+          /* Step 3: Step-by-Step Dialogue Practice Mode */
           <div className="space-y-6">
             {/* Step Progress & Roleplay Helper Bar */}
-            <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3">
+            <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-600 font-medium">
                   ความคืบหน้าประโยคที่ <span className="font-bold text-slate-900">{currentIndex + 1}</span> จาก {scenario.dialogues.length}
@@ -220,7 +283,7 @@ export default function SessionPage({ params }: PageProps) {
                   {Math.round(((currentIndex + 1) / scenario.dialogues.length) * 100)}%
                 </span>
               </div>
-              <div className="w-full h-2.5 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
+              <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                 <div
                   className="h-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-300 rounded-full"
                   style={{
@@ -231,7 +294,7 @@ export default function SessionPage({ params }: PageProps) {
 
               {/* Clear Turn Status Banner */}
               {!isUserTurn ? (
-                <div className="bg-indigo-50 border border-indigo-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="bg-indigo-50 border border-indigo-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-2 text-indigo-900 font-bold">
                     <Bot className="w-4 h-4 text-indigo-600 animate-pulse" />
                     <span>🔊 1. ฟังคู่สนทนาพูด ({currentDialogue.speakerName})</span>
@@ -241,7 +304,7 @@ export default function SessionPage({ params }: PageProps) {
                   </span>
                 </div>
               ) : (
-                <div className="bg-amber-50 border border-amber-200 rounded-xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="bg-amber-50 border border-amber-200 rounded-2xl p-3 flex flex-wrap items-center justify-between gap-2 text-xs">
                   <div className="flex items-center gap-2 text-amber-900 font-bold">
                     <User className="w-4 h-4 text-amber-600" />
                     <span>🎙️ 2. คิวคุณออกเสียงพูดตอบ ({currentDialogue.speakerName})</span>
@@ -334,12 +397,10 @@ export default function SessionPage({ params }: PageProps) {
                 </div>
               </div>
             ) : (
-              /* User Customer Speech Practice Warm Emerald-Amber Card */
+              /* User Customer Speech Practice Warm Card */
               <div className="rounded-3xl bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-emerald-500/10 border-2 border-amber-400/90 p-5 sm:p-7 shadow-xl space-y-5 relative overflow-hidden bg-white">
-                {/* Glow Ambient lights for User Stage */}
                 <div className="absolute -top-16 -right-16 w-48 h-48 bg-amber-400/15 rounded-full blur-2xl pointer-events-none" />
 
-                {/* Header: User Avatar & Mic Badge */}
                 <div className="flex items-center justify-between border-b border-amber-200/90 pb-4 relative z-10">
                   <div className="flex items-center gap-3">
                     <span className="text-3xl p-2.5 rounded-2xl bg-amber-50 border border-amber-200 shadow-2xs">
@@ -406,6 +467,13 @@ export default function SessionPage({ params }: PageProps) {
               </button>
             </div>
           </div>
+        ) : mode === 'quiz' ? (
+          /* Step 4: Memory Retention Quick-Quiz */
+          <MemoryQuiz
+            questions={quizQuestions}
+            onComplete={(score) => setQuizScore(score)}
+            onRetry={() => setQuizScore(null)}
+          />
         ) : (
           /* Overview Mode */
           <div className="space-y-4">

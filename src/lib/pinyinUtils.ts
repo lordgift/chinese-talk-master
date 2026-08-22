@@ -24,6 +24,42 @@ export type CategoryId =
   | 'hotel-stay'
   | 'weather-climate';
 
+export interface SentenceExpansionStep {
+  stepNumber: number;
+  hanzi: string;
+  pinyin: string;
+  thai: string;
+  addedPart?: string; // New word or chunk added at this step
+  explanation?: string;
+}
+
+export interface SentenceExpansion {
+  id: string;
+  targetHanzi: string;
+  targetPinyin: string;
+  targetThai: string;
+  scenarioContext?: string;
+  steps: SentenceExpansionStep[];
+  scrambledWords?: { hanzi: string; pinyin: string; thai: string }[];
+}
+
+export interface MemoryQuizOption {
+  text: string;
+  textZh?: string;
+  isCorrect: boolean;
+}
+
+export interface MemoryQuizQuestion {
+  id: string;
+  type: 'listen-meaning' | 'fill-blank' | 'scenario-response';
+  questionText: string;
+  audioText?: string;
+  promptZh?: string;
+  promptPinyin?: string;
+  options: MemoryQuizOption[];
+  explanation: string;
+}
+
 export interface Scenario {
   id: string;
   categoryId: CategoryId;
@@ -36,6 +72,9 @@ export interface Scenario {
   location: string;
   estimatedMinutes: number;
   dialogues: DialogueLine[];
+  coreKeywords?: WordBreakdown[];
+  expansions?: SentenceExpansion[];
+  memoryQuiz?: MemoryQuizQuestion[];
 }
 
 export interface Category {
@@ -250,4 +289,175 @@ export function evaluateWordByWordPronunciation(
     correctCount,
     missedCount,
   };
+}
+
+/**
+ * Get or automatically generate sentence expansion ladder for a scenario
+ */
+export function getScenarioExpansions(scenario: Scenario): SentenceExpansion[] {
+  if (scenario.expansions && scenario.expansions.length > 0) {
+    return scenario.expansions;
+  }
+
+  // Fallback: Generate progressive expansions from user dialogues
+  const userDialogues = scenario.dialogues.filter((d) => d.speaker === 'user');
+  const targetList = userDialogues.length > 0 ? userDialogues : scenario.dialogues;
+
+  return targetList.map((dlg, dIdx) => {
+    const words = dlg.words || [];
+    const steps: SentenceExpansionStep[] = [];
+
+    if (words.length <= 1) {
+      steps.push({
+        stepNumber: 1,
+        hanzi: dlg.hanzi,
+        pinyin: dlg.pinyin,
+        thai: dlg.thai,
+        addedPart: dlg.hanzi,
+        explanation: 'ฝึกฟังและออกเสียงทั้งประโยค/คำนี้ให้คล่องปาก',
+      });
+    } else {
+      // Step 1: First essential word
+      steps.push({
+        stepNumber: 1,
+        hanzi: words[0].hanzi,
+        pinyin: words[0].pinyin,
+        thai: words[0].thai,
+        addedPart: words[0].hanzi,
+        explanation: `เริ่มต้นจำคำศัพท์กุญแจสำคัญ: "${words[0].thai}"`,
+      });
+
+      // Middle steps (if more than 2 words)
+      if (words.length > 2) {
+        const midWords = words.slice(0, 2);
+        const midHanzi = midWords.map((w) => w.hanzi).join('');
+        const midPinyin = midWords.map((w) => w.pinyin).join(' ');
+        const midThai = midWords.map((w) => w.thai).join(' + ');
+
+        steps.push({
+          stepNumber: 2,
+          hanzi: midHanzi,
+          pinyin: midPinyin,
+          thai: midThai,
+          addedPart: words[1].hanzi,
+          explanation: `เติมคำเพิ่ม: "${words[1].hanzi}" (${words[1].thai})`,
+        });
+      }
+
+      // Final step: Full sentence
+      steps.push({
+        stepNumber: steps.length + 1,
+        hanzi: dlg.hanzi,
+        pinyin: dlg.pinyin,
+        thai: dlg.thai,
+        addedPart: dlg.hanzi,
+        explanation: 'รวมเป็นประโยคสมบูรณ์พร้อมใช้พูดจริง!',
+      });
+    }
+
+    // Scramble words for the assembly game
+    const scrambled = [...words].sort(() => Math.random() - 0.5);
+
+    return {
+      id: `exp-${scenario.id}-${dIdx + 1}`,
+      targetHanzi: dlg.hanzi,
+      targetPinyin: dlg.pinyin,
+      targetThai: dlg.thai,
+      scenarioContext: dlg.thai,
+      steps,
+      scrambledWords: scrambled.map((w) => ({ hanzi: w.hanzi, pinyin: w.pinyin, thai: w.thai })),
+    };
+  });
+}
+
+/**
+ * Get or automatically generate memory quiz questions for a scenario
+ */
+export function getScenarioMemoryQuiz(scenario: Scenario): MemoryQuizQuestion[] {
+  if (scenario.memoryQuiz && scenario.memoryQuiz.length > 0) {
+    return scenario.memoryQuiz;
+  }
+
+  const allWords = scenario.dialogues.flatMap((d) => d.words || []);
+  const uniqueWords = allWords.filter(
+    (w, idx, self) => self.findIndex((item) => item.hanzi === w.hanzi) === idx
+  );
+
+  const questions: MemoryQuizQuestion[] = [];
+
+  // Question 1: Listen to a core word and pick Thai meaning
+  if (uniqueWords.length > 0) {
+    const targetWord = uniqueWords[0];
+    const distractorWords = uniqueWords.slice(1, 4);
+    const options = [
+      { text: targetWord.thai, textZh: targetWord.hanzi, isCorrect: true },
+      ...distractorWords.map((w) => ({ text: w.thai, textZh: w.hanzi, isCorrect: false })),
+    ];
+    // Add generic distractors if needed
+    if (options.length < 3) {
+      options.push(
+        { text: 'ราคาเท่าไหร่', textZh: '多少钱', isCorrect: false },
+        { text: 'ขอบคุณมาก', textZh: '非常感谢', isCorrect: false }
+      );
+    }
+
+    questions.push({
+      id: `quiz-${scenario.id}-1`,
+      type: 'listen-meaning',
+      questionText: '🎧 ฟังเสียงภาษาจีนแล้วเลือกว่ามีความหมายตรงกับข้อใด?',
+      audioText: targetWord.hanzi,
+      promptZh: targetWord.hanzi,
+      promptPinyin: targetWord.pinyin,
+      options: options.slice(0, 4).sort(() => Math.random() - 0.5),
+      explanation: `"${targetWord.hanzi}" (${targetWord.pinyin}) แปลว่า "${targetWord.thai}"`,
+    });
+  }
+
+  // Question 2: Fill in the blank for a user dialogue line
+  const userDlg = scenario.dialogues.find((d) => d.speaker === 'user' && d.words.length >= 2);
+  if (userDlg && userDlg.words.length >= 2) {
+    const missingWord = userDlg.words[userDlg.words.length - 1];
+    const blankSentence = userDlg.hanzi.replace(missingWord.hanzi, '_____');
+
+    const otherWords = uniqueWords.filter((w) => w.hanzi !== missingWord.hanzi);
+    const options = [
+      { text: `${missingWord.hanzi} (${missingWord.thai})`, textZh: missingWord.hanzi, isCorrect: true },
+      ...otherWords.slice(0, 3).map((w) => ({ text: `${w.hanzi} (${w.thai})`, textZh: w.hanzi, isCorrect: false })),
+    ];
+
+    questions.push({
+      id: `quiz-${scenario.id}-2`,
+      type: 'fill-blank',
+      questionText: `🧩 เติมคำในช่องว่างเพื่อให้ประโยคสมบูรณ์: "${userDlg.thai}"`,
+      promptZh: blankSentence,
+      promptPinyin: userDlg.pinyin,
+      options: options.slice(0, 4).sort(() => Math.random() - 0.5),
+      explanation: `ประโยคที่ถูกต้องคือ "${userDlg.hanzi}" (${userDlg.pinyin}) - ${userDlg.thai}`,
+    });
+  }
+
+  // Question 3: Scenario Response Choice
+  const firstUserDlg = scenario.dialogues.find((d) => d.speaker === 'user');
+  if (firstUserDlg) {
+    const otherUserDlgs = scenario.dialogues.filter((d) => d.speaker === 'user' && d.id !== firstUserDlg.id);
+    const options = [
+      { text: `${firstUserDlg.hanzi} (${firstUserDlg.pinyin})`, textZh: firstUserDlg.hanzi, isCorrect: true },
+      ...otherUserDlgs.slice(0, 2).map((d) => ({
+        text: `${d.hanzi} (${d.pinyin})`,
+        textZh: d.hanzi,
+        isCorrect: false,
+      })),
+      { text: '谢谢，再见 (Xièxie, zàijiàn)', textZh: '谢谢，再见', isCorrect: false },
+    ];
+
+    questions.push({
+      id: `quiz-${scenario.id}-3`,
+      type: 'scenario-response',
+      questionText: `💬 ในสถานการณ์ "${scenario.title}": หากคุณต้องการพูดว่า "${firstUserDlg.thai}" ควรพูดว่าอย่างไร?`,
+      options: options.slice(0, 4).sort(() => Math.random() - 0.5),
+      explanation: `คำตอบคือ "${firstUserDlg.hanzi}" (${firstUserDlg.pinyin}) แปลว่า "${firstUserDlg.thai}"`,
+    });
+  }
+
+  return questions;
 }

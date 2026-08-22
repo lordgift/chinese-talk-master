@@ -95,6 +95,17 @@ export default function HomePage() {
             ไม่ต้องท่องศัพท์เยอะ! เน้นสถานการณ์จริงที่ต้องเจอในทริปตั้งแต่ <span className="text-indigo-700 font-bold">ปูพื้นฐานสั้นๆ 🔰</span> <span className="text-sky-700 font-bold">เดินทางขึ้นรถไฟฟ้า Metro/เรียกรถ 🚇</span> <span className="text-amber-700 font-bold">สั่งอาหาร/สแกน Alipay 🍜</span> ไปจนถึง <span className="text-emerald-700 font-bold">เช็คอินโรงแรม 🏨</span>
           </p>
 
+          {/* 4-Step Learning Method Banner */}
+          <div className="mt-6 inline-flex flex-wrap items-center justify-center gap-2 p-2 rounded-2xl bg-white/90 border border-slate-200 shadow-2xs text-xs font-bold text-slate-700">
+            <span className="px-2.5 py-1 rounded-xl bg-amber-100 text-amber-900">1. 📚 จำศัพท์สำคัญ</span>
+            <span className="text-slate-400">➔</span>
+            <span className="px-2.5 py-1 rounded-xl bg-rose-100 text-rose-900">2. 🧱 ต่อประโยคสั้น➔ยาว</span>
+            <span className="text-slate-400">➔</span>
+            <span className="px-2.5 py-1 rounded-xl bg-emerald-100 text-emerald-900">3. 💬 สวมบทบาทสนทนา</span>
+            <span className="text-slate-400">➔</span>
+            <span className="px-2.5 py-1 rounded-xl bg-indigo-100 text-indigo-900">4. 🧠 ทบทวนความจำ</span>
+          </div>
+
           {/* Tone Guide Bar */}
           <div className="mt-8 max-w-2xl mx-auto bg-white border border-slate-200/80 rounded-2xl p-4 shadow-sm">
             <div className="flex items-center justify-between border-b border-slate-100 pb-2 mb-3">

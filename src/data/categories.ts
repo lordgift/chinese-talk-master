@@ -5,11 +5,11 @@ export const CATEGORIES: Category[] = [
     id: 'survival-foundation',
     title: 'ปูพื้นฐานเอาตัวรอด (Zero-Foundation)',
     titleZh: '生存基础 (Shēngchún Jīchǔ)',
-    description: 'สำหรับผู้ไม่มีพื้นฐานเลย: ฝึกพยัญชนะ (b p m f), สระ & วรรณยุกต์ Pinyin, คำทักทายติดปาก, นับเลข 0-100, ประโยคไม้ตายเอาตัวรอด และการฟังไม่ออก',
+    description: 'สำหรับผู้ไม่มีพื้นฐานเลย: ฝึกพยัญชนะ (b p m f), สระ & วรรณยุกต์ Pinyin, คำทักทายติดปาก, นับเลข 0-100, คำคู่ตรงข้าม & ประโยคสถานการณ์, ประโยคไม้ตายเอาตัวรอด และการฟังไม่ออก',
     icon: 'GraduationCap',
     color: 'from-indigo-500 to-purple-500',
     bgGradient: 'bg-gradient-to-br from-indigo-500/10 via-purple-500/5 to-transparent',
-    scenariosCount: 6,
+    scenariosCount: 7,
     isAvailable: true,
   },
   {
