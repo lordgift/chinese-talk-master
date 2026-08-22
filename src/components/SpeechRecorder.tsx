@@ -66,7 +66,7 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
   };
 
   const handlePlayWord = (wordHanzi: string) => {
-    speak(wordHanzi, 0.5); // Play missed word slowly at 0.5x
+    speak(wordHanzi, 0.65); // Play missed word slowly at 0.65x
   };
 
   if (!isSupported) {

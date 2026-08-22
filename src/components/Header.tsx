@@ -1,9 +1,14 @@
 'use client';
 
+import { useState } from 'react';
 import Link from 'next/link';
+import { Sliders } from 'lucide-react';
 import { UserMenu } from './UserMenu';
+import { VoiceSettingsModal } from './VoiceSettingsModal';
 
 export function Header() {
+  const [isVoiceSettingsOpen, setIsVoiceSettingsOpen] = useState(false);
+
   return (
     <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 text-slate-900 shadow-xs">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 sm:h-16 flex items-center justify-between gap-3">
@@ -31,11 +36,30 @@ export function Header() {
           </div>
         </Link>
 
-        {/* User Menu */}
-        <div className="flex items-center shrink-0">
+        {/* Right Action Controls: Voice Settings + User Menu */}
+        <div className="flex items-center gap-2 shrink-0">
+          {/* Voice Settings Button */}
+          <button
+            type="button"
+            onClick={() => setIsVoiceSettingsOpen(true)}
+            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 hover:text-slate-900 border border-slate-200 shadow-2xs font-bold text-xs transition active:scale-95 cursor-pointer touch-manipulation min-h-[40px]"
+            title="ปรับแต่งเสียงพูดภาษาจีน (Voice & Pitch Settings)"
+          >
+            <Sliders className="w-4 h-4 text-amber-600" />
+            <span className="hidden sm:inline">ตั้งค่าเสียง</span>
+          </button>
+
+          {/* User Menu */}
           <UserMenu />
         </div>
       </div>
+
+      {/* Voice Settings Modal */}
+      <VoiceSettingsModal
+        isOpen={isVoiceSettingsOpen}
+        onClose={() => setIsVoiceSettingsOpen(false)}
+      />
     </header>
   );
 }
+
