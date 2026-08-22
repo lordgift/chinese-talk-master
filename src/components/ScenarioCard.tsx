@@ -136,14 +136,33 @@ export function ScenarioCard({ scenario }: ScenarioCardProps) {
             </div>
           </div>
 
+          {/* Ghibli Scenario Scene Cover */}
+          {scenario.image && (
+            <div className="relative w-full h-32 sm:h-36 rounded-xl overflow-hidden mb-3 border border-slate-100/90 shadow-2xs group-hover:shadow-sm transition-all bg-slate-100">
+              <img
+                src={scenario.image}
+                alt={scenario.imageAlt || scenario.title}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/50 via-transparent to-transparent pointer-events-none" />
+              <div className="absolute bottom-2 left-2 right-2 flex items-center justify-between pointer-events-none">
+                <span className="text-[10px] font-semibold text-white/95 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/20 flex items-center gap-1 shadow-2xs">
+                  <MapPin className="w-2.5 h-2.5 text-amber-300 shrink-0" />
+                  <span className="truncate max-w-[160px]">{scenario.location}</span>
+                </span>
+              </div>
+            </div>
+          )}
+
           {/* Icon, Title & Score Pie Chart */}
           <div className="flex items-start justify-between gap-3 my-2">
             <div className="flex items-start gap-3">
-              <div className="p-2.5 rounded-xl bg-slate-100 border border-slate-200 group-hover:scale-105 transition-transform shrink-0">
+              <div className="p-2 rounded-xl bg-slate-100 border border-slate-200 group-hover:scale-105 transition-transform shrink-0">
                 {renderIcon(scenario.icon)}
               </div>
               <div>
-                <h3 className="text-base font-bold text-slate-900 group-hover:text-rose-600 transition">
+                <h3 className="text-base font-bold text-slate-900 group-hover:text-rose-600 transition leading-snug">
                   {scenario.title}
                 </h3>
                 <p className="text-xs font-serif font-semibold text-rose-600">{scenario.titleZh}</p>

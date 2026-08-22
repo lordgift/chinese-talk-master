@@ -25,6 +25,8 @@ import {
   Bot,
   Sparkles,
   Volume2,
+  Maximize2,
+  X,
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import {
@@ -50,6 +52,7 @@ export default function SessionPage({ params }: PageProps) {
   const [evaluations, setEvaluations] = useState<Record<number, DetailedSpeechEvaluation | undefined>>({});
   const [isCompleted, setIsCompleted] = useState(false);
   const [quizScore, setQuizScore] = useState<number | null>(null);
+  const [showImageModal, setShowImageModal] = useState(false);
 
   const { speak } = useSpeechSynthesis();
 
@@ -235,40 +238,125 @@ export default function SessionPage({ params }: PageProps) {
         </div>
       </div>
 
-      {/* Scenario Title Banner */}
-      <div className="bg-gradient-to-b from-slate-100/90 to-slate-50 border-b border-slate-200 py-5 sm:py-6">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 flex flex-wrap items-center justify-between gap-4">
-          <div>
-            <div className="flex items-center gap-2">
-              <span
-                className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
-                  scenario.level === 'easy'
-                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                    : scenario.level === 'medium'
-                    ? 'bg-amber-50 text-amber-700 border-amber-200'
-                    : 'bg-rose-50 text-rose-700 border-rose-200'
-                }`}
-              >
-                {scenario.levelTitle}
-              </span>
-              <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
-                <User className="w-3 h-3 text-amber-600" /> สวมบทบาท: ลูกค้า / นักท่องเที่ยว
-              </span>
+      {/* Scenario Title Banner & Ghibli Scene Hero */}
+      <div className="bg-gradient-to-b from-slate-100/90 to-slate-50 border-b border-slate-200 py-5 sm:py-7">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-5 items-center">
+            {/* Left Column: Info & Badges */}
+            <div className={`${scenario.image ? 'md:col-span-7' : 'md:col-span-12'} space-y-3`}>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span
+                  className={`text-[11px] font-bold px-2.5 py-0.5 rounded-full border ${
+                    scenario.level === 'easy'
+                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
+                      : scenario.level === 'medium'
+                      ? 'bg-amber-50 text-amber-700 border-amber-200'
+                      : 'bg-rose-50 text-rose-700 border-rose-200'
+                  }`}
+                >
+                  {scenario.levelTitle}
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200 flex items-center gap-1">
+                  <User className="w-3 h-3 text-amber-600" /> สวมบทบาท: ลูกค้า / นักท่องเที่ยว
+                </span>
+                <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-sky-50 text-sky-700 border border-sky-200 flex items-center gap-1">
+                  <Sparkles className="w-3 h-3 text-sky-500" /> สไตล์ Ghibli 2D
+                </span>
+              </div>
+
+              <div>
+                <h1 className="text-xl sm:text-2xl font-black text-slate-900 flex flex-wrap items-baseline gap-2">
+                  <span>{scenario.title}</span>
+                  <span className="text-base text-amber-700 font-serif font-semibold">({scenario.titleZh})</span>
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-600 mt-1.5 leading-relaxed">{scenario.description}</p>
+              </div>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-600 pt-1">
+                <div className="flex items-center gap-1.5 font-medium bg-white/80 px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                  <span className="text-slate-400">📍 สถานที่:</span>
+                  <span className="text-slate-900 font-bold">{scenario.location}</span>
+                </div>
+                <div className="flex items-center gap-1.5 font-medium bg-white/80 px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
+                  <span className="text-slate-400">💬 จำนวน:</span>
+                  <span className="text-rose-600 font-bold">{scenario.dialogues.length} ประโยค</span>
+                </div>
+              </div>
             </div>
 
-            <h1 className="text-xl sm:text-2xl font-black text-slate-900 mt-2 flex flex-wrap items-baseline gap-2">
-              <span>{scenario.title}</span>
-              <span className="text-base text-amber-700 font-serif font-semibold">({scenario.titleZh})</span>
-            </h1>
-            <p className="text-xs text-slate-600 mt-1">{scenario.description}</p>
-          </div>
-
-          <div className="text-right text-xs text-slate-600 bg-white/90 p-2.5 rounded-2xl border border-slate-200 shadow-2xs">
-            <div>สถานที่: <span className="text-slate-900 font-bold">{scenario.location}</span></div>
-            <div>จำนวนประโยค: <span className="text-rose-600 font-bold">{scenario.dialogues.length} ประโยค</span></div>
+            {/* Right Column: Interactive Ghibli Illustration Card */}
+            {scenario.image && (
+              <div className="md:col-span-5">
+                <div
+                  onClick={() => setShowImageModal(true)}
+                  className="group relative rounded-2xl overflow-hidden border border-slate-200/90 shadow-md hover:shadow-xl transition-all duration-300 cursor-pointer aspect-[16/9] bg-slate-900/5 ring-1 ring-black/5 hover:ring-rose-400/40"
+                  title="คลิกเพื่อดูภาพบรรยากาศเต็มตา"
+                >
+                  <img
+                    src={scenario.image}
+                    alt={scenario.imageAlt || scenario.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-slate-950/70 via-transparent to-black/10 pointer-events-none" />
+                  
+                  {/* Floating Caption on Image */}
+                  <div className="absolute bottom-2.5 left-2.5 right-2.5 flex items-center justify-between pointer-events-none">
+                    <span className="text-[10px] font-bold text-white/95 px-2 py-0.5 rounded-md bg-black/50 backdrop-blur-md border border-white/20 flex items-center gap-1 shadow-2xs">
+                      <span>🎨 บรรยากาศจำลอง</span>
+                    </span>
+                    <span className="text-[10px] font-bold text-white/90 px-2 py-0.5 rounded-md bg-black/40 backdrop-blur-md border border-white/10 flex items-center gap-1 group-hover:bg-rose-500 transition-colors">
+                      <Maximize2 className="w-3 h-3" />
+                      <span>ขยายดูรูป</span>
+                    </span>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
         </div>
       </div>
+
+      {/* Fullscreen Ghibli Image Modal */}
+      {showImageModal && scenario.image && (
+        <div
+          onClick={() => setShowImageModal(false)}
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="relative max-w-4xl w-full bg-white rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 flex flex-col max-h-[90vh]"
+          >
+            <div className="relative aspect-[16/9] w-full bg-slate-950 flex items-center justify-center overflow-hidden">
+              <img
+                src={scenario.image}
+                alt={scenario.imageAlt || scenario.title}
+                className="w-full h-full object-contain"
+              />
+              <button
+                type="button"
+                onClick={() => setShowImageModal(false)}
+                className="absolute top-3.5 right-3.5 w-9 h-9 rounded-full bg-black/60 hover:bg-black/90 text-white flex items-center justify-center backdrop-blur-md transition-colors cursor-pointer border border-white/20"
+                title="ปิด"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+            <div className="p-5 sm:p-6 bg-white space-y-2 overflow-y-auto">
+              <div className="flex items-center justify-between gap-2 flex-wrap">
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200">
+                    {scenario.location}
+                  </span>
+                  <span className="text-xs font-medium text-slate-500">ภาพประกอบสถานการณ์สไตล์ Ghibli 2D</span>
+                </div>
+                <span className="text-xs text-slate-400">ภาพจำลองเพื่อสร้างจินตนาการและการเรียนรู้</span>
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">{scenario.title}</h3>
+              <p className="text-xs sm:text-sm text-slate-600 leading-relaxed">{scenario.description}</p>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Main Content Area */}
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">

@@ -72,6 +72,8 @@ export interface Scenario {
   icon: string;
   location: string;
   estimatedMinutes: number;
+  image?: string;
+  imageAlt?: string;
   dialogues: DialogueLine[];
   coreKeywords?: WordBreakdown[];
   expansions?: SentenceExpansion[];

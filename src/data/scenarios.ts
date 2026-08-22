@@ -15,6 +15,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ห้องเรียน Pinyin (拼音课堂)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-pinyin-initials.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ห้องเรียน Pinyin (拼音课堂) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'pi-1',
@@ -76,6 +78,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ห้องเรียน Pinyin (拼音课堂)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-pinyin-finals.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ห้องเรียน Pinyin (拼音课堂) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'pf-1',
@@ -139,6 +143,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ทั่วไป (街头/สนามบิน)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-pinyin-greetings.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ทั่วไป (街头/สนามบิน) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'fg-1',
@@ -215,6 +221,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ร้านค้า & เคาน์เตอร์ (商店/柜台)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-numbers-prices.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านค้า & เคาน์เตอร์ (商店/柜台) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'fn-1',
@@ -279,6 +287,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ร้านค้า & ตลาดริมทาง (商店/街头小摊)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-essential-questions.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านค้า & ตลาดริมทาง (商店/街头小摊) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'fq-1',
@@ -391,6 +401,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'สถานที่ทั่วไป / ร้านค้า (街头/店面)',
     estimatedMinutes: 3,
+    image: '/scenarios/foundation-not-understand-english.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ สถานที่ทั่วไป / ร้านค้า (街头/店面) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'fue-1',
@@ -480,6 +492,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'GraduationCap',
     location: 'ร้านค้า & ชีวิตประจำวัน (商店/日常)',
     estimatedMinutes: 4,
+    image: '/scenarios/foundation-opposite-words.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านค้า & ชีวิตประจำวัน (商店/日常) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'fow-1',
@@ -718,6 +732,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'MapPin',
     location: 'ริมถนน / ข้างทาง (街头)',
     estimatedMinutes: 3,
+    image: '/scenarios/travel-asking-directions.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ริมถนน / ข้างทาง (街头) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'ad-1',
@@ -893,6 +909,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Compass',
     location: 'เคาน์เตอร์ขายตั๋วรถไฟฟ้าใต้ดิน (地铁售票处)',
     estimatedMinutes: 3,
+    image: '/scenarios/travel-subway-metro.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ เคาน์เตอร์ขายตั๋วรถไฟฟ้าใต้ดิน (地铁售票处) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'ts-1',
@@ -960,6 +978,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Car',
     location: 'บนรถแท็กซี่ / Didi (出租车/网约车)',
     estimatedMinutes: 3,
+    image: '/scenarios/travel-taxi-didi.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ บนรถแท็กซี่ / Didi (出租车/网约车) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'tt-1',
@@ -1027,6 +1047,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'MapPin',
     location: 'หน้าสถานที่ท่องเที่ยว (景区门口)',
     estimatedMinutes: 3,
+    image: '/scenarios/travel-asking-spot.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ หน้าสถานที่ท่องเที่ยว (景区门口) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'ta-1',
@@ -1080,6 +1102,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'CloudSun',
     location: 'โรงแรม / นอกสถานที่ (酒店/户外)',
     estimatedMinutes: 3,
+    image: '/scenarios/travel-weather.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ โรงแรม / นอกสถานที่ (酒店/户外) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'tw-1',
@@ -1274,6 +1298,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'UtensilsCrossed',
     location: 'ร้านอาหารทั่วไป (餐厅)',
     estimatedMinutes: 3,
+    image: '/scenarios/dining-food-pointing.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านอาหารทั่วไป (餐厅) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'df-1',
@@ -1529,6 +1555,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Utensils',
     location: 'ร้านอาหาร (餐厅)',
     estimatedMinutes: 3,
+    image: '/scenarios/dining-meat-types.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านอาหาร (餐厅) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'dm-1',
@@ -1618,6 +1646,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'CupSoda',
     location: 'ร้านชานมไข่มุก/กาแฟ (奶茶店/咖啡馆)',
     estimatedMinutes: 3,
+    image: '/scenarios/dining-boba-coffee.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านชานมไข่มุก/กาแฟ (奶茶店/咖啡馆) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'db-1',
@@ -1809,6 +1839,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'ShoppingBag',
     location: 'ร้านค้า & เคาน์เตอร์ชำระเงิน (商场/收银台)',
     estimatedMinutes: 3,
+    image: '/scenarios/shopping-alipay-pay.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ร้านค้า & เคาน์เตอร์ชำระเงิน (商场/收银台) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'sp-1',
@@ -2094,6 +2126,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Building2',
     location: 'เคาน์เตอร์เช็คอินโรงแรม (酒店前台)',
     estimatedMinutes: 3,
+    image: '/scenarios/hotel-checkin-passport.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ เคาน์เตอร์เช็คอินโรงแรม (酒店前台) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'hc-1',
@@ -2151,6 +2185,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Building2',
     location: 'เคาน์เตอร์เช็คอินโรงแรม (酒店前台)',
     estimatedMinutes: 3,
+    image: '/scenarios/hotel-luggage-storage.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ เคาน์เตอร์เช็คอินโรงแรม (酒店前台) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'hl-1',
@@ -2260,6 +2296,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Building2',
     location: 'เคาน์เตอร์ & ห้องพักโรงแรม (酒店前台/房间)',
     estimatedMinutes: 3,
+    image: '/scenarios/hotel-wifi-services.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ เคาน์เตอร์ & ห้องพักโรงแรม (酒店前台/房间) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'hs-1',
@@ -2361,6 +2399,8 @@ export const SCENARIOS: Scenario[] = [
     icon: 'Building2',
     location: 'ประตูหน้าห้องพักโรงแรม (客房门口)',
     estimatedMinutes: 3,
+    image: '/scenarios/hotel-housekeeping-cleaning.jpg',
+    imageAlt: 'ภาพประกอบบรรยากาศ ประตูหน้าห้องพักโรงแรม (客房门口) สไตล์ Ghibli 2D',
     dialogues: [
       {
         id: 'hk-1',
