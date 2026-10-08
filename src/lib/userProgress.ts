@@ -12,6 +12,70 @@ export interface ScenarioProgress {
 
 const LOCAL_STORAGE_KEY = 'chinese_talk_user_progress';
 const LOCAL_FAVORITES_KEY = 'chinese_talk_user_favorites';
+const LOCAL_SAVED_WORDS_KEY = 'chinese_talk_saved_words';
+// uid of the account the local data belongs to; absent = guest data not yet uploaded
+const LOCAL_OWNER_KEY = 'chinese_talk_local_owner';
+
+const getLocalOwner = (): string | null => {
+  if (typeof window === 'undefined') return null;
+  try {
+    return localStorage.getItem(LOCAL_OWNER_KEY);
+  } catch {
+    return null;
+  }
+};
+
+const setLocalOwner = (userId: string) => {
+  if (typeof window === 'undefined') return;
+  try {
+    localStorage.setItem(LOCAL_OWNER_KEY, userId);
+  } catch (err) {
+    console.error('Error saving local owner:', err);
+  }
+};
+
+const clearLocalUserData = () => {
+  if (typeof window === 'undefined') return;
+  try {
+    [LOCAL_STORAGE_KEY, LOCAL_FAVORITES_KEY, LOCAL_SAVED_WORDS_KEY, LOCAL_OWNER_KEY].forEach((key) =>
+      localStorage.removeItem(key)
+    );
+  } catch (err) {
+    console.error('Error clearing local user data:', err);
+  }
+};
+
+/**
+ * Clear locally cached data that belongs to a signed-in account (on logout / session end),
+ * so it isn't shown to — or synced into — whoever uses this browser next. Guest data is kept.
+ */
+export const releaseLocalUserData = () => {
+  if (getLocalOwner()) {
+    clearLocalUserData();
+  }
+};
+
+/**
+ * Merge two progress records for the same scenario without ever lowering the best score
+ */
+const mergeProgressItem = (a: ScenarioProgress, b: ScenarioProgress): ScenarioProgress => {
+  const newer = new Date(a.completedAt) >= new Date(b.completedAt) ? a : b;
+  return {
+    scenarioId: a.scenarioId || b.scenarioId,
+    scenarioTitle: newer.scenarioTitle || a.scenarioTitle || b.scenarioTitle,
+    bestScore: Math.max(a.bestScore || 0, b.bestScore || 0),
+    lastScore: newer.lastScore ?? 0,
+    completedAt: newer.completedAt,
+    attemptsCount: Math.max(a.attemptsCount || 0, b.attemptsCount || 0),
+  };
+};
+
+const isSameProgress = (a: ScenarioProgress, b: ScenarioProgress): boolean =>
+  a.bestScore === b.bestScore &&
+  a.lastScore === b.lastScore &&
+  a.completedAt === b.completedAt &&
+  a.attemptsCount === b.attemptsCount &&
+  a.scenarioTitle === b.scenarioTitle;
 
 /**
  * Get all progress saved in LocalStorage
@@ -122,7 +186,10 @@ export const fetchUserFavorites = async (
       }
     });
 
-    const mergedFavs: Record<string, boolean> = { ...localFavs, ...firestoreFavs };
+    // Cloud is the source of truth once guest favorites have been uploaded at login,
+    // so removals made on another device aren't resurrected from this device's cache
+    const mergedFavs =
+      getLocalOwner() === userId ? firestoreFavs : { ...localFavs, ...firestoreFavs };
     saveLocalFavorites(mergedFavs);
     return mergedFavs;
   } catch (err) {
@@ -197,22 +264,7 @@ export const fetchUserProgress = async (
     Object.keys(firestoreMap).forEach((id) => {
       const cloudItem = firestoreMap[id];
       const localItem = mergedMap[id];
-
-      if (!localItem) {
-        mergedMap[id] = cloudItem;
-      } else {
-        mergedMap[id] = {
-          scenarioId: id,
-          scenarioTitle: cloudItem.scenarioTitle || localItem.scenarioTitle,
-          bestScore: Math.max(cloudItem.bestScore || 0, localItem.bestScore || 0),
-          lastScore: cloudItem.lastScore || localItem.lastScore,
-          completedAt:
-            new Date(cloudItem.completedAt) > new Date(localItem.completedAt)
-              ? cloudItem.completedAt
-              : localItem.completedAt,
-          attemptsCount: Math.max(cloudItem.attemptsCount || 0, localItem.attemptsCount || 0),
-        };
-      }
+      mergedMap[id] = localItem ? mergeProgressItem(cloudItem, localItem) : cloudItem;
     });
 
     saveLocalProgress(mergedMap);
@@ -233,8 +285,6 @@ export interface SavedWord {
   scenarioTitle?: string;
   savedAt: string;
 }
-
-const LOCAL_SAVED_WORDS_KEY = 'chinese_talk_saved_words';
 
 /**
  * Generate standard unique ID for saved words
@@ -292,7 +342,9 @@ export const fetchUserSavedWords = async (
       }
     });
 
-    const mergedWords: Record<string, SavedWord> = { ...localWords, ...firestoreWords };
+    // Cloud is the source of truth once guest data has been uploaded (see fetchUserFavorites)
+    const mergedWords =
+      getLocalOwner() === userId ? firestoreWords : { ...localWords, ...firestoreWords };
     saveLocalSavedWords(mergedWords);
     return mergedWords;
   } catch (err) {
@@ -353,40 +405,67 @@ export const toggleSaveUserWord = async (
 };
 
 /**
- * Sync offline LocalStorage data (progress, favorites & saved words) to Firestore after Google login
+ * Upload guest (signed-out) LocalStorage data — progress, favorites & saved words — to Firestore
+ * after Google login. Runs once per account: afterwards local data is only a cache of the cloud.
  */
 export const syncLocalToFirestore = async (userId: string) => {
+  const owner = getLocalOwner();
+  if (owner === userId) {
+    return; // Local data is already this account's cache
+  }
+  if (owner) {
+    // Local data belongs to a different account — never sync it into this one
+    clearLocalUserData();
+    setLocalOwner(userId);
+    return;
+  }
+
   const localMap = getLocalProgress();
-  const progressKeys = Object.keys(localMap);
-
   const localFavs = getLocalFavorites();
-  const favoriteKeys = Object.keys(localFavs);
-
   const localSavedWords = getLocalSavedWords();
-  const savedWordKeys = Object.keys(localSavedWords);
 
   try {
+    const [progressSnap, favsSnap, wordsSnap] = await Promise.all([
+      getDocs(collection(db, 'users', userId, 'scenarios')),
+      getDocs(collection(db, 'users', userId, 'favorites')),
+      getDocs(collection(db, 'users', userId, 'saved_words')),
+    ]);
+
+    const cloudProgress: Record<string, ScenarioProgress> = {};
+    progressSnap.forEach((docSnap) => {
+      cloudProgress[docSnap.id] = docSnap.data() as ScenarioProgress;
+    });
+    const cloudFavIds = new Set(favsSnap.docs.map((d) => d.id));
+    const cloudWordIds = new Set(wordsSnap.docs.map((d) => d.id));
+
     const promises: Promise<void>[] = [];
 
-    progressKeys.forEach((scenarioId) => {
-      const docRef = doc(db, 'users', userId, 'scenarios', scenarioId);
-      promises.push(setDoc(docRef, localMap[scenarioId], { merge: true }));
+    Object.keys(localMap).forEach((scenarioId) => {
+      const cloudItem = cloudProgress[scenarioId];
+      const merged = cloudItem ? mergeProgressItem(cloudItem, localMap[scenarioId]) : localMap[scenarioId];
+      if (!cloudItem || !isSameProgress(cloudItem, merged)) {
+        promises.push(setDoc(doc(db, 'users', userId, 'scenarios', scenarioId), merged));
+      }
     });
 
-    favoriteKeys.forEach((scenarioId) => {
-      if (localFavs[scenarioId]) {
+    Object.keys(localFavs).forEach((scenarioId) => {
+      if (localFavs[scenarioId] && !cloudFavIds.has(scenarioId)) {
         const favDocRef = doc(db, 'users', userId, 'favorites', scenarioId);
         promises.push(setDoc(favDocRef, { scenarioId, favoritedAt: new Date().toISOString() }));
       }
     });
 
-    savedWordKeys.forEach((wordId) => {
-      const wordDocRef = doc(db, 'users', userId, 'saved_words', wordId);
-      promises.push(setDoc(wordDocRef, localSavedWords[wordId], { merge: true }));
+    Object.keys(localSavedWords).forEach((wordId) => {
+      if (!cloudWordIds.has(wordId)) {
+        const wordDocRef = doc(db, 'users', userId, 'saved_words', wordId);
+        promises.push(setDoc(wordDocRef, localSavedWords[wordId]));
+      }
     });
 
     await Promise.all(promises);
+    setLocalOwner(userId);
   } catch (err) {
+    // Owner stays unset so the guest data upload is retried on next login
     console.error('Error syncing local data to Firestore on login:', err);
   }
 };

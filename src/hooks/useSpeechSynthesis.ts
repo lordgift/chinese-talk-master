@@ -241,7 +241,8 @@ export function useSpeechSynthesis() {
     };
 
     updateVoices();
-    window.speechSynthesis.onvoiceschanged = updateVoices;
+    // addEventListener (not onvoiceschanged) so every hook instance receives async-loaded voices
+    window.speechSynthesis.addEventListener('voiceschanged', updateVoices);
 
     const handleSettingsChange = (e: Event) => {
       const customEvent = e as CustomEvent<VoiceSettings>;
@@ -261,9 +262,7 @@ export function useSpeechSynthesis() {
     window.addEventListener('chinese_talk_voice_settings_changed', handleSettingsChange);
 
     return () => {
-      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
-        window.speechSynthesis.onvoiceschanged = null;
-      }
+      window.speechSynthesis.removeEventListener('voiceschanged', updateVoices);
       window.removeEventListener('chinese_talk_voice_settings_changed', handleSettingsChange);
     };
   }, []);

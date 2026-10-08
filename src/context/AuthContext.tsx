@@ -19,6 +19,7 @@ import {
   toggleSaveUserWord,
   getSavedWordId,
   syncLocalToFirestore,
+  releaseLocalUserData,
 } from '@/lib/userProgress';
 
 interface AuthContextType {
@@ -82,6 +83,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       if (currentUser) {
         // Sync local progress, favorites & saved words to Firestore on login
         await syncLocalToFirestore(currentUser.uid);
+      } else {
+        // Signed out (or session ended): drop the previous account's cached data
+        releaseLocalUserData();
       }
       await reloadData(currentUser);
       setLoading(false);
@@ -107,6 +111,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       setLoading(true);
       await signOut(auth);
+      releaseLocalUserData();
       await reloadData(null);
     } catch (err) {
       console.error('Sign-out error:', err);

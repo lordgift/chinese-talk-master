@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, use, useMemo, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { SCENARIOS } from '@/data/scenarios';
 import { Header } from '@/components/Header';
@@ -35,6 +35,8 @@ import {
   getScenarioMemoryQuiz,
 } from '@/lib/pinyinUtils';
 
+const subscribeNoop = () => () => {};
+
 interface PageProps {
   params: Promise<{
     scenarioId: string;
@@ -54,6 +56,18 @@ export default function SessionPage({ params }: PageProps) {
   const [showImageModal, setShowImageModal] = useState(false);
 
   const { speak } = useSpeechSynthesis();
+
+  // Shuffled puzzles/quizzes are generated on the client only (avoids SSR hydration mismatch)
+  // and memoized so re-renders don't reshuffle words under the user's selections
+  const isClient = useSyncExternalStore(subscribeNoop, () => true, () => false);
+  const expansions = useMemo(
+    () => (isClient && scenario ? getScenarioExpansions(scenario) : null),
+    [isClient, scenario]
+  );
+  const quizQuestions = useMemo(
+    () => (isClient && scenario ? getScenarioMemoryQuiz(scenario) : null),
+    [isClient, scenario]
+  );
 
   if (!scenario) {
     return (
@@ -75,8 +89,6 @@ export default function SessionPage({ params }: PageProps) {
 
   // Extract all words across all dialogue lines in this scenario
   const allScenarioWords: WordBreakdown[] = scenario.dialogues.flatMap((d) => d.words || []);
-  const expansions = getScenarioExpansions(scenario);
-  const quizQuestions = getScenarioMemoryQuiz(scenario);
   const currentDialogue = scenario.dialogues[currentIndex];
   const isUserTurn = currentDialogue?.speaker === 'user';
 
@@ -350,10 +362,14 @@ export default function SessionPage({ params }: PageProps) {
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8 flex-1 w-full">
         {mode === 'expansion' ? (
           /* Step 1: Progressive Sentence Expansion & Chunk Listening */
-          <SentenceExpansionBuilder
-            expansions={expansions}
-            onProceedToDialogue={handleStartDialogue}
-          />
+          expansions ? (
+            <SentenceExpansionBuilder
+              expansions={expansions}
+              onProceedToDialogue={handleStartDialogue}
+            />
+          ) : (
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 text-center text-sm text-slate-400">กำลังโหลด...</div>
+          )
         ) : mode === 'step' ? (
           /* Step 2: Step-by-Step Dialogue Practice Mode */
           <div className="space-y-6">
@@ -553,12 +569,16 @@ export default function SessionPage({ params }: PageProps) {
           </div>
         ) : mode === 'quiz' ? (
           /* Step 3: Memory Retention Quick-Quiz */
-          <MemoryQuiz
-            questions={quizQuestions}
-            onComplete={(score) => setQuizScore(score)}
-            onRetry={() => setQuizScore(null)}
-            onProceedToVocabSummary={handleStartVocabSummary}
-          />
+          quizQuestions ? (
+            <MemoryQuiz
+              questions={quizQuestions}
+              onComplete={(score) => setQuizScore(score)}
+              onRetry={() => setQuizScore(null)}
+              onProceedToVocabSummary={handleStartVocabSummary}
+            />
+          ) : (
+            <div className="bg-white p-6 rounded-3xl border border-slate-200 text-center text-sm text-slate-400">กำลังโหลด...</div>
+          )
         ) : mode === 'vocab' ? (
           /* Step 4: Vocabulary Summary & Personal Word Bookmark */
           <VocabPrep

@@ -63,6 +63,16 @@ export function useSpeechRecognition() {
     };
 
     recognitionRef.current = recognition;
+
+    return () => {
+      // Release the mic and drop handlers so no state updates fire after unmount
+      recognition.onstart = null;
+      recognition.onresult = null;
+      recognition.onerror = null;
+      recognition.onend = null;
+      recognition.abort();
+      recognitionRef.current = null;
+    };
   }, []);
 
   const startListening = useCallback(() => {

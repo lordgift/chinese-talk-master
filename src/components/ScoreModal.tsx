@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { Trophy, Star, RotateCcw, Home, CloudCheck, HardDrive } from 'lucide-react';
 import confetti from 'canvas-confetti';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { trackEvent } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
 import { saveScenarioProgress } from '@/lib/userProgress';
@@ -27,8 +27,14 @@ export function ScoreModal({
 }: ScoreModalProps) {
   const { user, loginWithGoogle, refreshProgress } = useAuth();
   const [isSaved, setIsSaved] = useState(false);
+  const hasRecordedRef = useRef(false);
 
   useEffect(() => {
+    // Record only once per modal: logging in from this modal changes `user`, but the
+    // login sync already uploads local progress, so re-running would double-count attempts
+    if (hasRecordedRef.current) return;
+    hasRecordedRef.current = true;
+
     trackEvent('session_complete', {
       scenario_id: scenarioId,
       scenario_title: scenarioTitle,

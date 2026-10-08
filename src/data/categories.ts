@@ -16,11 +16,11 @@ export const CATEGORIES: Category[] = [
     id: 'survival-foundation',
     title: 'ปูพื้นฐานเอาตัวรอด (Survival Foundation)',
     titleZh: '生存基础常用句 (Shēngchún Jīchǔ Chángyòng Jù)',
-    description: 'ฝึก 5 คำทักทายติดปาก, นับเลข 0-100 & บอกจำนวน, ประโยคไม้ตายถามราคา/ปฏิเสธ, ฟังไม่ออกขอพูดอังกฤษ, และ 16 ประโยคคำตรงข้าม',
+    description: 'ฝึก 5 คำทักทายติดปาก, คำพูดประจำวันเช้า-บ่าย-เย็น & มารยาท, นับเลข 0-100, ประโยคไม้ตายถามราคา, ฟังไม่ออกขอพูดอังกฤษ, และ 16 ประโยคคำตรงข้าม',
     icon: 'GraduationCap',
     color: 'from-violet-500 to-indigo-600',
     bgGradient: 'bg-gradient-to-br from-violet-500/10 via-indigo-500/5 to-transparent',
-    scenariosCount: 5,
+    scenariosCount: 6,
     isAvailable: true,
   },
   {
