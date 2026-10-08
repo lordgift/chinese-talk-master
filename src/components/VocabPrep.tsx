@@ -21,6 +21,7 @@ import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import { useAuth } from '@/context/AuthContext';
 import confetti from 'canvas-confetti';
+import { playCelebrationSound } from '@/lib/celebrationSound';
 
 interface VocabPrepProps {
   words: WordBreakdown[];
@@ -95,6 +96,7 @@ export function VocabPrep({
       const isMatched = cleanRecognized.includes(cleanWord) || cleanWord.includes(cleanRecognized);
       setWordScores((prev) => ({ ...prev, [activeWordIndex]: isMatched }));
       if (isMatched && typeof window !== 'undefined') {
+        playCelebrationSound('correct');
         confetti({ particleCount: 25, spread: 60, origin: { y: 0.8 } });
       }
     } else {

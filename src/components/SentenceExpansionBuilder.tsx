@@ -18,6 +18,7 @@ import {
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { useSpeechRecognition } from '@/hooks/useSpeechRecognition';
 import confetti from 'canvas-confetti';
+import { playCelebrationSound } from '@/lib/celebrationSound';
 
 interface SentenceExpansionBuilderProps {
   expansions: SentenceExpansion[];
@@ -80,6 +81,7 @@ export function SentenceExpansionBuilder({
         setIsAssemblyCorrect(true);
         speak(currentExpansion.targetHanzi, 0.85);
         if (typeof window !== 'undefined') {
+          playCelebrationSound('correct');
           confetti({ particleCount: 60, spread: 70, origin: { y: 0.7 } });
         }
       } else if (nextIndices.length === puzzleWords.length) {
@@ -113,6 +115,7 @@ export function SentenceExpansionBuilder({
         (cleanRecognized.includes(cleanTarget) || cleanTarget.includes(cleanRecognized));
       setSpeechSuccess(isMatch);
       if (isMatch && typeof window !== 'undefined') {
+        playCelebrationSound('correct');
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.75 } });
       }
     } else {

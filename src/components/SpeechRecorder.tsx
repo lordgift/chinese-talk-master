@@ -8,6 +8,7 @@ import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import { AudioPlayer } from './AudioPlayer';
 import { PronunciationChart } from './PronunciationChart';
 import confetti from 'canvas-confetti';
+import { playCelebrationSound } from '@/lib/celebrationSound';
 
 interface SpeechRecorderProps {
   targetHanzi: string;
@@ -40,6 +41,7 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
         setHasTested(true);
 
         if (result.score >= 80) {
+          playCelebrationSound('correct');
           confetti({
             particleCount: 50,
             spread: 60,

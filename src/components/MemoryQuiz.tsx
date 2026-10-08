@@ -15,6 +15,7 @@ import {
 } from 'lucide-react';
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import confetti from 'canvas-confetti';
+import { playCelebrationSound } from '@/lib/celebrationSound';
 
 interface MemoryQuizProps {
   questions: MemoryQuizQuestion[];
@@ -60,6 +61,7 @@ export function MemoryQuiz({
     if (isCorrect) {
       setCorrectAnswersCount((prev) => prev + 1);
       if (typeof window !== 'undefined') {
+        playCelebrationSound('correct');
         confetti({ particleCount: 40, spread: 60, origin: { y: 0.7 } });
       }
     }
@@ -75,6 +77,7 @@ export function MemoryQuiz({
       const finalScore = Math.round((correctAnswersCount / questions.length) * 100);
       onComplete(finalScore);
       if (typeof window !== 'undefined') {
+        playCelebrationSound('complete');
         confetti({ particleCount: 70, spread: 80, origin: { y: 0.6 } });
       }
     }

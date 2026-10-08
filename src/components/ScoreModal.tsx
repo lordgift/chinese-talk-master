@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { Trophy, Star, RotateCcw, Home, CloudCheck, HardDrive } from 'lucide-react';
 import confetti from 'canvas-confetti';
+import { playCelebrationSound } from '@/lib/celebrationSound';
 import { useEffect, useRef, useState } from 'react';
 import { trackEvent } from '@/lib/firebase';
 import { useAuth } from '@/context/AuthContext';
@@ -42,6 +43,7 @@ export function ScoreModal({
     });
 
     if (totalScore > 0) {
+      playCelebrationSound('complete');
       confetti({
         particleCount: 100,
         spread: 70,
