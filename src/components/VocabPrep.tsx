@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { WordBreakdown, getToneColorClass } from '@/lib/pinyinUtils';
+import { WordBreakdown, getToneColorClass, isSpeechMatch } from '@/lib/pinyinUtils';
 import {
   Volume2,
   BookOpen,
@@ -91,9 +91,8 @@ export function VocabPrep({
   const handleTestWord = () => {
     if (isListening) {
       stopListening();
-      const cleanRecognized = (transcript || '').replace(/[^\u4e00-\u9fa5]/g, '');
-      const cleanWord = currentWord?.hanzi ? currentWord.hanzi.replace(/[^\u4e00-\u9fa5]/g, '') : '';
-      const isMatched = cleanRecognized.includes(cleanWord) || cleanWord.includes(cleanRecognized);
+      // Handles pinyin letter drills (e.g. "b") via the syllable table too
+      const isMatched = !!currentWord && isSpeechMatch(transcript || '', currentWord.hanzi, [currentWord]);
       setWordScores((prev) => ({ ...prev, [activeWordIndex]: isMatched }));
       if (isMatched && typeof window !== 'undefined') {
         playCelebrationSound('correct');

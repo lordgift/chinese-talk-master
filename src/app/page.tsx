@@ -24,6 +24,7 @@ import {
   Lightbulb,
   CloudSun,
   ShieldCheck,
+  LifeBuoy,
 } from 'lucide-react';
 
 export default function HomePage() {
@@ -48,6 +49,8 @@ export default function HomePage() {
         return <CloudSun className="w-5 h-5 text-sky-500" />;
       case 'ShoppingBag':
         return <ShoppingBag className="w-5 h-5 text-emerald-500" />;
+      case 'LifeBuoy':
+        return <LifeBuoy className="w-5 h-5 text-rose-500" />;
       case 'Building2':
       default:
         return <Building2 className="w-5 h-5 text-purple-500" />;

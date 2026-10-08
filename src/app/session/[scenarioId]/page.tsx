@@ -4,6 +4,7 @@ import { useState, use, useMemo, useSyncExternalStore } from 'react';
 import Link from 'next/link';
 import { SCENARIOS } from '@/data/scenarios';
 import { Header } from '@/components/Header';
+import { useAuth } from '@/context/AuthContext';
 import { PinyinCard } from '@/components/PinyinCard';
 import { SpeechRecorder } from '@/components/SpeechRecorder';
 import { VocabPrep } from '@/components/VocabPrep';
@@ -30,12 +31,32 @@ import {
 import { useSpeechSynthesis } from '@/hooks/useSpeechSynthesis';
 import {
   DetailedSpeechEvaluation,
+  DialogueLine,
+  MemoryQuizQuestion,
   WordBreakdown,
   getScenarioExpansions,
   getScenarioMemoryQuiz,
 } from '@/lib/pinyinUtils';
 
 const subscribeNoop = () => () => {};
+
+function pickDialogueVariants(lines: DialogueLine[], round: number): DialogueLine[] {
+  return lines.map((line) => {
+    if (line.speaker !== 'ai' || !line.variants?.length) return line;
+    // First round keeps the scripted line; later rounds pick randomly among all replies
+    const options = [line, ...line.variants];
+    const pick = round === 0 ? line : options[Math.floor(Math.random() * options.length)];
+    if (pick === line) return line;
+    return {
+      ...line,
+      hanzi: pick.hanzi,
+      pinyin: pick.pinyin,
+      thai: pick.thai,
+      words: pick.words ?? [],
+      audioHint: undefined, // hint was written for the scripted line
+    };
+  });
+}
 
 interface PageProps {
   params: Promise<{
@@ -64,9 +85,17 @@ export default function SessionPage({ params }: PageProps) {
     () => (isClient && scenario ? getScenarioExpansions(scenario) : null),
     [isClient, scenario]
   );
-  const quizQuestions = useMemo(
-    () => (isClient && scenario ? getScenarioMemoryQuiz(scenario) : null),
-    [isClient, scenario]
+  // Quiz is generated when the learner opens it (not during render), so it can include
+  // review words from their latest progress without reshuffling mid-quiz
+  const [quizQuestions, setQuizQuestions] = useState<MemoryQuizQuestion[] | null>(null);
+  const { userProgress, userSavedWords } = useAuth();
+
+  // AI partner lines may have several natural replies; pick one per practice round (client only)
+  // so learners get used to answers that don't match the script word for word
+  const [variantRound, setVariantRound] = useState(0);
+  const dialogues = useMemo(
+    () => (scenario ? (isClient ? pickDialogueVariants(scenario.dialogues, variantRound) : scenario.dialogues) : []),
+    [isClient, scenario, variantRound]
   );
 
   if (!scenario) {
@@ -88,8 +117,8 @@ export default function SessionPage({ params }: PageProps) {
   }
 
   // Extract all words across all dialogue lines in this scenario
-  const allScenarioWords: WordBreakdown[] = scenario.dialogues.flatMap((d) => d.words || []);
-  const currentDialogue = scenario.dialogues[currentIndex];
+  const allScenarioWords: WordBreakdown[] = dialogues.flatMap((d) => d.words || []);
+  const currentDialogue = dialogues[currentIndex];
   const isUserTurn = currentDialogue?.speaker === 'user';
 
   const handleScoreUpdate = (score: number, evalResult?: DetailedSpeechEvaluation) => {
@@ -110,13 +139,35 @@ export default function SessionPage({ params }: PageProps) {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-    if (scenario.dialogues[0]?.speaker === 'ai') {
-      speak(scenario.dialogues[0].hanzi);
+    if (dialogues[0]?.speaker === 'ai') {
+      speak(dialogues[0].hanzi);
     }
   };
 
-  const handleStartQuiz = () => {
+  // Review pool: saved words first, then words from finished lessons with the lowest best score
+  const buildReviewWords = (): WordBreakdown[] => {
+    const saved: WordBreakdown[] = Object.values(userSavedWords).map((w) => ({
+      hanzi: w.hanzi,
+      pinyin: w.pinyin,
+      thai: w.thai,
+      tones: w.tones,
+    }));
+    const fromLessons = Object.values(userProgress)
+      .filter((p) => p.scenarioId !== scenario.id)
+      .sort((a, b) => a.bestScore - b.bestScore)
+      .flatMap((p) => SCENARIOS.find((sc) => sc.id === p.scenarioId)?.dialogues.flatMap((d) => d.words || []) ?? []);
+    return [...saved, ...fromLessons];
+  };
+
+  const openQuiz = (regenerate = false) => {
+    if (regenerate || !quizQuestions) {
+      setQuizQuestions(getScenarioMemoryQuiz(scenario, buildReviewWords()));
+    }
     setMode('quiz');
+  };
+
+  const handleStartQuiz = () => {
+    openQuiz();
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
@@ -130,13 +181,13 @@ export default function SessionPage({ params }: PageProps) {
   };
 
   const handleNext = () => {
-    if (currentIndex < scenario.dialogues.length - 1) {
+    if (currentIndex < dialogues.length - 1) {
       const nextIndex = currentIndex + 1;
       setCurrentIndex(nextIndex);
 
       // Auto speak if AI line
-      if (scenario.dialogues[nextIndex].speaker === 'ai') {
-        speak(scenario.dialogues[nextIndex].hanzi);
+      if (dialogues[nextIndex].speaker === 'ai') {
+        speak(dialogues[nextIndex].hanzi);
       }
     } else {
       setIsCompleted(true);
@@ -150,7 +201,7 @@ export default function SessionPage({ params }: PageProps) {
   };
 
   const calculateAverageScore = () => {
-    const userTurnIndices = scenario.dialogues
+    const userTurnIndices = dialogues
       .map((d, index) => (d.speaker === 'user' ? index : -1))
       .filter((index) => index !== -1);
 
@@ -209,7 +260,7 @@ export default function SessionPage({ params }: PageProps) {
 
             <button
               type="button"
-              onClick={() => setMode('quiz')}
+              onClick={() => openQuiz()}
               className={`px-3 py-1.5 rounded-xl transition font-bold flex items-center gap-1.5 touch-manipulation select-none cursor-pointer active:scale-95 min-h-[36px] whitespace-nowrap ${
                 mode === 'quiz'
                   ? 'bg-indigo-600 text-white shadow-xs'
@@ -290,7 +341,7 @@ export default function SessionPage({ params }: PageProps) {
                 </div>
                 <div className="flex items-center gap-1.5 font-medium bg-white/80 px-3 py-1.5 rounded-xl border border-slate-200 shadow-2xs">
                   <span className="text-slate-400">💬 จำนวน:</span>
-                  <span className="text-rose-600 font-bold">{scenario.dialogues.length} ประโยค</span>
+                  <span className="text-rose-600 font-bold">{dialogues.length} ประโยค</span>
                 </div>
               </div>
             </div>
@@ -377,17 +428,17 @@ export default function SessionPage({ params }: PageProps) {
             <div className="bg-white p-4 rounded-3xl border border-slate-200 shadow-xs space-y-3">
               <div className="flex items-center justify-between text-xs">
                 <span className="text-slate-600 font-medium">
-                  ความคืบหน้าประโยคที่ <span className="font-bold text-slate-900">{currentIndex + 1}</span> จาก {scenario.dialogues.length}
+                  ความคืบหน้าประโยคที่ <span className="font-bold text-slate-900">{currentIndex + 1}</span> จาก {dialogues.length}
                 </span>
                 <span className="text-amber-700 font-mono font-bold">
-                  {Math.round(((currentIndex + 1) / scenario.dialogues.length) * 100)}%
+                  {Math.round(((currentIndex + 1) / dialogues.length) * 100)}%
                 </span>
               </div>
               <div className="w-full h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200">
                 <div
                   className="h-full bg-gradient-to-r from-rose-500 to-amber-500 transition-all duration-300 rounded-full"
                   style={{
-                    width: `${((currentIndex + 1) / scenario.dialogues.length) * 100}%`,
+                    width: `${((currentIndex + 1) / dialogues.length) * 100}%`,
                   }}
                 />
               </div>
@@ -417,27 +468,27 @@ export default function SessionPage({ params }: PageProps) {
             </div>
 
             {/* IF USER TURN & PRECEDING DIALOGUE IS AI: Show Preceding AI Context Bubble */}
-            {isUserTurn && currentIndex > 0 && scenario.dialogues[currentIndex - 1].speaker === 'ai' && (
+            {isUserTurn && currentIndex > 0 && dialogues[currentIndex - 1].speaker === 'ai' && (
               <div className="bg-indigo-50/90 border border-indigo-200/90 rounded-2xl p-4 shadow-2xs space-y-2">
                 <div className="flex items-center justify-between text-xs font-bold text-indigo-900 border-b border-indigo-200/80 pb-2">
                   <div className="flex items-center gap-1.5">
                     <Bot className="w-4 h-4 text-indigo-600" />
-                    <span>💬 คู่สนทนา ({scenario.dialogues[currentIndex - 1].speakerName}) เพิ่งพูดว่า:</span>
+                    <span>💬 คู่สนทนา ({dialogues[currentIndex - 1].speakerName}) เพิ่งพูดว่า:</span>
                   </div>
-                  <AudioPlayer text={scenario.dialogues[currentIndex - 1].hanzi} />
+                  <AudioPlayer text={dialogues[currentIndex - 1].hanzi} />
                 </div>
 
                 <div className="flex flex-wrap items-baseline gap-2">
                   <span className="text-base sm:text-lg font-black text-slate-900">
-                    {scenario.dialogues[currentIndex - 1].hanzi}
+                    {dialogues[currentIndex - 1].hanzi}
                   </span>
                   <span className="text-xs text-rose-600 font-serif font-semibold">
-                    ({scenario.dialogues[currentIndex - 1].pinyin})
+                    ({dialogues[currentIndex - 1].pinyin})
                   </span>
                 </div>
 
                 <p className="text-xs text-slate-600 font-medium">
-                  คำแปล: <span className="text-slate-800 font-bold">&quot;{scenario.dialogues[currentIndex - 1].thai}&quot;</span>
+                  คำแปล: <span className="text-slate-800 font-bold">&quot;{dialogues[currentIndex - 1].thai}&quot;</span>
                 </p>
               </div>
             )}
@@ -483,6 +534,12 @@ export default function SessionPage({ params }: PageProps) {
                     wordEvaluations={evaluations[currentIndex]?.wordEvaluations}
                   />
                 </div>
+
+                {!!scenario.dialogues[currentIndex]?.variants?.length && (
+                  <p className="relative z-10 text-[11px] text-sky-200/90 text-center -mt-2">
+                    🎲 คนจีนตอบประโยคนี้ได้หลายแบบ ฝึกรอบหน้าคุณอาจได้ยินคำตอบแบบอื่น ลองฟังจับใจความให้ได้นะครับ
+                  </p>
+                )}
 
                 {/* Prominent Action Button to Proceed to User Turn */}
                 <div className="pt-2 flex justify-center relative z-10">
@@ -561,7 +618,7 @@ export default function SessionPage({ params }: PageProps) {
                 className="px-6 py-3 rounded-xl bg-gradient-to-r from-rose-500 to-amber-500 hover:from-rose-600 hover:to-amber-600 text-white text-xs sm:text-sm font-bold flex items-center gap-1.5 shadow-md shadow-rose-500/20 transition cursor-pointer touch-manipulation select-none active:scale-95 min-h-[44px]"
               >
                 <span>
-                  {currentIndex === scenario.dialogues.length - 1 ? 'เสร็จสิ้นบทเรียน' : 'ประโยคถัดไป'}
+                  {currentIndex === dialogues.length - 1 ? 'เสร็จสิ้นบทเรียน' : 'ประโยคถัดไป'}
                 </span>
                 <ChevronRight className="w-4 h-4" />
               </button>
@@ -573,7 +630,10 @@ export default function SessionPage({ params }: PageProps) {
             <MemoryQuiz
               questions={quizQuestions}
               onComplete={(score) => setQuizScore(score)}
-              onRetry={() => setQuizScore(null)}
+              onRetry={() => {
+                setQuizScore(null);
+                openQuiz(true); // fresh listening/review questions each round
+              }}
               onProceedToVocabSummary={handleStartVocabSummary}
             />
           ) : (
@@ -593,6 +653,7 @@ export default function SessionPage({ params }: PageProps) {
               setCurrentIndex(0);
               setScores({});
               setEvaluations({});
+              setVariantRound((r) => r + 1);
               setMode('step');
             }}
           />
@@ -603,14 +664,36 @@ export default function SessionPage({ params }: PageProps) {
               💡 โหมดภาพรวมบทสนทนา: คุณสามารถคลิกฟังเสียงหรือแตะที่แต่ละคำเพื่อตรวจดู Pinyin และคำแปลภาษาไทยของทุกประโยคในบทนี้ได้อย่างอิสระ
             </div>
 
-            {scenario.dialogues.map((dlg, idx) => (
-              <PinyinCard
-                key={dlg.id}
-                dialogue={dlg}
-                isCurrent={idx === currentIndex}
-                wordEvaluations={evaluations[idx]?.wordEvaluations}
-              />
-            ))}
+            {dialogues.map((dlg, idx) => {
+              const original = scenario.dialogues[idx];
+              const alternatives = original.variants?.length
+                ? [original, ...original.variants].filter((v) => v.hanzi !== dlg.hanzi)
+                : [];
+              return (
+                <div key={dlg.id} className="space-y-2">
+                  <PinyinCard
+                    dialogue={dlg}
+                    isCurrent={idx === currentIndex}
+                    wordEvaluations={evaluations[idx]?.wordEvaluations}
+                  />
+                  {alternatives.length > 0 && (
+                    <div className="ml-4 sm:ml-8 p-3 rounded-xl bg-sky-50 border border-sky-200 text-xs text-sky-900 space-y-1.5">
+                      <p className="font-bold">🎲 คู่สนทนาอาจตอบแบบอื่นได้:</p>
+                      {alternatives.map((alt) => (
+                        <div key={alt.hanzi} className="flex items-start gap-2">
+                          <AudioPlayer text={alt.hanzi} compact />
+                          <div>
+                            <p className="font-bold text-sm text-slate-900">{alt.hanzi}</p>
+                            <p className="text-amber-800">{alt.pinyin}</p>
+                            <p className="text-slate-600">{alt.thai}</p>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
         )}
       </main>
@@ -626,6 +709,7 @@ export default function SessionPage({ params }: PageProps) {
             setCurrentIndex(0);
             setScores({});
             setEvaluations({});
+            setVariantRound((r) => r + 1);
           }}
           onProceedToQuiz={() => {
             setIsCompleted(false);

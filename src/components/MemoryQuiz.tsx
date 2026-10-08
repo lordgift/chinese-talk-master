@@ -69,9 +69,14 @@ export function MemoryQuiz({
 
   const handleNextQuestion = () => {
     if (currentIndex < questions.length - 1) {
+      const nextQ = questions[currentIndex + 1];
       setCurrentIndex((prev) => prev + 1);
       setSelectedOptionIndex(null);
       setIsAnswerSubmitted(false);
+      // Listening questions start by playing the audio (this runs inside the click gesture)
+      if (nextQ.type === 'listen-dialogue' && nextQ.audioText) {
+        speak(nextQ.audioText, 0.9);
+      }
     } else {
       setIsQuizFinished(true);
       const finalScore = Math.round((correctAnswersCount / questions.length) * 100);
@@ -140,11 +145,18 @@ export function MemoryQuiz({
           {/* Question Box */}
           <div className="bg-slate-50 border border-slate-200/90 rounded-2xl p-5 sm:p-6 shadow-2xs space-y-4">
             <div className="flex items-start justify-between gap-3">
-              <h4 className="text-base sm:text-lg font-bold text-slate-900">
-                {currentQ.questionText}
-              </h4>
+              <div className="space-y-1.5">
+                {currentQ.isReview && (
+                  <span className="inline-block text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300">
+                    🔁 ทบทวนจากบทก่อน
+                  </span>
+                )}
+                <h4 className="text-base sm:text-lg font-bold text-slate-900">
+                  {currentQ.questionText}
+                </h4>
+              </div>
 
-              {currentQ.audioText && (
+              {currentQ.audioText && currentQ.type !== 'listen-dialogue' && (
                 <button
                   type="button"
                   onClick={() => handlePlayAudio(currentQ.audioText!)}
@@ -166,6 +178,39 @@ export function MemoryQuiz({
                   <p className="text-xs font-pinyin text-rose-600 font-semibold">
                     {currentQ.promptPinyin}
                   </p>
+                )}
+              </div>
+            )}
+
+            {/* Listening comprehension: audio only, text revealed after answering */}
+            {currentQ.type === 'listen-dialogue' && (
+              <div className="p-4 rounded-xl bg-white border border-slate-200 text-center space-y-3">
+                <div className="flex flex-wrap justify-center gap-2">
+                  <button
+                    type="button"
+                    onClick={() => speak(currentQ.audioText || '', 0.9)}
+                    className="px-5 py-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-bold flex items-center gap-2 shadow-sm cursor-pointer active:scale-95 touch-manipulation"
+                  >
+                    <Volume2 className="w-5 h-5" />
+                    <span>▶️ กดฟังประโยค</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => speak(currentQ.audioText || '', 0.6)}
+                    className="px-4 py-3 rounded-2xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-sm font-bold border border-indigo-200 cursor-pointer active:scale-95 touch-manipulation"
+                  >
+                    🐢 ฟังช้าๆ
+                  </button>
+                </div>
+                {isAnswerSubmitted ? (
+                  <div className="space-y-1">
+                    <span className="text-xl sm:text-2xl font-bold text-slate-900 font-serif">{currentQ.promptZh}</span>
+                    {currentQ.promptPinyin && (
+                      <p className="text-xs font-pinyin text-rose-600 font-semibold">{currentQ.promptPinyin}</p>
+                    )}
+                  </div>
+                ) : (
+                  <p className="text-xs text-slate-500">ตัวหนังสือจะแสดงหลังจากเลือกคำตอบแล้ว 👀</p>
                 )}
               </div>
             )}

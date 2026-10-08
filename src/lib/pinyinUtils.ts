@@ -15,6 +15,19 @@ export interface DialogueLine {
   thai: string;
   audioHint?: string;
   words: WordBreakdown[];
+  /**
+   * AI lines only: alternative natural replies with the same meaning/intent.
+   * One of [base line, ...variants] is picked at random per session so learners
+   * practise understanding real, non-scripted answers.
+   */
+  variants?: DialogueVariant[];
+}
+
+export interface DialogueVariant {
+  hanzi: string;
+  pinyin: string;
+  thai: string;
+  words?: WordBreakdown[];
 }
 
 export type CategoryId =
@@ -23,7 +36,8 @@ export type CategoryId =
   | 'travel-transport'
   | 'dining-shopping'
   | 'hotel-stay'
-  | 'weather-climate';
+  | 'weather-climate'
+  | 'help-emergency';
 
 export interface SentenceExpansionStep {
   stepNumber: number;
@@ -52,7 +66,9 @@ export interface MemoryQuizOption {
 
 export interface MemoryQuizQuestion {
   id: string;
-  type: 'listen-meaning' | 'fill-blank' | 'scenario-response';
+  type: 'listen-meaning' | 'fill-blank' | 'scenario-response' | 'listen-dialogue';
+  /** Spaced-review question drawn from an earlier lesson or the learner's saved words */
+  isReview?: boolean;
   questionText: string;
   audioText?: string;
   promptZh?: string;
@@ -129,92 +145,193 @@ export function getToneColorClass(tone?: number): { text: string; bg: string; bo
   }
 }
 
+const HANZI_RE = /[一-龥]/;
+
 function getCleanComparableText(text: string): string {
   if (!text) return '';
-  // Convert Pinyin ü / v variants to normalized yu for flexible matching
-  const normalized = text
-    .toLowerCase()
-    .replace(/ü|ǖ|ǘ|ǚ|ǜ|v/gi, 'yu')
-    .replace(/于|迂|余|鱼/g, 'yu');
-
-  // If text has Chinese characters, use Chinese characters + letters
-  const clean = normalized.replace(/[^\u4e00-\u9fa5a-z0-9]/g, '');
-  if (clean.length > 0) return clean;
-
-  // Fallback: strip punctuation only
-  return normalized.replace(/[^\w]/g, '');
+  // Keep Chinese characters, letters and digits only (drop punctuation/spaces)
+  return text.toLowerCase().replace(/[^一-龥a-z0-9]/g, '');
 }
 
 /**
- * Calculate similarity between user speech input and target Chinese text
+ * Common characters for each toneless syllable. Speech recognition returns characters,
+ * never pinyin, so letter drills (e.g. "b p m f", "mā má mǎ mà") are scored by checking
+ * that each spoken syllable came back as *some* character with that sound.
  */
-export function evaluateSpeechAccuracy(recognizedText: string, targetHanzi: string): {
+const SYLLABLE_CHARS: Record<string, string> = {
+  a: '啊阿呵嗄', o: '哦喔噢', e: '额鹅饿俄恶呃厄',
+  yi: '一衣医依以已亿义艺议易意移疑姨椅乙亦异益', wu: '五无午舞物务误屋乌吴武雾悟污',
+  yu: '鱼语雨与于玉育遇余欲预迂娱宇羽域愉',
+  bo: '波播拨玻剥伯博薄驳泊脖勃', po: '坡破婆泼迫颇魄', mo: '摸模磨末莫墨魔抹默膜', fo: '佛',
+  de: '的得德地', te: '特', ne: '呢讷哪', le: '了乐勒',
+  ge: '个哥歌格各割隔鸽阁', ke: '可科课客克刻棵颗渴壳', he: '和喝河合何盒荷贺鹤',
+  ji: '鸡机几记级急集计技既及基击极吉即寄季', qi: '七其起气期齐骑奇汽器妻棋旗启',
+  xi: '西喜洗系息希习细戏吸席溪稀夕',
+  zhi: '知之只直指纸志制治支值止织职枝', chi: '吃尺迟持池齿赤翅',
+  shi: '是时十事师市使史世式试石识实诗失视室', ri: '日',
+  zi: '字自子资紫姿仔滋', ci: '次此词刺辞磁慈瓷', si: '四思死丝私司似寺斯撕',
+  ma: '妈麻马骂吗嘛码玛', ba: '八吧爸把拔巴罢霸坝', pa: '怕爬趴帕', fa: '发法罚乏',
+  da: '大打达答', ta: '他她它塔踏', na: '那拿哪纳', la: '拉啦辣蜡', ga: '嘎尬', ka: '卡咖', ha: '哈',
+  mi: '米迷密蜜秘', bi: '比笔必币闭鼻', pi: '皮批屁匹啤', di: '地第低底弟滴敌', ti: '提题体替踢梯',
+  ni: '你泥尼拟逆', li: '里理力立利李离礼历',
+  bu: '不步部布补', pu: '普铺扑葡', mu: '木目母幕牧', fu: '府服福夫父副富复付',
+  du: '读度都毒肚堵', tu: '图土兔突吐涂', nu: '努怒奴', lu: '路绿陆录露鹿',
+  gu: '古故顾谷骨鼓', ku: '苦哭酷库裤', hu: '湖呼虎户护胡',
+  zhu: '住主猪竹注祝', chu: '出处初除厨', shu: '书数树熟属', ru: '如入乳',
+  zu: '组足租祖', cu: '粗醋促', su: '苏速素诉俗', ju: '句局举剧居菊', qu: '去取区曲趣', xu: '需许续序虚',
+};
+
+const CHAR_TO_SYLLABLES: Record<string, Set<string>> = {};
+Object.entries(SYLLABLE_CHARS).forEach(([syllable, chars]) => {
+  for (const ch of chars) {
+    (CHAR_TO_SYLLABLES[ch] ??= new Set()).add(syllable);
+  }
+});
+
+/** "mǎ" → "ma", "lǜ" → "lv", "ū" → "wu" (normalized to how the syllable is spelled standalone) */
+function toTonelessSyllable(pinyin: string): string {
+  const base = pinyin
+    .replace(/[ǖǘǚǜüÜ]/g, 'v') // keep ü distinct before stripping tone marks
+    .normalize('NFD')
+    .replace(/[̀-ͯ]/g, '')
+    .toLowerCase()
+    .replace(/[^a-z]/g, '');
+  const standalone: Record<string, string> = { i: 'yi', u: 'wu', v: 'yu' };
+  return standalone[base] ?? base;
+}
+
+/** Does a recognized token (a character, or a latin letter group) sound like this syllable? */
+function tokenMatchesSyllable(token: string, syllable: string): boolean {
+  if (HANZI_RE.test(token)) {
+    return CHAR_TO_SYLLABLES[token]?.has(syllable) ?? false;
+  }
+  // Recognizer sometimes returns letters, e.g. "BPMF" for "bo po mo fo"
+  return token === syllable || (token.length <= 2 && syllable.startsWith(token));
+}
+
+/**
+ * Longest-common-subsequence alignment: which target characters were spoken, in order
+ */
+function alignInOrder(target: string, recognized: string): boolean[] {
+  const t = Array.from(target);
+  const r = Array.from(recognized);
+  const dp: number[][] = Array.from({ length: t.length + 1 }, () => new Array(r.length + 1).fill(0));
+  for (let i = t.length - 1; i >= 0; i--) {
+    for (let j = r.length - 1; j >= 0; j--) {
+      dp[i][j] = t[i] === r[j] ? dp[i + 1][j + 1] + 1 : Math.max(dp[i + 1][j], dp[i][j + 1]);
+    }
+  }
+  const matched = new Array(t.length).fill(false);
+  let i = 0;
+  let j = 0;
+  while (i < t.length && j < r.length) {
+    if (t[i] === r[j]) {
+      matched[i] = true;
+      i++;
+      j++;
+    } else if (dp[i + 1][j] >= dp[i][j + 1]) {
+      i++;
+    } else {
+      j++;
+    }
+  }
+  return matched;
+}
+
+/**
+ * Letter drills (target has no Chinese characters): match each word's syllable, in order,
+ * against the recognized characters/letters
+ */
+function alignDrillSyllables(syllables: string[], recognizedText: string): boolean[] {
+  const tokens = (recognizedText.toLowerCase().match(/[一-龥]|[a-z]+/g) ?? []).flatMap((t) =>
+    // Split letter runs like "bpmf" into single initials unless they spell a syllable
+    HANZI_RE.test(t) || SYLLABLE_CHARS[t] ? [t] : t.split('')
+  );
+  const matched = new Array(syllables.length).fill(false);
+  let cursor = 0;
+  syllables.forEach((syllable, idx) => {
+    for (let k = cursor; k < tokens.length; k++) {
+      if (tokenMatchesSyllable(tokens[k], syllable)) {
+        matched[idx] = true;
+        cursor = k + 1;
+        break;
+      }
+    }
+  });
+  return matched;
+}
+
+function getDrillSyllables(targetText: string, words?: WordBreakdown[]): string[] {
+  if (words && words.length > 0) {
+    return words.map((w) => toTonelessSyllable(w.pinyin || w.hanzi)).filter(Boolean);
+  }
+  return targetText.split(/\s+/).map(toTonelessSyllable).filter(Boolean);
+}
+
+function gradeFor(score: number): { grade: 'S' | 'A' | 'B' | 'C'; feedbackMsg: string } {
+  if (score >= 90) return { grade: 'S', feedbackMsg: '🎉 สุดยอดมาก! ระบบได้ยินครบทุกคำตามลำดับ' };
+  if (score >= 75) {
+    return { grade: 'A', feedbackMsg: '👍 ดีมาก! ได้ยินเกือบครบ ลองดูคำที่พลาดเพื่อปรับปรุงอีกนิด' };
+  }
+  if (score >= 50) {
+    return { grade: 'B', feedbackMsg: '💪 พยายามได้ดี! ลองกดปุ่มลำโพงฟังเสียงคำที่พลาดเฉพาะคำอีกครั้งนะครับ' };
+  }
+  return { grade: 'C', feedbackMsg: '💡 ลองเปิดฟังเสียงตัวอย่างช้าๆ (0.5x) แล้วฝึกเน้นออกเสียงทีละคำนะครับ' };
+}
+
+/**
+ * Calculate similarity between user speech input and target Chinese text.
+ * Order-aware (the target characters must be heard in sequence). Note: recognition returns
+ * characters chosen from context, so tones cannot be verified — only that the words were understood.
+ */
+export function evaluateSpeechAccuracy(
+  recognizedText: string,
+  targetHanzi: string,
+  words?: WordBreakdown[]
+): {
   score: number;
   matchedChars: boolean[];
   feedbackMsg: string;
   grade: 'S' | 'A' | 'B' | 'C';
 } {
+  const isDrill = !HANZI_RE.test(targetHanzi);
+  const drillSyllables = isDrill ? getDrillSyllables(targetHanzi, words) : [];
+  const cleanTarget = getCleanComparableText(targetHanzi);
+  const unitCount = isDrill ? drillSyllables.length : Array.from(cleanTarget).length;
+
   if (!recognizedText || recognizedText.trim() === '') {
     return {
       score: 0,
-      matchedChars: new Array(targetHanzi.length).fill(false),
+      matchedChars: new Array(unitCount).fill(false),
       feedbackMsg: 'ยังไม่ได้รับเสียงพูด ลองกดไมค์แล้วออกเสียงอีกครั้งนะครับ',
       grade: 'C',
     };
   }
 
-  const cleanTarget = getCleanComparableText(targetHanzi);
+  if (unitCount === 0) {
+    return { score: 100, matchedChars: [], feedbackMsg: 'ยอดเยี่ยมมากครับ!', grade: 'S' };
+  }
+
   const cleanRecognized = getCleanComparableText(recognizedText);
+  const matchedChars = isDrill
+    ? alignDrillSyllables(drillSyllables, recognizedText)
+    : alignInOrder(cleanTarget, cleanRecognized);
+  const matchCount = matchedChars.filter(Boolean).length;
+  const score = Math.round((matchCount / unitCount) * 100);
 
-  if (cleanTarget.length === 0) {
-    return {
-      score: 100,
-      matchedChars: [],
-      feedbackMsg: 'ยอดเยี่ยมมากครับ!',
-      grade: 'S',
-    };
-  }
+  return { score, matchedChars, ...gradeFor(score) };
+}
 
-  let matchCount = 0;
-  const matchedChars: boolean[] = [];
-
-  for (let i = 0; i < cleanTarget.length; i++) {
-    const char = cleanTarget[i];
-    if (cleanRecognized.includes(char)) {
-      matchCount++;
-      matchedChars.push(true);
-    } else {
-      matchedChars.push(false);
-    }
-  }
-
-  const rawScore = Math.round((matchCount / cleanTarget.length) * 100);
-  // Bonus score if exact substring match
-  const finalScore = cleanRecognized.includes(cleanTarget) ? 100 : Math.min(100, rawScore);
-
-  let feedbackMsg = '';
-  let grade: 'S' | 'A' | 'B' | 'C' = 'C';
-
-  if (finalScore >= 90) {
-    grade = 'S';
-    feedbackMsg = '🎉 สุดยอดมาก! ออกเสียงได้ถูกต้องแม่นยำทุกคำ';
-  } else if (finalScore >= 75) {
-    grade = 'A';
-    feedbackMsg = '👍 ดีมาก! ออกเสียงได้ใกล้เคียงส่วนใหญ่ ลองดูคำที่พลาดเพื่อปรับปรุงอีกนิด';
-  } else if (finalScore >= 50) {
-    grade = 'B';
-    feedbackMsg = '💪 พยายามได้ดี! ลองกดปุ่มลำโพงฟังเสียงคำที่พลาดเฉพาะคำอีกครั้งนะครับ';
-  } else {
-    grade = 'C';
-    feedbackMsg = '💡 ลองเปิดฟังเสียงตัวอย่างช้าๆ (0.5x) แล้วฝึกเน้นออกเสียงทีละคำนะครับ';
-  }
-
-  return {
-    score: finalScore,
-    matchedChars,
-    feedbackMsg,
-    grade,
-  };
+/**
+ * Simple pass/fail check used by the sentence builder and vocab drills
+ */
+export function isSpeechMatch(
+  recognizedText: string,
+  targetHanzi: string,
+  words?: WordBreakdown[],
+  passScore = 80
+): boolean {
+  return evaluateSpeechAccuracy(recognizedText, targetHanzi, words).score >= passScore;
 }
 
 /**
@@ -225,20 +342,36 @@ export function evaluateWordByWordPronunciation(
   targetHanzi: string,
   words: WordBreakdown[]
 ): DetailedSpeechEvaluation {
-  const baseResult = evaluateSpeechAccuracy(recognizedText, targetHanzi);
+  const baseResult = evaluateSpeechAccuracy(recognizedText, targetHanzi, words);
   const cleanRecognized = getCleanComparableText(recognizedText);
   const cleanTarget = getCleanComparableText(targetHanzi);
+  const isDrill = !HANZI_RE.test(targetHanzi);
+  const targetChars = Array.from(cleanTarget);
 
   let correctCount = 0;
   let missedCount = 0;
+  let searchFrom = 0;
 
-  const wordEvaluations: WordEvaluation[] = (words || []).map((w) => {
-    const cleanWordHanzi = getCleanComparableText(w.hanzi || w.pinyin);
-    let matchedCount = 0;
+  const wordEvaluations: WordEvaluation[] = (words || []).map((w, wordIdx) => {
+    let totalChars: number;
+    let matchedCount: number;
 
-    for (const char of cleanWordHanzi) {
-      if (cleanRecognized.includes(char)) {
-        matchedCount++;
+    if (isDrill) {
+      // One syllable per word in letter drills
+      totalChars = 1;
+      matchedCount = baseResult.matchedChars[wordIdx] ? 1 : 0;
+    } else {
+      const wordChars = Array.from(getCleanComparableText(w.hanzi || w.pinyin));
+      totalChars = wordChars.length;
+      // Locate this word inside the target (words are listed in sentence order)
+      const start = targetChars.join('').indexOf(wordChars.join(''), searchFrom);
+      if (start >= 0) {
+        const startIdx = Array.from(targetChars.join('').slice(0, start)).length;
+        matchedCount = wordChars.filter((_, k) => baseResult.matchedChars[startIdx + k]).length;
+        searchFrom = start + wordChars.join('').length;
+      } else {
+        // Word not literally in the sentence (e.g. a variant form): fall back to presence check
+        matchedCount = wordChars.filter((ch) => cleanRecognized.includes(ch)).length;
       }
     }
 
@@ -246,33 +379,26 @@ export function evaluateWordByWordPronunciation(
     let reasonType: 'mispronounced' | 'wrong_word' | 'omitted' | undefined = undefined;
     let reasonExplanation: string | undefined = undefined;
 
-    if (matchedCount === cleanWordHanzi.length && cleanWordHanzi.length > 0) {
+    if (matchedCount === totalChars && totalChars > 0) {
       status = 'correct';
       correctCount++;
     } else if (matchedCount > 0) {
       status = 'partial';
       missedCount++;
       reasonType = 'mispronounced';
-      reasonExplanation = `🔊 ออกเสียงเพี้ยนบางวรรณยุกต์/พยัญชนะ (ระบบได้ยินเสียงคล้ายกันเป็น "${cleanRecognized}")`;
+      reasonExplanation = `🔊 ระบบได้ยินคำนี้ไม่ครบ อาจออกเสียงเพี้ยนบางพยางค์ (ระบบได้ยินเป็น "${cleanRecognized}")`;
     } else {
-      status = 'missed';
       missedCount++;
 
-      if (!cleanRecognized || cleanRecognized.length === 0) {
+      if (!cleanRecognized) {
         reasonType = 'omitted';
         reasonExplanation = `🔇 พูดตกคำนี้ไป หรือไมค์ไม่ได้ยินเสียงคำว่า "${w.hanzi}"`;
+      } else if (!isDrill && Array.from(cleanRecognized).some((c) => !cleanTarget.includes(c))) {
+        reasonType = 'wrong_word';
+        reasonExplanation = `❌ ระบบได้ยินเป็นคำอื่น ("${cleanRecognized}") แทนคำเป้าหมาย "${w.hanzi}" — ลองฟังตัวอย่างแล้วพูดช้าๆ ชัดๆ`;
       } else {
-        // Check if user spoke a completely different word vs mispronounced tone
-        // Find if any character in cleanRecognized is totally outside cleanTarget
-        const extraChars = Array.from(cleanRecognized).filter((c) => !cleanTarget.includes(c));
-
-        if (extraChars.length > 0) {
-          reasonType = 'wrong_word';
-          reasonExplanation = `❌ พูดผิดคำไปเลย (คุณพูดได้เป็นคำว่า "${cleanRecognized}" แทนคำเป้าหมาย "${w.hanzi}")`;
-        } else {
-          reasonType = 'mispronounced';
-          reasonExplanation = `🔊 ออกเสียงไม่ถูกต้อง/วรรณยุกต์เพี้ยน (ระบบได้ยินเป็น "${cleanRecognized}")`;
-        }
+        reasonType = 'mispronounced';
+        reasonExplanation = `🔊 ระบบยังไม่ได้ยินเสียง "${w.pinyin}" ชัดเจน (ได้ยินเป็น "${cleanRecognized}")`;
       }
     }
 
@@ -280,7 +406,7 @@ export function evaluateWordByWordPronunciation(
       word: w,
       status,
       matchedCharsCount: matchedCount,
-      totalCharsCount: cleanWordHanzi.length,
+      totalCharsCount: totalChars,
       reasonType,
       reasonExplanation,
     };
@@ -718,9 +844,90 @@ export function getScenarioExpansions(scenario: Scenario): SentenceExpansion[] {
 /**
  * Get or automatically generate memory quiz questions for a scenario
  */
-export function getScenarioMemoryQuiz(scenario: Scenario): MemoryQuizQuestion[] {
+function shuffle<T>(items: T[]): T[] {
+  const copy = [...items];
+  for (let i = copy.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [copy[i], copy[j]] = [copy[j], copy[i]];
+  }
+  return copy;
+}
+
+const GENERIC_THAI_DISTRACTORS = [
+  'ราคาเท่าไหร่ครับ/คะ?',
+  'ขอบคุณมากครับ/ค่ะ',
+  'ห้องน้ำอยู่ที่ไหนครับ/คะ?',
+  'ฉันฟังไม่ออกครับ/ค่ะ',
+  'ไม่เอาครับ/ค่ะ ขอบคุณ',
+];
+
+/** Correct Thai meaning + up to 3 distinct distractors, shuffled */
+function buildMeaningOptions(correct: string, pool: string[]): MemoryQuizOption[] {
+  const distractors = shuffle(
+    Array.from(new Set([...pool, ...GENERIC_THAI_DISTRACTORS])).filter((t) => t && t !== correct)
+  ).slice(0, 3);
+  return shuffle([{ text: correct, isCorrect: true }, ...distractors.map((text) => ({ text, isCorrect: false }))]);
+}
+
+/**
+ * Listening comprehension: hear the partner's line (no text shown) and pick its meaning
+ */
+function buildListeningQuestions(scenario: Scenario): MemoryQuizQuestion[] {
+  const aiLines = scenario.dialogues.filter((d) => d.speaker === 'ai');
+  const allThai = scenario.dialogues.map((d) => d.thai);
+  return shuffle(aiLines)
+    .slice(0, 2)
+    .map((line, idx) => {
+      // Use a natural alternative reply sometimes, so learners can't just memorize the script
+      const reply = line.variants?.length ? shuffle([line, ...line.variants])[0] : line;
+      return {
+        id: `quiz-${scenario.id}-listen-${idx + 1}`,
+        type: 'listen-dialogue' as const,
+        questionText: `🎧 ฝึกฟังจับใจความ: ${line.speakerName} พูดว่าอะไร? (กดฟัง ไม่มีตัวหนังสือให้ดู)`,
+        audioText: reply.hanzi,
+        promptZh: reply.hanzi,
+        promptPinyin: reply.pinyin,
+        options: buildMeaningOptions(reply.thai, allThai),
+        explanation: `"${reply.hanzi}" (${reply.pinyin}) แปลว่า "${reply.thai}"`,
+      };
+    });
+}
+
+/**
+ * Spaced review: re-test words from earlier lessons / saved words that aren't in this lesson
+ */
+function buildReviewQuestions(scenario: Scenario, reviewWords: WordBreakdown[]): MemoryQuizQuestion[] {
+  const currentHanzi = new Set(scenario.dialogues.flatMap((d) => (d.words || []).map((w) => w.hanzi)));
+  const candidates = reviewWords.filter(
+    (w, idx, self) =>
+      /[一-龥]/.test(w.hanzi) &&
+      !currentHanzi.has(w.hanzi) &&
+      self.findIndex((o) => o.hanzi === w.hanzi) === idx
+  );
+  // Earlier entries are higher priority (saved words / weakest lessons), but keep some variety
+  const picked = shuffle(candidates.slice(0, 8)).slice(0, 2);
+  const thaiPool = candidates.map((w) => w.thai);
+  return picked.map((word, idx) => ({
+    id: `quiz-${scenario.id}-review-${idx + 1}`,
+    type: 'listen-meaning' as const,
+    isReview: true,
+    questionText: '🔁 ทบทวนคำจากบทที่เรียนไปแล้ว: ฟังแล้วเลือกความหมายที่ถูกต้อง',
+    audioText: word.hanzi,
+    promptZh: word.hanzi,
+    promptPinyin: word.pinyin,
+    options: buildMeaningOptions(word.thai, thaiPool),
+    explanation: `"${word.hanzi}" (${word.pinyin}) แปลว่า "${word.thai}"`,
+  }));
+}
+
+export function getScenarioMemoryQuiz(
+  scenario: Scenario,
+  reviewWords: WordBreakdown[] = []
+): MemoryQuizQuestion[] {
+  const extraQuestions = [...buildListeningQuestions(scenario), ...buildReviewQuestions(scenario, reviewWords)];
+
   if (scenario.memoryQuiz && scenario.memoryQuiz.length > 0) {
-    return scenario.memoryQuiz;
+    return [...scenario.memoryQuiz, ...extraQuestions];
   }
 
   const allWords = scenario.dialogues.flatMap((d) => d.words || []);
@@ -804,5 +1011,5 @@ export function getScenarioMemoryQuiz(scenario: Scenario): MemoryQuizQuestion[] 
     });
   }
 
-  return questions;
+  return [...questions, ...extraQuestions];
 }

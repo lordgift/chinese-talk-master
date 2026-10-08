@@ -68,6 +68,10 @@ export function PinyinCard({ dialogue, isCurrent = false, wordEvaluations }: Pin
 
         {/* Big Hanzi text with interactive clickable word pills */}
         <div className="flex flex-wrap items-baseline gap-2.5 py-1">
+          {dialogue.words.length === 0 && (
+            // Lines without a word breakdown (e.g. alternative AI replies) still show the sentence
+            <span className="text-2xl sm:text-3xl font-bold text-slate-900 font-serif">{dialogue.hanzi}</span>
+          )}
           {dialogue.words.map((word, idx) => {
             const isSelected = selectedWord === word.hanzi;
             const evalResult = getWordEval(word.hanzi);

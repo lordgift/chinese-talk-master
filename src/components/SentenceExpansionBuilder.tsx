@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { SentenceExpansion } from '@/lib/pinyinUtils';
+import { SentenceExpansion, isSpeechMatch } from '@/lib/pinyinUtils';
 import {
   Volume2,
   Mic,
@@ -108,11 +108,8 @@ export function SentenceExpansionBuilder({
     if (isListening) {
       stopListening();
       setIsMicTesting(true);
-      const cleanRecognized = (transcript || '').replace(/[^\u4e00-\u9fa5]/g, '');
-      const cleanTarget = currentExpansion.targetHanzi.replace(/[^\u4e00-\u9fa5]/g, '');
-      const isMatch =
-        cleanRecognized.length > 0 &&
-        (cleanRecognized.includes(cleanTarget) || cleanTarget.includes(cleanRecognized));
+      // Whole sentence must be heard in order (saying one word of it no longer passes)
+      const isMatch = isSpeechMatch(transcript || '', currentExpansion.targetHanzi);
       setSpeechSuccess(isMatch);
       if (isMatch && typeof window !== 'undefined') {
         playCelebrationSound('correct');

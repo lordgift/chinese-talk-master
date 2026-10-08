@@ -116,6 +116,9 @@ export function SpeechRecorder({ targetHanzi, targetPinyin, words, onComplete }:
         <p className="text-xs text-slate-500 mb-1 font-mono">ประโยคเป้าหมายที่ต้องพูด:</p>
         <p className="text-lg font-bold text-slate-900 font-serif">{targetHanzi}</p>
         <p className="text-xs text-amber-800 font-bold">{targetPinyin}</p>
+        <p className="text-[11px] text-slate-500 mt-1.5">
+          ℹ️ ระบบตรวจว่าได้ยินคำครบและเรียงถูกลำดับ แต่ยังตรวจวรรณยุกต์ไม่ได้ ควรกดฟังเสียงตัวอย่างแล้วเทียบวรรณยุกต์ด้วยตัวเองเสมอ
+        </p>
       </div>
 
       {/* Prominent Mic Callout Badge */}
