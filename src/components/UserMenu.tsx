@@ -7,7 +7,22 @@ import { LogOut, CloudCheck, Loader2 } from 'lucide-react';
 export function UserMenu() {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
+  const [appVersion, setAppVersion] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  // Fetch app version from manifest.json
+  useEffect(() => {
+    fetch('/manifest.json')
+      .then((res) => res.json())
+      .then((data: { version?: string }) => {
+        if (data?.version) {
+          setAppVersion(data.version);
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load version from manifest:', err);
+      });
+  }, []);
 
   // Close dropdown on outside click (supports both desktop mousedown and mobile touchstart)
   useEffect(() => {
@@ -100,17 +115,24 @@ export function UserMenu() {
           </div>
 
           {/* Actions */}
-          <div className="pt-1">
+          <div className="pt-1 border-t border-slate-100">
             <button
               type="button"
               onClick={() => {
                 setIsOpen(false);
                 logout();
               }}
-              className="w-full px-4 py-2.5 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center gap-2 transition touch-manipulation cursor-pointer active:bg-rose-100"
+              className="w-full px-4 py-2.5 text-left text-xs font-bold text-rose-600 hover:bg-rose-50 flex items-center justify-between transition touch-manipulation cursor-pointer active:bg-rose-100"
             >
-              <LogOut className="w-4 h-4 text-rose-500" />
-              <span>ออกจากระบบ (Logout)</span>
+              <div className="flex items-center gap-2">
+                <LogOut className="w-4 h-4 text-rose-500" />
+                <span>ออกจากระบบ (Logout)</span>
+              </div>
+              {appVersion && (
+                <span className="text-[10px] font-mono font-medium text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md border border-slate-200/60" title={`เวอร์ชัน ${appVersion}`}>
+                  v{appVersion}
+                </span>
+              )}
             </button>
           </div>
         </div>
