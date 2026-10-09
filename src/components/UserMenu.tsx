@@ -4,25 +4,13 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useAuth } from '@/context/AuthContext';
 import { LogOut, CloudCheck, Loader2 } from 'lucide-react';
 
+import { APP_VERSION } from '@/lib/version';
+
 export function UserMenu() {
   const { user, loading, loginWithGoogle, logout } = useAuth();
   const [isOpen, setIsOpen] = useState(false);
-  const [appVersion, setAppVersion] = useState<string>('');
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  // Fetch app version from manifest.json
-  useEffect(() => {
-    fetch('/manifest.json')
-      .then((res) => res.json())
-      .then((data: { version?: string }) => {
-        if (data?.version) {
-          setAppVersion(data.version);
-        }
-      })
-      .catch((err) => {
-        console.error('Failed to load version from manifest:', err);
-      });
-  }, []);
+  const appVersion = APP_VERSION;
 
   // Close dropdown on outside click (supports both desktop mousedown and mobile touchstart)
   useEffect(() => {
