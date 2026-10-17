@@ -20,7 +20,7 @@ export const CATEGORIES: Category[] = [
     icon: 'GraduationCap',
     color: 'from-violet-500 to-indigo-600',
     bgGradient: 'bg-gradient-to-br from-violet-500/10 via-indigo-500/5 to-transparent',
-    scenariosCount: 14,
+    scenariosCount: 15,
     isAvailable: true,
   },
   {
